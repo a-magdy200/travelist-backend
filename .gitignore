@@ -1,2 +1,6 @@
-node_modules
-# config
+node_modules/
+.idea/
+.env
+.vscode/
+*.log
+

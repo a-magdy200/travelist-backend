@@ -1,16 +1,24 @@
 const req = require('express/lib/request');
 const { sendStatus } = require('express/lib/response');
 var jwt = require('jsonwebtoken');
-// const User = require('../models/User');
+
+// import {AppDataSource} from "../src/config/database/data-source";
+// import {User} from "../src/entities/User.entity";
 
 module.exports= {
 
-    login(req, res){
-    // should be from db
+    login(req, res, next){
+
+        // from database but not working
+        // const user = await AppDataSource.manager.find(User, {
+        //     id: 1,
+        // })
+        // if (req.body.name == user.name && req.body.password == user.password)
+
         const user = { name: 'hadeer', password: '123456'};
-
+        
         if (req.body.name == user['name'] && req.body.password == user['password']){
-
+            console.log(user.name);
             jwt.sign({user},'secretkey',(err,token)=>{
                 res.json({
                     token
