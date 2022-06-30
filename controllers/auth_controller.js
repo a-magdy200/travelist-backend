@@ -7,13 +7,19 @@ module.exports= {
 
     login(req, res){
     // should be from db
-        const user = { username: 'hadeer', password: '123456'};
+        const user = { name: 'hadeer', password: '123456'};
 
-        jwt.sign({user},'secretkey',(err,token)=>{
-            res.json({
-                token
+        if (req.body.name == user['name'] && req.body.password == user['password']){
+
+            jwt.sign({user},'secretkey',(err,token)=>{
+                res.json({
+                    token
+                });
             });
-        });
+        }
+        else{
+          res.send( "Your Login has been failed");
+        }
     },
      
     post(req, res, next){
