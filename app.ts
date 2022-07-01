@@ -7,6 +7,7 @@ import logger from "./src/config/logger";
 import configurations from "./src/config/configurations";
 const indexRouter = require('./src/routes');
 const usersRouter = require('./src/routes/countries.routes');
+const profileRouter = require('./src/routes/profile.routes');
 
 const app = express();
 // create a rotating write stream
@@ -19,6 +20,7 @@ AppDataSource.initialize().then(connection => {
   const config = configurations();
   // app.use('/', indexRouter);
   app.use('/countries', usersRouter);
+  app.use('/api/companies', profileRouter);
   app.listen(config.port, () => {
     // logger.log("info", "Server is running");
   });

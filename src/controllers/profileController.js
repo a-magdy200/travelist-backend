@@ -3,7 +3,7 @@ const express=require('express');
 
 
 
- displayProfile(req,res,next){
+ const displayProfile = (req,res,next) => {
     const companies=[
         {id:1,name:'company1',email:'comapny1@gmail.com',password:'12345',rate:3.5},
         {id:2,name:'company2',email:'company2@gmail.com',password:'12345',rate:4.8},
@@ -13,4 +13,4 @@ const express=require('express');
   if(!company) res.status(404).send('The profile with the given id was not found');
   res.send(company);
 }
-module.exports=displayProfile;
+module.exports= {displayProfile};

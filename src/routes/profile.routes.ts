@@ -1,10 +1,10 @@
 import {Router} from 'express';
-//import {displayProfile} from '../controllers/profileController';
-const profileController = require('../controllers/profileController');
+import {displayProfile} from '../controllers/profileController';
+// const profileController = require('../controllers/profileController');
 
 const router = Router();
 
-router.get('/api/companies/:id',displayProfile);
+router.get('/:id',displayProfile);
 
 
 module.exports = router;
