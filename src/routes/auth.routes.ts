@@ -1,4 +1,5 @@
 import {Router} from 'express';
+import { NotBrackets } from 'typeorm';
 var Auth_Controller = require('../../controllers/auth_controller');
 
 const router = Router();
@@ -9,11 +10,3 @@ router.post('/login', Auth_Controller.login);
 router.post('/post', Auth_Controller.verifyToken, Auth_Controller.post);
 
 module.exports = router;
-
-
-
-
-
-
-
-

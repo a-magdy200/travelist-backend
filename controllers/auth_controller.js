@@ -1,52 +1,52 @@
+import {AppDataSource} from "../src/config/database/data-source";
+import {User} from "../src/entities/User.entity";
+
 const req = require('express/lib/request');
 const { sendStatus } = require('express/lib/response');
 var jwt = require('jsonwebtoken');
 
-// import {AppDataSource} from "../src/config/database/data-source";
-// import {User} from "../src/entities/User.entity";
-
 module.exports= {
 
-    register(req, res, next){
+    async register(req, res, next){
 
-        // from database but not working
+        const user = await AppDataSource.manager.insert<User>(User, {
+            id:req.body.id,
+            name:req.body.name ,
+            email: req.body.email ,
+            password: req.body.password
+        });
 
-        // const user = await AppDataSource.manager.insert<User>(User, {
-        //     username:req.body.name ,
-        //     email: req.body.email ,
-        //     password: req.body.password
-        // });
+        console.log(user);
 
-        // AppDataSource.manager.save(user);
+        await AppDataSource.manager.save(user)
 
-        const name= req.body.name ;
-        const mail= req.body.email;
-        const pass= req.body.password;
+        // const name= req.body.name ;
+        // const mail= req.body.email;
+        // const pass= req.body.password;
 
-        const user = {
-                        username:name,
-                        email:  mail,
-                        password: pass,
-                    };
+        // const user = {
+        //                 name:name,
+        //                 email:  mail,
+        //                 password: pass,
+        //             };
         res.send({
             user
         });
       
     },
 
-    login(req, res, next){
+    async login(req, res, next){
+        // email
+        const requiredName= req.body.name;
+        console.log(requiredName);
+        let user = await AppDataSource.manager.find(User, {
+            name:requiredName,
+        });
 
-        // from database but not working
-        
-        // const user = await AppDataSource.manager.find(User, {
-        //     id: 1,
-        // });
+        console.log(user[0].name);
+        console.log('/////////////////////');
+        if (req.body.name == user[0].name && req.body.password == user[0].password){
 
-        const user = { name: 'hadeer', password: '123456'};
-       
-        if (req.body.name == user['name'] && req.body.password == user['password']){
-
-            console.log(req.body.name);
             jwt.sign({user},'secretkey',(err,token)=>{
                 res.json({
                     token
