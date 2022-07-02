@@ -28,7 +28,9 @@ const editProfileData=(req,res,next)=> {
       const company= companies.find(c=>c.id==parseInt(req.params.id));
       if(!company) return res.status(404).send('The profile with the given id was not found');
   
-      const {error}=validateCompany(req.body);
+      const {error}=validateCompany(req.body); //result.error
+      if(error){
+          //400 bad request
           res.status(400).send(error.details[0].message);
           return;
       }
