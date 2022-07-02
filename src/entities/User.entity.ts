@@ -1,5 +1,7 @@
 import {BaseEntity, Column, Entity, PrimaryGeneratedColumn} from "typeorm";
 
+export type UserType = "traveler" | "company";
+
 @Entity()
 export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
@@ -10,4 +12,10 @@ export class User extends BaseEntity {
   email?: string;
   @Column()
   password?: string;
+  @Column({
+    type: "enum",
+    enum: ["traveler", "company"],
+    default: "traveler"
+  })
+  type!: UserType;
 }
