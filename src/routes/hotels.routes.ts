@@ -7,17 +7,10 @@ import {
   updateHotelCover
 } from "../controllers/hotels/hotels_controller";
 import multer from 'multer';
-import {HOTELS_DIRECTORY, UPLOAD_DIRECTORY} from "../helpers/constants/directories";
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, `${UPLOAD_DIRECTORY}${HOTELS_DIRECTORY}`)
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-    cb(null, `${uniqueSuffix}-${file.originalname}`)
-  }
-})
-const upload = multer({storage});
+import {storage} from "../helpers/common/storage-customizer";
+import {HOTELS_DIRECTORY} from "../helpers/constants/directories";
+
+const upload = multer({storage: storage(HOTELS_DIRECTORY)});
 const router = Router();
 
 router.get('/', listHotels);
