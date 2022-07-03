@@ -25,6 +25,6 @@ router.get('/:id', showHotel);
 router.put('/:id', updateHotel);
 router.delete('/:id', deleteHotel);
 router.post('/', createHotel);
-router.patch('/:id/cover', upload.single('hotel_cover_picture'), updateHotelCover);
+router.patch('/:id', upload.single('hotel_cover_picture'), updateHotelCover);
 
 export default router;
