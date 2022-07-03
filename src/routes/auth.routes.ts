@@ -2,9 +2,9 @@ import {Router} from 'express';
 import {register} from '../controllers/auth_controller/register_handler';
 import {login} from '../controllers/auth_controller/login_handler';
 import {list} from '../controllers/auth_controller/test_handler';
-import {forgetPassword} from '../controllers/auth_controller/forget_handler';
-import {verifyCode} from '../controllers/auth_controller/verify_handler';
-import {resetPassword} from '../controllers/auth_controller/reset_handler';
+import {forgetPassword} from '../controllers/auth_controller/forget_pass_handler';
+import {verifyCode} from '../controllers/auth_controller/verify_code_handler';
+import {resetPassword} from '../controllers/auth_controller/reset_pass_handler';
 import { hasToken } from '../middlewares/hasToken';
 import { isAuthenticated } from '../middlewares/isAuthenticated';
 
