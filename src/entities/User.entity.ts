@@ -12,6 +12,8 @@ export class User extends BaseEntity {
   email?: string;
   @Column()
   password?: string;
+  @Column()
+  address?: string;
   @Column({
     type: "enum",
     enum: ["traveler", "company"],
