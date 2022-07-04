@@ -8,13 +8,42 @@ import {formatValidationErrors} from "../../helpers/functions/formatValidationEr
 import {UPLOAD_DIRECTORY} from "../../helpers/constants/directories";
 import {unlinkSync} from "fs";
 
-const viewFriendProfile: RequestHandler = async (req:Request, res:Response) => {
-//     // const results = await AppDataSource.getRepository(User).findOneBy({
-//     //   id: parseInt(req.params.id),
-//     // });
-//     // if(!results) res.status(404).send('The Company with the given id was not found');
-    res.send('hi');
-  };
+// const viewUserProfile: RequestHandler = async (req:Request, res:Response) => {
+//   // const user = await AppDataSource.getRepository(User).findOne({
+//   //   where: {
+//   //     id: parseInt(req.params.id)
+//   //   },
+//   //   relations: {
+//   //     friends: true,
+//   //   },
+//   // });
+//     const user = await AppDataSource.getRepository(User).findOneBy({
+//     id: parseInt(req.params.id),
+//   });
+//   const userFromToken = {
+//     id: 1,
+//   };
+//   let returnvalue;
+
+//   if (user?.id == userFromToken.id) {
+//     // view my profile as user
+//     returnvalue = {    
+//       name:"",
+//       email:"",
+//       address:"",
+//       profile_picture:"",
+      
+//     };
+//   }
+//   // view other friend profile
+//   else {
+//     returnvalue = {
+//       name:"",
+//       profile_picture:"",
+//     };
+//   }
+//   res.send(returnvalue);
+// };
   const uploadProfilePicture = async (req: Request, res: Response) => {
     const id: number | undefined = +req.params.id;
     const user: User | null = await AppDataSource.manager.findOneBy<User>(User, {
@@ -37,4 +66,4 @@ const viewFriendProfile: RequestHandler = async (req:Request, res:Response) => {
       res.json(NotFoundResponse);
     }
   }
-  export {viewFriendProfile,uploadProfilePicture}
+  export {uploadProfilePicture}

@@ -9,7 +9,8 @@ import hotelsRoutes from "./src/routes/hotels.routes";
 const indexRouter = require('./src/routes');
 const countryRouter = require('./src/routes/countries.routes');
 const companyRouter = require('./src/routes/company.routes');
-const userRouter = require('./src/routes/user.routes');
+import  userRouter from './src/routes/user.routes';
+import  travelerRouter from './src/routes/traveler.routes';
 const app = express();
 // create a rotating write stream
 app.use(express.json());
@@ -24,7 +25,8 @@ AppDataSource.initialize().then(connection => {
   app.use('/countries', countryRouter);
   app.use('/api/companies', companyRouter);
   app.use('/api/hotels', hotelsRoutes);
-   app.use('/api/userss', userRouter);
+  app.use('/api/users', userRouter);
+  app.use('/api/travelers', travelerRouter);
   app.listen(config.port, () => {
     console.log("info", "Server is running");
   });
