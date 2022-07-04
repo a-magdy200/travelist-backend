@@ -18,25 +18,25 @@ const login = async (req: Request, res: Response, next: any) => {
 
                 if (validPassword){
                     jwt.sign( {user},'secretkey', (err:any ,token:any) => {
-                        res.json({
+                        res.sendStatus(200).json({
                             success: true,
                             token
                         });
                     });
                 }else{
-                  res.json({
+                  res.sendStatus(404).json({
                       success: false,
                       error: "Incorrect password",
                   });
                 }
             }else{
-                res.json({
+                res.sendStatus(404).json({
                     success: false,
                     error: "Incorrect email, user not exist",
                 });
             }
         }else{
-            res.json({
+            res.sendStatus(404).json({
                 success: false,
                 error: "Missing email or password",
             });

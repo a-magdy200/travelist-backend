@@ -18,18 +18,18 @@ const resetPassword = async (req: Request, res: Response, next: any)  => {
                     user.password = pass;
                     await AppDataSource.manager.save(user);
 
-                     res.json({
+                     res.sendStatus(200).json({
                           success: true,
                           user
                      });
                 }else{
-                    res.json({
+                    res.sendStatus(404).json({
                           success: false,
                           error: "Missing password or user not found",
                     });
                 }
             }else{
-             res.json({
+             res.sendStatus(404).json({
                  success: false,
                  error: "Missing email",
              });

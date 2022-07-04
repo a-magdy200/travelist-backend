@@ -14,24 +14,24 @@ const verifyCode = async (req: Request, res: Response, next: any)=> {
 
                     if (req.body.code == user_pass_forget.code) {
                         // token
-                        res.json({
+                        res.sendStatus(200).json({
                              success: true,
                          });
 
                     } else {
-                        res.json({
+                        res.sendStatus(404).json({
                              success: false,
                              error: "Incorrect code",
                          });
                     }
                 }else{
-                   res.json({
+                   res.sendStatus(404).json({
                          success: false,
                          error: "Invalid email, user not found",
                     });
                 }
         }else{
-           res.json({
+           res.sendStatus(404).json({
              success: false,
              error: "Missing email or code",
            });

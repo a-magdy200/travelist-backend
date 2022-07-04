@@ -6,7 +6,7 @@ import {Request, Response} from "express";
 const listUsers = async  (req: Request, res: Response, next: any)=> {
         const users = await AppDataSource.manager.find<User[]>(User, {});
 
-        res.json({
+        res.sendStatus(200).json({
             success:true,
             users
         });

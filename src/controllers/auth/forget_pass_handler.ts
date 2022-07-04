@@ -50,18 +50,18 @@ const forgetPassword = async (req: Request, res: Response, next: any) => {
                         headers: {'x-myheader': 'test header'}
                     });
 
-                    res.json({
+                    res.sendStatus(200).json({
                         success: true,
                         info,
                     });
                 }else{
-                    res.json({
+                    res.sendStatus(404).json({
                         success: false,
                         error:"Invalid email, user not exist",
                     });
                 }
             }else{
-                res.json({
+                res.sendStatus(404).json({
                     success: false,
                     error:"Missing email",
                 });
