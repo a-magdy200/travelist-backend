@@ -31,6 +31,16 @@ await AppDataSource.manager.insert<Country>(Country, {
   // ...
 });
 const countries = await AppDataSource.manager.find<Country>(Country);
+
+// Find with relations example
+await AppDataSource.getRepository(Company).findOne({
+  where: {
+    id: parseInt(req.params.id)
+  },
+  relations: {
+    user: true,
+  }
+});
 ```
 
 ### Hashing
