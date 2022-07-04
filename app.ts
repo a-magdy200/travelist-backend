@@ -29,7 +29,7 @@ AppDataSource.initialize().then(connection => {
   app.use('/countries', usersRouter);
 
   app.listen(config.port, () => {
-    console.log("info", "Server is running");
+    console.log("info", `Server is running on Port: ${config.port}`);
   });
 }).catch(error => {
   logger.log("error", "Error connecting to database: " + JSON.stringify(error));
