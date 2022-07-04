@@ -1,16 +1,23 @@
-import {BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
+import {
+	BaseEntity,
+	Column,
+	CreateDateColumn,
+	Entity,
+	PrimaryGeneratedColumn,
+	UpdateDateColumn,
+} from 'typeorm'
 
 @Entity()
 export class Transportation extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  id?: number;
+	@PrimaryGeneratedColumn()
+	id?: number
 
-  @Column()
-  name?:string;
+	@Column()
+	name?: string
 
-  @CreateDateColumn({ name: 'created_at' })
-  createdAt?: Date;
+	@CreateDateColumn({ name: 'created_at' })
+	createdAt?: Date
 
-  @UpdateDateColumn({ name: 'updated_at' })
-  updatedAt?: Date;
+	@UpdateDateColumn({ name: 'updated_at' })
+	updatedAt?: Date
 }
