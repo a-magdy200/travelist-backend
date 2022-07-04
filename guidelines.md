@@ -1,0 +1,7 @@
+- TypeScript
+- import/export
+- async/await
+- Joi for backend validations
+- Yup for frontend validations
+- Prettier "Run `npx prettier --check ." Should be all done
+- Prettier "Run `npx prettier --write ." _Warning_ This will rewrite all files, may cause errors
