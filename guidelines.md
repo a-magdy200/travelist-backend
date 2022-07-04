@@ -18,6 +18,4 @@ Button -> verify code
 
 /auth/verify-code
 
-
 /auth/reset-password
-

@@ -1,5 +1,3 @@
-import {register_handler} from "./register_handler";
+import { register_handler } from './register_handler'
 
-export {
-  register_handler,
-}
+export { register_handler }

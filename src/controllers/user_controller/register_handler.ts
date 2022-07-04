@@ -1,3 +1,1 @@
-export const register_handler = () => {
-
-};
+export const register_handler = () => {}

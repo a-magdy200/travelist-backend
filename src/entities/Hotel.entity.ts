@@ -1,37 +1,36 @@
 import {
-  BaseEntity,
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
-  Entity,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn
-} from "typeorm";
+	BaseEntity,
+	Column,
+	CreateDateColumn,
+	DeleteDateColumn,
+	Entity,
+	PrimaryGeneratedColumn,
+	UpdateDateColumn,
+} from 'typeorm'
 
 @Entity()
 export class Hotel extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  id?: number;
+	@PrimaryGeneratedColumn()
+	id?: number
 
-  @Column()
-  name?: string;
+	@Column()
+	name?: string
 
-  @Column()
-  address?: string;
+	@Column()
+	address?: string
 
-  @Column({type: "int"})
-  stars?: number;
+	@Column({ type: 'int' })
+	stars?: number
 
-  @Column({default: ''})
-  cover_picture?: string;
+	@Column({ default: '' })
+	cover_picture?: string
 
-  @CreateDateColumn()
-  created_at?: Date;
+	@CreateDateColumn()
+	created_at?: Date
 
-  @UpdateDateColumn()
-  updated_at?: Date;
+	@UpdateDateColumn()
+	updated_at?: Date
 
-  @DeleteDateColumn()
-  deleted_at?: Date;
-
+	@DeleteDateColumn()
+	deleted_at?: Date
 }
