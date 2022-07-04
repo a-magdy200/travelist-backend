@@ -1,10 +1,10 @@
 import {Router} from 'express';
-import {register} from '../controllers/auth_controller/register_handler';
-import {login} from '../controllers/auth_controller/login_handler';
-import {list} from '../controllers/auth_controller/test_handler';
-import {forgetPassword} from '../controllers/auth_controller/forget_pass_handler';
-import {verifyCode} from '../controllers/auth_controller/verify_code_handler';
-import {resetPassword} from '../controllers/auth_controller/reset_pass_handler';
+import {register} from '../controllers/auth/register_handler';
+import {login} from '../controllers/auth/login_handler';
+import {listUsers} from '../controllers/auth/test_handler';
+import {forgetPassword} from '../controllers/auth/forget_pass_handler';
+import {verifyCode} from '../controllers/auth/verify_code_handler';
+import {resetPassword} from '../controllers/auth/reset_pass_handler';
 import { hasToken } from '../middlewares/hasToken';
 import { isAuthenticated } from '../middlewares/isAuthenticated';
 
@@ -17,6 +17,6 @@ router.post('/verify_code', verifyCode);
 router.post('/reset_password', resetPassword);
 
 //test hasToken, isAuthenticated
-router.post('/list', hasToken, isAuthenticated, list);
+router.get('/list', hasToken, isAuthenticated, listUsers);
 
-module.exports = router;
+export default router;

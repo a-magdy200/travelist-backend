@@ -1,4 +1,4 @@
-import {BaseEntity, Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import {BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
 
 @Entity()
 export class PasswordForget extends BaseEntity {
@@ -8,4 +8,8 @@ export class PasswordForget extends BaseEntity {
   email?: string;
   @Column({ unique: true })
   code?: string;
+  @CreateDateColumn()
+  created_at?: Date;
+  @UpdateDateColumn()
+  updated_at?: Date;
 }

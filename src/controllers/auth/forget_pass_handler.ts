@@ -3,17 +3,13 @@ import {AppDataSource} from "../../config/database/data-source";
 import {User} from "../../entities/User.entity";
 import {PasswordForget} from "../../entities/PasswordForget";
 import nodemailer from "nodemailer";
+import {Request, Response} from "express";
 
-const forgetPassword = async (
-    req: {body: {name:string;};},
-    res: {sendStatus: (arg0:number) => void;},
-    next: any) => {
-
-        try{
-            if (req.body.name !== undefined) {
+const forgetPassword = async (req: Request, res: Response, next: any) => {
+            if (req.body.email !== undefined) {
 
                 const user = await AppDataSource.manager.findOneBy(User, {
-                    name: req.body.name,
+                    email: req.body.email,
                 });
 
                 if(user !== null) {
@@ -27,7 +23,6 @@ const forgetPassword = async (
                     if (user_pass_forget !== null){
                         user_pass_forget.code = code;
                         await AppDataSource.manager.save(user_pass_forget);
-                        console.log(user_pass_forget);
                     }else{
                         const user_pass_forget = await AppDataSource.manager.insert<PasswordForget>(PasswordForget, {
                             email: email,
@@ -49,21 +44,29 @@ const forgetPassword = async (
 
                     const info = await transporter.sendMail({
                         from: 'djangonotifysys@gmail.com',
-                        to: email,
+                        to: "ramez.youssef.fahmy@gmail.com",
                         subject: "verify code to reset password",
                         text: "please, copy the attached code to verify your account and reset a new password, the code: " + code,
                         headers: {'x-myheader': 'test header'}
                     });
 
-                    // console.log("Message sent: %s", info.response);
-                    res.sendStatus(200);
+                    res.json({
+                        success: true,
+                        info,
+                    });
                 }else{
-                    res.sendStatus(403);
+                    res.json({
+                        success: false,
+                        error:"Invalid email, user not exist",
+                    });
                 }
+            }else{
+                res.json({
+                    success: false,
+                    error:"Missing email",
+                });
             }
-        }catch{
-            res.sendStatus(404);
-        }
+            // logger.log("error from forget_password_func"+json.stringify(req)+json.stringify(e));
 }
 
 export {

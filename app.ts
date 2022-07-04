@@ -10,9 +10,9 @@ import cors from "cors";
 
 const app = express();
 
-const indexRouter = require ('./src/routes');
-const usersRouter = require ('./src/routes/countries.routes');
-const authRouter = require ('./src/routes/auth.routes');
+import indexRouter from './src/routes';
+import usersRouter from './src/routes/countries.routes';
+import authRouter from "./src/routes/auth.routes";
 
 app.use(cors());
 // create a rotating write stream
@@ -29,7 +29,7 @@ AppDataSource.initialize().then(connection => {
   app.use('/countries', usersRouter);
 
   app.listen(config.port, () => {
-    // logger.log("info", "Server is running");
+    console.log("info", "Server is running");
   });
 }).catch(error => {
   logger.log("error", "Error connecting to database: " + JSON.stringify(error));
