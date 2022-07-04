@@ -1,32 +1,18 @@
 import express from 'express'
 import path from 'path'
 import cookieParser from 'cookie-parser'
-import 'reflect-metadata'
-import { AppDataSource } from './src/config/database/data-source'
-import logger from './src/config/logger'
-import configurations from './src/config/configurations'
-import express from 'express'
-import path from 'path'
-import cookieParser from 'cookie-parser'
+import cors from 'cors'
 import 'reflect-metadata'
 import { AppDataSource } from './src/config/database/data-source'
 import logger from './src/config/logger'
 import configurations from './src/config/configurations'
 import hotelsRoutes from './src/routes/hotels.routes'
-
-const indexRouter = require('./src/routes')
-const countryRouter = require('./src/routes/countries.routes')
-const companyRouter = require('./src/routes/company.routes')
 import userRouter from './src/routes/user.routes'
 import travelerRouter from './src/routes/traveler.routes'
-const usersRouter = require('./src/routes/countries.routes')
-const programRouter = require('./src/routes/programs.routes')
-
-import cors from 'cors'
-
-import indexRouter from './src/routes'
-import usersRouter from './src/routes/countries.routes'
 import authRouter from './src/routes/auth.routes'
+const companyRouter = require('./src/routes/company.routes')
+const indexRouter = require('./src/routes')
+const programRouter = require('./src/routes/programs.routes')
 
 const app = express()
 app.use(
