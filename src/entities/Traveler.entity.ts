@@ -12,8 +12,8 @@ export type GenderType = "female" | "male";
 export class Traveler extends BaseEntity {
   @PrimaryGeneratedColumn()
   id?: number;
-  @Column({ unique: true })
-  national_id:number
+  @Column({ unique: true ,type: 'bigint'})
+  national_id:string
   @Column({
     type: "enum",
     enum: ["female", "male"],
