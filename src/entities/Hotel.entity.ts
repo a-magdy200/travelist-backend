@@ -15,8 +15,8 @@ export class Hotel extends BaseEntity {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt?: Date;
 
-  @ManyToMany((program) => Program, (program) => program.hotels)
-  program?: Program[];
+ // @ManyToMany((program) => Program, (program) => program.hotels)
+ // program?: Program[];
  
 // @ManyToMany(() => Program,program=>program.hotels,{
  // cascade:true

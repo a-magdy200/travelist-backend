@@ -10,7 +10,9 @@ export const showAll=async (req: Request, res: Response)=> {
     else
     res.json(programs)
 */
-const programs: Program[] = await AppDataSource.manager.find<Program>(Program ,{});
+const programs: Program[] = await AppDataSource.manager.find<Program>(Program ,{ relations: {
+  company: true,
+}});
   res.json({
     success: true,
     data: programs

@@ -1,7 +1,11 @@
 import {Router} from 'express';
 import { Program } from '../../controllers/Program/index' 
+import multer from 'multer';
+import {storage} from "../../helpers/common/storage-customizer";
+import {PROGRAMS_DIRECTORY} from "../../helpers/constants/directories";
 
 const router = Router();
+const upload = multer({storage: storage(PROGRAMS_DIRECTORY)});
 
 router.get('/all',Program.showAll );
 router.get('/show/:id',Program.show );

@@ -45,9 +45,7 @@ export class Program extends BaseEntity {
     @OneToMany(() => Cycle, (cycle) => cycle.program)
     cycles?: Cycle[]
 
-    @ManyToMany((hotel) => Hotel, {
-        cascade: true,
-      })
+    @ManyToMany((hotel) => Hotel, )
     @JoinTable()
    hotels?: Hotel[]
 }
