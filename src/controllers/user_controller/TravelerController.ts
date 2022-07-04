@@ -8,17 +8,15 @@ import {formatValidationErrors} from "../../helpers/functions/formatValidationEr
 import {UPLOAD_DIRECTORY} from "../../helpers/constants/directories";
 import {unlinkSync} from "fs";
 
-const viewUserProfile: RequestHandler = async (req:Request, res:Response) => {
-  const traveler = await AppDataSource.getRepository(Traveler).findOne({
-    where: {
-      id: parseInt(req.params.id)
-    },
-    relations: {
-      user: true,
-
-    },
-  });
-
+const viewUserProfile: RequestHandler = async (req: Request, res: Response) => {
+	const traveler = await AppDataSource.getRepository(Traveler).findOne({
+		where: {
+			id: parseInt(req.params.id),
+		},
+		relations: {
+			user: true,
+		},
+	})
   const userFromToken = {
     id: 1,
   };

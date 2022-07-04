@@ -1,13 +1,13 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  BaseEntity,
-  OneToOne,
-  JoinColumn,
-} from "typeorm";
-import { User } from "./User.entity";
-export type GenderType = "female" | "male";
+	Entity,
+	PrimaryGeneratedColumn,
+	Column,
+	BaseEntity,
+	OneToOne,
+	JoinColumn,
+} from 'typeorm'
+import { User } from './User.entity'
+export type GenderType = 'female' | 'male'
 @Entity()
 export class Traveler extends BaseEntity {
   @PrimaryGeneratedColumn()
@@ -25,7 +25,7 @@ export class Traveler extends BaseEntity {
   @Column()
   is_guide?: boolean;
 
-  @OneToOne(() => User)
-  @JoinColumn()
-  user: User;
+	@OneToOne(() => User)
+	@JoinColumn()
+	user: User
 }
