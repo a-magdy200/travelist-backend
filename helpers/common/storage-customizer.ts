@@ -12,4 +12,5 @@ const storage = (directory: string): StorageEngine => {
     }
   });
 }
+
 export {storage};
