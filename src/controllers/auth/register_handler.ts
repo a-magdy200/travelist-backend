@@ -21,12 +21,12 @@ const register = async (req: Request, res: Response, next: any) => {
 			type: req.body.type,
 		})
 
-		res.sendStatus(200).json({
+		return res.status(200).json({
 			success: true,
 			user,
 		})
 	} catch (error: any) {
-		res.json({
+		return res.status(500).json({
 			success: false,
 			// errors: error.details.map((e: Error) => e.message),
 			// errors:error,

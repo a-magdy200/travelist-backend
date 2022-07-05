@@ -5,13 +5,6 @@ import 'reflect-metadata'
 import { AppDataSource } from './src/config/database/data-source'
 import logger from './src/config/logger'
 import configurations from './src/config/configurations'
-import express from 'express'
-import path from 'path'
-import cookieParser from 'cookie-parser'
-import 'reflect-metadata'
-import { AppDataSource } from './src/config/database/data-source'
-import logger from './src/config/logger'
-import configurations from './src/config/configurations'
 import hotelsRoutes from './src/routes/hotels.routes'
 
 const indexRouter = require('./src/routes')
@@ -24,8 +17,6 @@ const programRouter = require('./src/routes/programs.routes')
 
 import cors from 'cors'
 
-import indexRouter from './src/routes'
-import usersRouter from './src/routes/countries.routes'
 import authRouter from './src/routes/auth.routes'
 
 const app = express()
@@ -54,7 +45,7 @@ AppDataSource.initialize()
 		app.use('/', indexRouter)
 		app.use('/programs', programRouter)
 		app.listen(config.port, () => {
-			console.log('info', 'Server is running')
+			console.log(`Server running on PORT: ${config.port}`)
 		})
 	})
 	.catch((error) => {
