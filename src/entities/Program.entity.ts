@@ -1,7 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, BaseEntity, OneToMany,ManyToMany,JoinTable, CreateDateColumn, UpdateDateColumn } from "typeorm"
 import { Company } from "./Company.entity"
-import { Cycle } from "./Cylce.entity"
+import { Cycle } from "./Cycle.entity"
 import { Hotel } from "./Hotel.entity"
+import { Transportation } from "./Transportation.entity"
 
 
 @Entity()
@@ -39,13 +40,16 @@ export class Program extends BaseEntity {
     @UpdateDateColumn({ name: 'updated_at' })
     updatedAt?: Date;
 
-    @ManyToOne(() => Company, (company) => company.programs)
+    @ManyToOne(() => Company, (company) => company.programs,{onDelete: "CASCADE"})
     company?: Company
 
     @OneToMany(() => Cycle, (cycle) => cycle.program)
-    cycles?: Cycle[]
+     cycles?: Cycle[]
+
+    @ManyToOne(() => Transportation, (transportation) => transportation.programs,{onDelete: "CASCADE"})
+    transportation?: Transportation
 
     @ManyToMany((hotel) => Hotel, )
     @JoinTable()
-   hotels?: Hotel[]
+    hotels?: Hotel[]
 }

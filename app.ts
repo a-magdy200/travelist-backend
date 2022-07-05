@@ -9,6 +9,8 @@ import configurations from "./src/config/configurations";
 const indexRouter = require('./src/routes');
 const usersRouter = require('./src/routes/countries.routes');
 const programRouter = require('./src/routes/programs.routes');
+const cycleRouter = require('./src/routes/cycles.routes');
+
 
 const app = express();
 const cors = require('cors');
@@ -22,10 +24,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
 AppDataSource.initialize().then(connection => {
   const config = configurations();
   app.use('/', indexRouter);
   app.use('/programs', programRouter);
+  app.use('/cycles', cycleRouter);
   app.use('/countries', usersRouter);
   app.listen(config.port, () => {
     // logger.log("info", "Server is running");

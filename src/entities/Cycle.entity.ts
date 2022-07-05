@@ -2,6 +2,7 @@ import {BaseEntity, Column, Entity, ManyToOne,PrimaryGeneratedColumn,ManyToMany,
 import {IsDate} from "class-validator"
 import { Program } from "./Program.entity"
 import { User } from "./User.entity"
+import { Country } from "./Country.entity";
 
 
 @Entity()
@@ -15,7 +16,7 @@ export class Cycle extends BaseEntity {
   @Column()
   max_seats?:number;
 
-  @Column()
+  @Column({ type: 'int', default: 0, })
   current_seats?:number;
 
   @Column()
@@ -34,17 +35,17 @@ export class Cycle extends BaseEntity {
   @IsDate()
   return_arrival_date?:Date;
 
-  @Column()
-  departure_location?:number;
+ // @Column()
+ //departure_location?:number;
 
-  @Column()
-  arrival_location?:number;
+//  @Column()
+ // arrival_location?:number;
 
-  @Column()
-  return_location?:number;
+  //@Column()
+  //return_location?:number;
 
-  @Column()
-  return_arrival_location?:number;
+  //@Column()
+  //return_arrival_location?:number;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt?: Date;
@@ -52,8 +53,20 @@ export class Cycle extends BaseEntity {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt?: Date;
   
-  @ManyToOne(() => Program, (program) => program.cycles)
+  @ManyToOne(() => Program, (program) => program.cycles,)
   program?: Program
+
+  @ManyToOne(() => Country, (country) => country.cycles,)
+  departure_location?: Country
+
+  @ManyToOne(() => Country, (country) => country.cycles,)
+  return_location?: Country
+
+  @ManyToOne(() => Country, (country) => country.cycles,)
+  arrival_location?: Country
+
+  @ManyToOne(() => Country, (country) => country.cycles,)
+  return_arrival_location?: Country
 
   @ManyToMany(() => User)
   @JoinTable()

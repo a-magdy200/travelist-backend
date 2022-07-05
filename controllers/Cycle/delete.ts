@@ -1,4 +1,4 @@
-import { Cycle } from "../../src/entities/Cylce.entity"
+import { Cycle } from "../../src/entities/Cycle.entity"
 import { AppDataSource } from "../../src/config/database/data-source"
 import { Request, Response } from "express"
 
