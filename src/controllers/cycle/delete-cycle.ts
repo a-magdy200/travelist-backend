@@ -1,6 +1,6 @@
-import { Cycle } from "../../src/entities/Cycle.entity"
-import { AppDataSource } from "../../src/config/database/data-source"
+import { AppDataSource } from "../../config/database/data-source"
 import { Request, Response } from "express"
+import { Cycle } from "../../entities/Cycle.entity";
 
 export const deleteCycle=async (req: Request, res: Response)=> {
     try {
@@ -15,7 +15,7 @@ const updateResult = await AppDataSource.manager.delete<Cycle>(Cycle, {
         res.json(
             {
             success: false,
-           
+
           });
       }
 

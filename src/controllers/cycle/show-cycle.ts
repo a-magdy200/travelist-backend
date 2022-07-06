@@ -1,8 +1,8 @@
-import { Cycle } from "../../src/entities/Cycle.entity"
-import { AppDataSource } from "../../src/config/database/data-source"
+import { Cycle } from "../../entities/Cycle.entity"
+import { AppDataSource } from "../../config/database/data-source"
 import { Request, Response } from "express"
 
-export const show=async (req: Request, res: Response)=> {
+export const showCycle=async (req: Request, res: Response)=> {
     const id: number | undefined = +req.params.id;
     const cycle=await AppDataSource.getRepository(Cycle).findOne({
       where: {

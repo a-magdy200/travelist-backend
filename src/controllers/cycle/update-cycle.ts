@@ -1,11 +1,11 @@
-import { Cycle } from "../../src/entities/Cycle.entity"
-import { AppDataSource } from "../../src/config/database/data-source"
+import { Cycle } from "../../entities/Cycle.entity"
+import { AppDataSource } from "../../config/database/data-source"
 import { Request, Response } from "express"
-import { Country } from "../../src/entities/Country.entity";
+import { Country } from "../../entities/Country.entity";
 import { cycleValidation } from '../../helpers/validations/cycle.validation'
 import { formatValidationErrors } from '../../helpers/functions/formatValidationErrors'
 
-export const update=async (req: Request, res: Response)=> {
+export const updateCycle=async (req: Request, res: Response)=> {
   try {
     const id: number | undefined = parseInt(req.params.id);
     const validation: Cycle = await cycleValidation.validateAsync(req.body, {
@@ -19,15 +19,15 @@ export const update=async (req: Request, res: Response)=> {
       id: parseInt(req.params.id),
     },
     })
-    
-    
+
+
    /*  const cycle: Cycle | null = await AppDataSource.manager.findOneBy<Cycle>(Cycle, {
       id
     });
-   const departureCountry = await AppDataSource.getRepository(Country).findOneBy({ id: parseInt(req.body.departureLocationId), }) 
-    const arrivalCountry = await AppDataSource.getRepository(Country).findOneBy({ id: parseInt(req.body.arrivalLocationId), }) 
-    const returnCountry = await AppDataSource.getRepository(Country).findOneBy({ id: parseInt(req.body.returnLocationId), }) 
-    const returnArrivalCountry = await AppDataSource.getRepository(Country).findOneBy({ id: parseInt(req.body.returnArrivalLocationId), }) 
+   const departureCountry = await AppDataSource.getRepository(Country).findOneBy({ id: parseInt(req.body.departureLocationId), })
+    const arrivalCountry = await AppDataSource.getRepository(Country).findOneBy({ id: parseInt(req.body.arrivalLocationId), })
+    const returnCountry = await AppDataSource.getRepository(Country).findOneBy({ id: parseInt(req.body.returnLocationId), })
+    const returnArrivalCountry = await AppDataSource.getRepository(Country).findOneBy({ id: parseInt(req.body.returnArrivalLocationId), })
     if( cycle&&departureCountry && arrivalCountry && returnCountry&& returnArrivalCountry )
     {
        cycle.departure_location=departureCountry;
@@ -36,7 +36,7 @@ export const update=async (req: Request, res: Response)=> {
        cycle.return_arrival_location=returnArrivalCountry;
        await cycle.save();
 
-    }   
+    }
 */
     res.json({
       success: updateCycle.affected === 1,
