@@ -1,11 +1,5 @@
-import {
-	BaseEntity,
-	Column,
-	CreateDateColumn,
-	Entity,
-	PrimaryGeneratedColumn,
-	UpdateDateColumn,
-} from 'typeorm'
+import {BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
+import { Program } from "./Program.entity";
 
 @Entity()
 export class Transportation extends BaseEntity {
@@ -15,8 +9,11 @@ export class Transportation extends BaseEntity {
 	@Column()
 	name?: string
 
-	@CreateDateColumn({ name: 'created_at' })
-	createdAt?: Date
+  @OneToMany(() => Program, (program) => program.transportation)
+  programs?: Program[]
+
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt?: Date;
 
 	@UpdateDateColumn({ name: 'updated_at' })
 	updatedAt?: Date

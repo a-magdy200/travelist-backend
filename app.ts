@@ -13,6 +13,7 @@ import authRouter from './src/routes/auth.routes'
 const companyRouter = require('./src/routes/company.routes')
 const indexRouter = require('./src/routes')
 const programRouter = require('./src/routes/programs.routes')
+const cycleRouter = require('./src/routes/cycles.routes');
 
 const app = express()
 app.use(
@@ -38,7 +39,8 @@ AppDataSource.initialize()
 		app.use('/api/users', userRouter)
 		app.use('/api/travelers', travelerRouter)
 		app.use('/', indexRouter)
-		app.use('/programs', programRouter)
+    app.use('/cycles', cycleRouter);
+    app.use('/programs', programRouter)
 		app.listen(config.port, () => {
 			console.log('info', 'Server is running')
 		})
