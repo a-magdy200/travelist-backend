@@ -8,7 +8,6 @@ import { passwordValidation } from '../../helpers/validations/password.validatio
 import { formatValidationErrors } from '../../helpers/functions/formatValidationErrors'
 import { UPLOAD_DIRECTORY } from '../../helpers/constants/directories'
 
-
 import { unlinkSync } from 'fs'
 
 const editUserProfile = async (req: Request, res: Response) => {
@@ -78,4 +77,4 @@ const uploadProfilePicture = async (req: Request, res: Response) => {
 		res.json(NotFoundResponse)
 	}
 }
-export { editUserProfile, updateUserPassword ,uploadProfilePicture}
+export { editUserProfile, updateUserPassword, uploadProfilePicture }

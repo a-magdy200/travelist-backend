@@ -9,7 +9,7 @@ const login = async (req: Request, res: Response, next: any) => {
 		const user = await AppDataSource.manager.findOneBy<User>(User, {
 			email: req.body.email,
 		})
-		
+
 		if (user !== null) {
 			const validPassword = await bcrypt.compare(
 				req.body.password,

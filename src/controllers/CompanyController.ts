@@ -3,7 +3,7 @@ import e, { RequestHandler } from 'express'
 import { Company } from '../entities/Company.entity'
 import { AppDataSource } from '../config/database/data-source'
 import { NotFoundResponse } from '../helpers/responses/404.response'
-import {companyValidation} from "../helpers/validations/company.validation";
+import { companyValidation } from '../helpers/validations/company.validation'
 import { formatValidationErrors } from '../helpers/functions/formatValidationErrors'
 import { UPLOAD_DIRECTORY } from '../helpers/constants/directories'
 import { unlinkSync } from 'fs'
@@ -62,19 +62,26 @@ const viewCompanyProfile: RequestHandler = async (req, res) => {
 }
 const editCompanyProfile = async (req: Request, res: Response) => {
 	try {
-	  const id: number | undefined = +req.params.id;
-	  const validation: Company = await companyValidation.validateAsync(req.body, { abortEarly: false });
-	  const updateResult = await AppDataSource.manager.update<Company>(Company, {
-		id
-	  }, validation);
-  
-	  res.json({
-		success: updateResult.affected === 1,
-	  });
+		const id: number | undefined = +req.params.id
+		const validation: Company = await companyValidation.validateAsync(
+			req.body,
+			{ abortEarly: false }
+		)
+		const updateResult = await AppDataSource.manager.update<Company>(
+			Company,
+			{
+				id,
+			},
+			validation
+		)
+
+		res.json({
+			success: updateResult.affected === 1,
+		})
 	} catch (error: any) {
-	  res.json(formatValidationErrors(error));
+		res.json(formatValidationErrors(error))
 	}
-  }
+}
 // export const editCompanyData: RequestHandler = async (req, res) => {
 // 	const user = await AppDataSource.getRepository(Company).findOneBy({
 // 		id: parseInt(req.params.id),
@@ -90,8 +97,6 @@ const editCompanyProfile = async (req: Request, res: Response) => {
 // 		console.log('no user found')
 // 	}
 // }
-
-
 
 const uploadCoverPicture = async (req: Request, res: Response) => {
 	const id: number | undefined = +req.params.id
@@ -119,4 +124,4 @@ const uploadCoverPicture = async (req: Request, res: Response) => {
 		res.json(NotFoundResponse)
 	}
 }
-export {listCompanies,viewCompanyProfile,editCompanyProfile}
+export { listCompanies, viewCompanyProfile, editCompanyProfile }

@@ -1,27 +1,30 @@
-import { Cycle } from "../../entities/Cycle.entity"
-import { AppDataSource } from "../../config/database/data-source"
-import { Request, Response } from "express"
-import { Country } from "../../entities/Country.entity";
+import { Cycle } from '../../entities/Cycle.entity'
+import { AppDataSource } from '../../config/database/data-source'
+import { Request, Response } from 'express'
+import { Country } from '../../entities/Country.entity'
 import { cycleValidation } from '../../helpers/validations/cycle.validation'
 import { formatValidationErrors } from '../../helpers/functions/formatValidationErrors'
 
-export const updateCycle=async (req: Request, res: Response)=> {
-  try {
-    const id: number | undefined = parseInt(req.params.id);
-    const validation: Cycle = await cycleValidation.validateAsync(req.body, {
+export const updateCycle = async (req: Request, res: Response) => {
+	try {
+		const id: number | undefined = parseInt(req.params.id)
+		const validation: Cycle = await cycleValidation.validateAsync(req.body, {
 			abortEarly: false,
 		})
-   const updateCycle = await AppDataSource.manager.update<Cycle>(Cycle, {
-     id
-   }, validation);
-   const cycle=await AppDataSource.getRepository(Cycle).findOne({
-    where: {
-      id: parseInt(req.params.id),
-    },
-    })
+		const updateCycle = await AppDataSource.manager.update<Cycle>(
+			Cycle,
+			{
+				id,
+			},
+			validation
+		)
+		const cycle = await AppDataSource.getRepository(Cycle).findOne({
+			where: {
+				id: parseInt(req.params.id),
+			},
+		})
 
-
-   /*  const cycle: Cycle | null = await AppDataSource.manager.findOneBy<Cycle>(Cycle, {
+		/*  const cycle: Cycle | null = await AppDataSource.manager.findOneBy<Cycle>(Cycle, {
       id
     });
    const departureCountry = await AppDataSource.getRepository(Country).findOneBy({ id: parseInt(req.body.departureLocationId), })
@@ -38,15 +41,15 @@ export const updateCycle=async (req: Request, res: Response)=> {
 
     }
 */
-    res.json({
-      success: updateCycle.affected === 1,
-      data:updateCycle
-    });
-  } catch (error: any) {
-    //res.json({
-     // success:false
-    //});
-    res.json(formatValidationErrors(error));
-    console.log(formatValidationErrors(error))
-    }
+		res.json({
+			success: updateCycle.affected === 1,
+			data: updateCycle,
+		})
+	} catch (error: any) {
+		//res.json({
+		// success:false
+		//});
+		res.json(formatValidationErrors(error))
+		console.log(formatValidationErrors(error))
+	}
 }
