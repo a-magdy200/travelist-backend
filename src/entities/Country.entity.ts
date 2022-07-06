@@ -3,11 +3,11 @@ import { Cycle } from "./Cycle.entity";
 
 @Entity()
 export class Country extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  id?: number;
+	@PrimaryGeneratedColumn()
+	id?: number
 
-  @Column()
-  name?:string;
+	@Column()
+	name?: string
 
   @OneToMany(() => Cycle, (cycle) => cycle.departure_location,)
   @OneToMany(() => Cycle, (cycle) => cycle.return_location)
@@ -22,6 +22,6 @@ export class Country extends BaseEntity {
   @CreateDateColumn({ name: 'created_at' })
   createdAt?: Date;
 
-  @UpdateDateColumn({ name: 'updated_at' })
-  updatedAt?: Date;
+	@UpdateDateColumn({ name: 'updated_at' })
+	updatedAt?: Date
 }

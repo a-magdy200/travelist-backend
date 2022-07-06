@@ -1,26 +1,36 @@
-import {BaseEntity, Column, CreateDateColumn, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
-import { Program } from "./Program.entity";
+import {
+	BaseEntity,
+	Column,
+	CreateDateColumn,
+	DeleteDateColumn,
+	Entity,
+	PrimaryGeneratedColumn,
+	UpdateDateColumn,
+} from 'typeorm'
 
 @Entity()
 export class Hotel extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  id?: number;
+	@PrimaryGeneratedColumn()
+	id?: number
 
-  @Column()
-  name?:string;
+	@Column()
+	name?: string
 
-  @CreateDateColumn({ name: 'created_at' })
-  createdAt?: Date;
+	@Column()
+	address?: string
 
-  @UpdateDateColumn({ name: 'updated_at' })
-  updatedAt?: Date;
+	@Column({ type: 'int' })
+	stars?: number
 
- // @ManyToMany((program) => Program, (program) => program.hotels)
- // program?: Program[];
- 
-// @ManyToMany(() => Program,program=>program.hotels,{
- // cascade:true
- //})
- //program?:Program
- 
+	@Column({ default: '' })
+	cover_picture?: string
+
+	@CreateDateColumn()
+	created_at?: Date
+
+	@UpdateDateColumn()
+	updated_at?: Date
+
+	@DeleteDateColumn()
+	deleted_at?: Date
 }
