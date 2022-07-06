@@ -22,13 +22,13 @@ const resetPassword = async (req: Request, res: Response, next: any) => {
 				user,
 			})
 		} else {
-			res.sendStatus(404).json({
+			return res.sendStatus(404).json({
 				success: false,
 				error: 'Missing password or user not found',
 			})
 		}
 	} else {
-		res.sendStatus(404).json({
+		return res.sendStatus(404).json({
 			success: false,
 			error: 'Missing email',
 		})
