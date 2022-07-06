@@ -1,15 +1,13 @@
 import { Router } from 'express'
-import { displayAllCompanies } from '../controllers/CompanyController'
+import { listCompanies } from '../controllers/CompanyController'
 //import {displayByCompany} from '../controllers/CompanyController';
-import { editCompanyData } from '../controllers/CompanyController'
-import { updatePassword } from '../controllers/CompanyController'
+import { editCompanyProfile } from '../controllers/CompanyController'
 import { viewCompanyProfile } from '../controllers/CompanyController'
 
 const router = Router()
 
-router.get('/', displayAllCompanies)
+router.get('/', listCompanies)
 //router.get('/:id',displayByCompany);
-router.put('/:id', editCompanyData)
-router.put('/:id', updatePassword)
+router.put('/:id', editCompanyProfile)
 router.get('/:id', viewCompanyProfile)
 module.exports = router
