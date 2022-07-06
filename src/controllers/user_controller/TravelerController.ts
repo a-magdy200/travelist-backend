@@ -62,8 +62,17 @@ const viewUserProfile: RequestHandler = async (req: Request, res: Response) => {
 //     console.log("no user found");
 //   }
 // };
+const listTravelers = async (req: Request, res: Response) => {
+	const hotels: Traveler[] = await AppDataSource.manager.find<Traveler>(Traveler, {
+		// withDeleted: true, // to return soft deleted records
+	})
+	res.json({
+		success: true,
+		data: hotels,
+	})
+}
 
-const editUserProfile = async (req: Request, res: Response) => {
+const editTravelerProfile = async (req: Request, res: Response) => {
   try {
     const id: number | undefined = +req.params.id;
     const validation: Traveler = await travelerValidation.validateAsync(req.body, { abortEarly: false });
@@ -100,4 +109,4 @@ const editUserProfile = async (req: Request, res: Response) => {
   //     res.json(NotFoundResponse);
   //   }
   // }
-   export {viewUserProfile,editUserProfile}
+   export {viewUserProfile,editTravelerProfile,listTravelers}

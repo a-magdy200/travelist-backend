@@ -1,8 +1,9 @@
-import Joi from "joi";
+const Joi = require ('joi')
+.extend(require('@joi/date'));
 
 export const travelerValidation = Joi.object().keys({
-  name: Joi.string().alphanum().min(3).required(),
-  address: Joi.string().alphanum().min(3).required(),
- // email: Joi.number().min(1).max(5).required(),
- // profile_picture: Joi.number().min(1).max(5).required(),
+	gender: Joi.string().required(),
+  date_of_birth:Joi.date().format("YYYY-MM-DD").required(),
+	is_guide: Joi.boolean().default(true).required,
+	national_id: Joi.number().min(14),
 })

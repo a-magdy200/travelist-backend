@@ -20,11 +20,13 @@ export class Traveler extends BaseEntity {
     default: "female",
   })
   gender!: GenderType;
-  @Column()
+
+  @Column({type:'date'})
   date_of_birth?: Date;
+
   @Column()
   is_guide?: boolean;
-
+  
 	@OneToOne(() => User)
 	@JoinColumn()
 	user: User
