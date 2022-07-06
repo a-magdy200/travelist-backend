@@ -4,9 +4,17 @@ import { Request, Response } from "express"
 
 export const show=async (req: Request, res: Response)=> {
     const id: number | undefined = +req.params.id;
-    const cycle: Cycle | null = await AppDataSource.manager.findOneBy<Cycle>(Cycle, {
-      id
-    });
+    const cycle=await AppDataSource.getRepository(Cycle).findOne({
+      where: {
+        id: parseInt(req.params.id),
+      },
+      relations: {
+        departure_location: true,
+        return_location:true,
+        arrival_location:true,
+        return_arrival_location:true
+      },
+    })
     if (cycle) {
       res.json({
         success: true,
