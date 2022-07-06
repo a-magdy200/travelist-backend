@@ -3,47 +3,56 @@ import { User } from '../../entities/User.entity'
 import { Request, Response } from 'express'
 import { AppDataSource } from '../../config/database/data-source'
 import { NotFoundResponse } from '../../helpers/responses/404.response'
-//import {userValidation} from "../../helpers/validations/user.validation";
+import { userValidation } from '../../helpers/validations/user.validation'
+import { passwordValidation } from '../../helpers/validations/password.validation'
 import { formatValidationErrors } from '../../helpers/functions/formatValidationErrors'
 import { UPLOAD_DIRECTORY } from '../../helpers/constants/directories'
+
+
 import { unlinkSync } from 'fs'
 
-// const viewUserProfile: RequestHandler = async (req:Request, res:Response) => {
-//   // const user = await AppDataSource.getRepository(User).findOne({
-//   //   where: {
-//   //     id: parseInt(req.params.id)
-//   //   },
-//   //   relations: {
-//   //     friends: true,
-//   //   },
-//   // });
-//     const user = await AppDataSource.getRepository(User).findOneBy({
-//     id: parseInt(req.params.id),
-//   });
-//   const userFromToken = {
-//     id: 1,
-//   };
-//   let returnvalue;
+const editUserProfile = async (req: Request, res: Response) => {
+	try {
+		const id: number | undefined = +req.params.id
+		const validation: User = await userValidation.validateAsync(req.body, {
+			abortEarly: false,
+		})
+		const updateResult = await AppDataSource.manager.update<User>(
+			User,
+			{
+				id,
+			},
+			validation
+		)
 
-//   if (user?.id == userFromToken.id) {
-//     // view my profile as user
-//     returnvalue = {
-//       name:"",
-//       email:"",
-//       address:"",
-//       profile_picture:"",
+		res.json({
+			success: updateResult.affected === 1,
+		})
+	} catch (error: any) {
+		res.json(formatValidationErrors(error))
+	}
+}
+const updateUserPassword = async (req: Request, res: Response) => {
+	try {
+		const id: number | undefined = +req.params.id
+		const password_validation: User = await passwordValidation.validateAsync(
+			req.body,
+			{ abortEarly: false }
+		)
+		const updateResult = await AppDataSource.manager.update<User>(
+			User,
 
-//     };
-//   }
-//   // view other friend profile
-//   else {
-//     returnvalue = {
-//       name:"",
-//       profile_picture:"",
-//     };
-//   }
-//   res.send(returnvalue);
-// };
+			id,
+			{ password: req.body.password }
+		)
+
+		res.json({
+			success: updateResult.affected === 1,
+		})
+	} catch (error: any) {
+		res.json(formatValidationErrors(error))
+	}
+}
 const uploadProfilePicture = async (req: Request, res: Response) => {
 	const id: number | undefined = +req.params.id
 	const user: User | null = await AppDataSource.manager.findOneBy<User>(User, {
@@ -51,9 +60,9 @@ const uploadProfilePicture = async (req: Request, res: Response) => {
 	})
 	if (user && req.file?.filename) {
 		// Remove `uploads/` from path string
-		const oldCoverPicture = user.profile_picture
-		if (oldCoverPicture && oldCoverPicture !== '') {
-			await unlinkSync(`${UPLOAD_DIRECTORY}${oldCoverPicture}`)
+		const oldProfilePicture = user.profile_picture
+		if (oldProfilePicture && oldProfilePicture !== '') {
+			await unlinkSync(`${UPLOAD_DIRECTORY}${oldProfilePicture}`)
 		}
 		const path = `${req.file.destination}${req.file.filename}`.replace(
 			UPLOAD_DIRECTORY,
@@ -69,4 +78,4 @@ const uploadProfilePicture = async (req: Request, res: Response) => {
 		res.json(NotFoundResponse)
 	}
 }
-export { uploadProfilePicture }
+export { editUserProfile, updateUserPassword ,uploadProfilePicture}

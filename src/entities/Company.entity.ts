@@ -17,9 +17,6 @@ export class Company extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id?: number
 
-	@Column()
-	name?: string
-
 	@CreateDateColumn({ name: 'created_at' })
 	createdAt?: Date
 
