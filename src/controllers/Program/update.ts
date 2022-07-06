@@ -1,5 +1,5 @@
-import { Program } from '../../src/entities/Program.entity'
-import { AppDataSource } from '../../src/config/database/data-source'
+import { Program } from '../../entities/Program.entity'
+import { AppDataSource } from '../../config/database/data-source'
 import { Request, Response } from 'express'
 
 export const update = async (req: Request, res: Response) => {
