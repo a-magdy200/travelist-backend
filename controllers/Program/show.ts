@@ -12,9 +12,16 @@ export const show=async (req: Request, res: Response)=> {
    return res.status(404).send('Not found');
    */
    const id: number | undefined = +req.params.id;
-   const program: Program | null = await AppDataSource.manager.findOneBy<Program>(Program, {
-     id
-   });
+   const program=await AppDataSource.getRepository(Program).findOne({
+    where: {
+      id: parseInt(req.params.id),
+    },
+    relations: {
+      company: true,
+      transportation:true,
+      hotels:true,
+       },
+  })
    if (program) {
      res.json({
        success: true,
