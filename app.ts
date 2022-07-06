@@ -21,9 +21,7 @@ import authRouter from './src/routes/auth.routes'
 
 const app = express()
 app.use(
-	cors({
-		origin: '*',
-	})
+	cors({ origin: true, credentials: true })
 )
 
 // create a rotating write stream
