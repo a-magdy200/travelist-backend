@@ -53,19 +53,19 @@ export class Cycle extends BaseEntity {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt?: Date;
   
-  @ManyToOne(() => Program, (program) => program.cycles,)
+  @ManyToOne(() => Program, (program) => program.cycles,{onUpdate: 'CASCADE'})
   program?: Program
 
-  @ManyToOne(() => Country, (country) => country.cycles,)
+  @ManyToOne(() => Country, (country) => country.cycles,{onUpdate: 'CASCADE'})
   departure_location?: Country
 
-  @ManyToOne(() => Country, (country) => country.cycles,)
+  @ManyToOne(() => Country, (country) => country.cycles,{onUpdate: 'CASCADE'})
   return_location?: Country
 
-  @ManyToOne(() => Country, (country) => country.cycles,)
+  @ManyToOne(() => Country, (country) => country.cycles,{onUpdate: 'CASCADE'})
   arrival_location?: Country
 
-  @ManyToOne(() => Country, (country) => country.cycles,)
+  @ManyToOne(() => Country, (country) => country.cycles,{onUpdate: 'CASCADE'})
   return_arrival_location?: Country
 
   @ManyToMany(() => User)
