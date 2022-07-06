@@ -18,7 +18,7 @@
 		"allowUnusedLabels": false,
 		"noUnusedParameters": false,
 		"strictNullChecks": true,
-		"noImplicitReturns": true,
+		"noImplicitReturns": false,
 		"useUnknownInCatchVariables": true,
 		"strictFunctionTypes": true,
 		"strictPropertyInitialization": false,

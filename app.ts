@@ -17,9 +17,7 @@ const cycleRouter = require('./src/routes/cycles.routes');
 
 const app = express()
 app.use(
-	cors({
-		origin: '*',
-	})
+	cors({ origin: true, credentials: true })
 )
 
 // create a rotating write stream
@@ -42,7 +40,7 @@ AppDataSource.initialize()
     app.use('/cycles', cycleRouter);
     app.use('/programs', programRouter)
 		app.listen(config.port, () => {
-			console.log('info', 'Server is running')
+			console.log(`Server running on PORT: ${config.port}`)
 		})
 	})
 	.catch((error) => {
