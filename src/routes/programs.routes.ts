@@ -9,7 +9,7 @@ const upload = multer({ storage: storage(PROGRAMS_DIRECTORY) })
 router.get('/all', Program.showAll)
 router.get('/show/:id', Program.show)
 router.post('/create', upload.single('cover_picture'), Program.create)
-router.put('/update/:id', Program.update)
+router.put('/update/:id', upload.single('cover_picture'),Program.update)
 router.delete('/delete/:id', Program.deleteProgram)
 
 module.exports = router

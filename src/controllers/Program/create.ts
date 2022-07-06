@@ -6,7 +6,8 @@ import { Request, Response } from 'express'
 import { In } from 'typeorm'
 import { Transportation } from '../../entities/Transportation.entity'
 import { UPLOAD_DIRECTORY } from '../../helpers/constants/directories'
-
+import { programValidation } from '../../helpers/validations/program.validation'
+import { formatValidationErrors } from '../../helpers/functions/formatValidationErrors'
 interface ProgramCreateBody {
 	name: string
 	description: string
@@ -17,18 +18,25 @@ interface ProgramCreateBody {
 }
 
 export const create = async (req: Request, res: Response) => {
+	console.log(req.body);
+	try {
+	const validation: Program = await programValidation.validateAsync(req.body, {
+		abortEarly: false,
+	})
 	const bodyObject: ProgramCreateBody = { ...req.body }
 	const path = `${req.file?.destination}${req.file?.filename}`.replace(
 		UPLOAD_DIRECTORY,
 		''
 	)
-	const program = await AppDataSource.manager.create<Program>(Program, {
-		name: bodyObject.name,
-		description: bodyObject.description,
-		cover_picture: path,
-		price: parseInt(bodyObject.price),
-		is_Recurring: bodyObject.is_Recurring,
-	})
+	const program = await AppDataSource.manager.create<Program>(Program,
+		{
+		  name: bodyObject.name,
+		  description: bodyObject.description,
+		  cover_picture: path,
+		  price: parseInt(bodyObject.price),
+		  is_Recurring:req.body.is_Recurring
+		}
+	  );
 
 	const hotelsIds =
 		typeof bodyObject.hotels === 'string'
@@ -53,6 +61,11 @@ export const create = async (req: Request, res: Response) => {
 	await AppDataSource.manager.save(program)
 	res.json({
 		success: true,
-		// data: program
+		 data: program
 	})
+}
+catch (error: any) {
+	res.json(formatValidationErrors(error))
+	console.log(formatValidationErrors(error))
+}
 }

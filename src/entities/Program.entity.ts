@@ -55,7 +55,7 @@ export class Program extends BaseEntity {
 	})
 	company?: Company
 
-	@OneToMany(() => Cycle, (cycle) => cycle.program)
+	@OneToMany(() => Cycle, (cycle) => cycle.program,{ onDelete: 'CASCADE' })
 	cycles?: Cycle[]
 
 	@ManyToOne(

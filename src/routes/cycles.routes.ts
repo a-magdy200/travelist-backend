@@ -8,7 +8,7 @@ import {
 	showAllCycles,
 	showCycle,
 	updateCycle,
-} from '../controllers/Cycle'
+} from '../controllers/cycle'
 
 const router = Router()
 const upload = multer({ storage: storage(PROGRAMS_DIRECTORY) })
