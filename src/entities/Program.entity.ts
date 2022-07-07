@@ -55,7 +55,7 @@ export class Program extends BaseEntity {
 	})
 	company?: Company
 
-	@OneToMany(() => Cycle, (cycle) => cycle.program)
+	@OneToMany(() => Cycle, (cycle) => cycle.program,{ onDelete: 'CASCADE' })
 	cycles?: Cycle[]
 
 	@ManyToOne(
@@ -65,7 +65,7 @@ export class Program extends BaseEntity {
 	)
 	transportation?: Transportation
 
-	@ManyToMany((hotel) => Hotel)
+	@ManyToMany((hotel) => Hotel,{ onDelete: 'CASCADE' })
 	@JoinTable()
 	hotels?: Hotel[]
 }
