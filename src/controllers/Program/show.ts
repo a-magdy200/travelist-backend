@@ -28,6 +28,6 @@ export const show=async (req: Request, res: Response)=> {
        data: program
      });
    } else {
-     res.status(404).json({sucess:false});
+     res.status(404).json({success:false});
    }
 }

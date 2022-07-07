@@ -1,11 +1,24 @@
 import { Router } from 'express'
-import { viewUserProfile } from '../controllers/user_controller/TravelerController'
-import { editTravelerProfile } from '../controllers/user_controller/TravelerController'
-import { listTravelers } from '../controllers/user_controller/TravelerController'
+import {
+	viewTravelerProfile,
+	editTravelerProfile,
+	listTravelers,
+	uploadProfilePicture,
+} from '../controllers/travelers/TravelerController'
+import { storage } from '../helpers/common/storage-customizer'
+import { PROFILES_DIRECTORY } from '../helpers/constants/directories'
+import { isAuthenticated } from '../middlewares/isAuthenticated'
+const multer = require('multer')
+const upload = multer({ storage: storage(PROFILES_DIRECTORY) })
 const router = Router()
 
-router.get('/:id', viewUserProfile)
-router.put('/:id', editTravelerProfile)
 router.get('/', listTravelers)
+router.get('/:id', viewTravelerProfile)
+router.put('/:id', editTravelerProfile)
+router.patch('/:id',
+	upload.single('profile_picture'),
+	uploadProfilePicture,
+	isAuthenticated
+)
 
 export default router

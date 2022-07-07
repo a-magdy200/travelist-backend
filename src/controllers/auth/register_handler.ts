@@ -30,8 +30,8 @@ const register = async (req: Request, res: Response, next: any) => {
 				email: req.body.email,
 				password: pass,
 				address: req.body.address,
-				profile_picture: req.body.profile_picture,
-				type: req.body.type,
+				// profile_picture: req.body.profile_picture,
+				// type: req.body.type,
 			})
 
 			const userId = user.generatedMaps[0].id;

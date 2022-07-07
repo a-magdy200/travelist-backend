@@ -24,7 +24,7 @@ const login = async (req: Request, res: Response, next: any) => {
 							access_token: token,
 							user: {
 								name: user.name,
-								profile_picture: user.profile_picture,
+								// profile_picture: user.profile_picture,
 							},
 						},
 					})
