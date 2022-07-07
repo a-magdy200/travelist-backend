@@ -37,8 +37,8 @@ AppDataSource.initialize()
 		app.use('/api/users', userRouter)
 		app.use('/api/travelers', travelerRouter)
 		app.use('/', indexRouter)
-    app.use('/cycles', cycleRouter);
-    app.use('/programs', programRouter)
+        app.use('/cycles', cycleRouter);
+        app.use('/programs', programRouter)
 		app.listen(config.port, () => {
 			console.log(`Server running on PORT: ${config.port}`)
 		})

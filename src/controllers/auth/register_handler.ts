@@ -6,9 +6,9 @@ import { userValidation } from '../../helpers/validations/user.validation'
 
 const register = async (req: Request, res: Response, next: any) => {
 	try {
-		const validation = await userValidation.validateAsync(req.body, {
-			abortEarly: false,
-		})
+		// const validation = await userValidation.validateAsync(req.body, {
+		// 	abortEarly: false,
+		// })
 
 		const salt = await bcrypt.genSalt(10)
 		const pass = await bcrypt.hash(req.body.password, salt)
