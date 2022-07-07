@@ -4,13 +4,14 @@ import { Request, Response } from 'express'
 
 const listUsers = async (req: Request, res: Response, next: any) => {
 
-	console.log(req.body);
+	// console.log(req.body);
 
 	// to get the request user id //login
-	console.log(req.body.user.id);
+	// console.log(req.body.user.id);
 
-	// to get the request user id //register
-	console.log(req.body.user.raw.insertId);
+	// // to get the request user id //register
+	// console.log(req.body.user.raw.insertId);
+	// token -decode- req
 
 	const users = await AppDataSource.manager.find<User[]>(User, {})
 

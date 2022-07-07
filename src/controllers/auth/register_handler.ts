@@ -37,6 +37,8 @@ const register = async (req: Request, res: Response, next: any) => {
 			const userId = user.generatedMaps[0].id;
 			const userType = user.generatedMaps[0].type;
 
+			console.log(req.body.national_id);
+
 			if(userType == 'traveler'){
 				const traveler = await AppDataSource.manager.insert<Traveler>(Traveler, {
 					national_id: req.body.national_id,
