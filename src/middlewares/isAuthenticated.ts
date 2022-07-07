@@ -1,19 +1,36 @@
-import jwt from 'jsonwebtoken'
+
+import { Request, Response } from 'express';
+import jwt from 'jsonwebtoken';
 
 const isAuthenticated = async (
-	req: { headers: { [x: string]: any }; token?: any },
-	res: { sendStatus: (arg0: number) => void },
+	req: Request,
+	res: Response,
 	next: () => void
 ) => {
-	jwt.verify(req.token, 'secretkey', (err: any, authData: any) => {
-		if (err) {
-			// console.log('isAuthenticated: no');
-			res.sendStatus(403)
-		} else {
-			// console.log('isAuthenticated: yes');
-			next()
-		}
-	})
+	const bearerHeader = req.headers['authorization']
+
+	if (typeof bearerHeader !== 'undefined') {
+		
+		const Token = bearerHeader.split(' ')[1];		
+
+		//Decoding the token
+		 jwt.verify(Token, 'secretkey', (err: any, requestedUser: any) => {
+			if (err) {
+				res.status(404).json({
+					success:false,
+					error: err
+				});
+			} else {
+				req.body = requestedUser;
+				next()
+			}
+		});
+	} else {
+		res.status(200).json({
+			success:false,
+			message: "Error!Token was not provided."
+		});
+	}
 }
 
 export { isAuthenticated }

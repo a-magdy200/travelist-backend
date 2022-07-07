@@ -1,8 +1,14 @@
-import {Router} from 'express';
-import multer from 'multer';
-import { storage } from "../helpers/common/storage-customizer";
-import { PROGRAMS_DIRECTORY } from "../helpers/constants/directories";
-import { createCycle, deleteCycle, showAllCycles, showCycle, updateCycle } from "../controllers/cycle";
+import { Router } from 'express'
+import multer from 'multer'
+import { storage } from '../helpers/common/storage-customizer'
+import { PROGRAMS_DIRECTORY } from '../helpers/constants/directories'
+import {
+	createCycle,
+	deleteCycle,
+	showAllCycles,
+	showCycle,
+	updateCycle,
+} from '../controllers/cycle'
 
 const router = Router();
 const upload = multer({storage: storage(PROGRAMS_DIRECTORY)});

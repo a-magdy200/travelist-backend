@@ -17,10 +17,16 @@ const login = async (req: Request, res: Response, next: any) => {
 			)
 
 			if (validPassword) {
-				jwt.sign({ user }, 'secretkey', (err: any, token: any) => {
+				jwt.sign({ user }, 'secretkey', { expiresIn: '1h' },(err: any, token: any) => {
 					return res.status(200).json({
 						success: true,
-						token,
+						data: {
+							access_token: token,
+							user: {
+								name: user.name,
+								profile_picture: user.profile_picture,
+							},
+						},
 					})
 				})
 			} else {

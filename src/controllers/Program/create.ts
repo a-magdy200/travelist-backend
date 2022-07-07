@@ -1,12 +1,13 @@
-import { Program } from "../../entities/Program.entity";
-import { Company } from "../../entities/Company.entity";
-import { Hotel } from "../../entities/Hotel.entity";
-import { AppDataSource } from "../../config/database/data-source";
-import { Request, Response } from "express";
-import { In } from "typeorm";
-import { Transportation } from "../../entities/Transportation.entity";
-import { UPLOAD_DIRECTORY } from "../../helpers/constants/directories";
-
+import { Program } from '../../entities/Program.entity'
+import { Company } from '../../entities/Company.entity'
+import { Hotel } from '../../entities/Hotel.entity'
+import { AppDataSource } from '../../config/database/data-source'
+import { Request, Response } from 'express'
+import { In } from 'typeorm'
+import { Transportation } from '../../entities/Transportation.entity'
+import { UPLOAD_DIRECTORY } from '../../helpers/constants/directories'
+import { programValidation } from '../../helpers/validations/program.validation'
+import { formatValidationErrors } from '../../helpers/functions/formatValidationErrors'
 interface ProgramCreateBody {
   name: string;
   description: string;
@@ -17,17 +18,25 @@ interface ProgramCreateBody {
 }
 
 export const create = async (req: Request, res: Response) => {
-  const bodyObject: ProgramCreateBody = { ...req.body };
-  const path = `${req.file?.destination}${req.file?.filename}`.replace(UPLOAD_DIRECTORY, '');
-  const program = await AppDataSource.manager.create<Program>(Program,
-    {
-      name: bodyObject.name,
-      description: bodyObject.description,
-      cover_picture: path,
-      price: parseInt(bodyObject.price),
-      is_Recurring: bodyObject.is_Recurring
-    }
-  );
+	console.log(req.body);
+	try {
+	const validation: Program = await programValidation.validateAsync(req.body, {
+		abortEarly: false,
+	})
+	const bodyObject: ProgramCreateBody = { ...req.body }
+	const path = `${req.file?.destination}${req.file?.filename}`.replace(
+		UPLOAD_DIRECTORY,
+		''
+	)
+	const program = await AppDataSource.manager.create<Program>(Program,
+		{
+		  name: bodyObject.name,
+		  description: bodyObject.description,
+		  cover_picture: path,
+		  price: parseInt(bodyObject.price),
+		  is_Recurring:req.body.is_Recurring
+		}
+	  );
 
   const hotelsIds = typeof bodyObject.hotels === "string" ? [parseInt(bodyObject.hotels, 10)] : bodyObject.hotels?.map((hotelId: string) => parseInt(hotelId, 10));
   const loadedHotels = await AppDataSource.manager.findBy(Hotel, { id: In(hotelsIds) });
@@ -40,9 +49,14 @@ export const create = async (req: Request, res: Response) => {
     program.transportation = transportation;
   }
 
-  await AppDataSource.manager.save(program);
-  res.json({
-    success: true,
-    // data: program
-  });
-};
+	await AppDataSource.manager.save(program)
+	res.json({
+		success: true,
+		 data: program
+	})
+}
+catch (error: any) {
+	res.json(formatValidationErrors(error))
+	console.log(formatValidationErrors(error))
+}
+}

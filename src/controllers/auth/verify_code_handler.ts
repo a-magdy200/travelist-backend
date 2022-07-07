@@ -9,30 +9,29 @@ const verifyCode = async (req: Request, res: Response, next: any) => {
         email: req.body.email,
       });
 
-    if (user_pass_forget !== null) {
-      if (req.body.code == user_pass_forget.code) {
-        // token
-        return res.status(200).json({
-          success: true,
-        });
-      } else {
-        return res.status(404).json({
-          success: false,
-          error: "Incorrect code",
-        });
-      }
-    } else {
-      return res.status(404).json({
-        success: false,
-        error: "Invalid email, user not found",
-      });
-    }
-  } else {
-    return res.status(404).json({
-      success: false,
-      error: "Missing email or code",
-    });
-  }
-};
+		if (user_pass_forget !== null) {
+			if (req.body.code == user_pass_forget.code) {
+				return res.status(200).json({
+					success: true,
+				})
+			} else {
+				return res.status(404).json({
+					success: false,
+					error: 'Incorrect code',
+				})
+			}
+		} else {
+			return res.status(404).json({
+				success: false,
+				error: 'Invalid email, user not found',
+			})
+		}
+	} else {
+		return res.status(404).json({
+			success: false,
+			error: 'Missing email or code',
+		})
+	}
+}
 
 export { verifyCode };

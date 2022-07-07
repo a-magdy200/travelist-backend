@@ -43,13 +43,13 @@ export class Program extends BaseEntity {
     @ManyToOne(() => Company, (company) => company.programs,{onDelete: "CASCADE"})
     company?: Company
 
-    @OneToMany(() => Cycle, (cycle) => cycle.program)
-     cycles?: Cycle[]
+	@OneToMany(() => Cycle, (cycle) => cycle.program,{ onDelete: 'CASCADE' })
+	cycles?: Cycle[]
 
     @ManyToOne(() => Transportation, (transportation) => transportation.programs,{onDelete: "CASCADE"})
     transportation?: Transportation
 
-    @ManyToMany((hotel) => Hotel, )
-    @JoinTable()
-    hotels?: Hotel[]
+	@ManyToMany((hotel) => Hotel,{ onDelete: 'CASCADE' })
+	@JoinTable()
+	hotels?: Hotel[]
 }
