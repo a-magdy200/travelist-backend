@@ -11,7 +11,6 @@ const verifyCode = async (req: Request, res: Response, next: any) => {
 
 		if (user_pass_forget !== null) {
 			if (req.body.code == user_pass_forget.code) {
-				// token
 				return res.status(200).json({
 					success: true,
 				})

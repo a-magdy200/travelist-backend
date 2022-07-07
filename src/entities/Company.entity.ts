@@ -26,8 +26,8 @@ export class Company extends BaseEntity {
 	@Column({ default: '' })
 	description?: string
 
-	@Column()
-	rate: string
+	@Column({ default: '' })
+	rate?: string
 
 	@Column({ default: '' })
 	cover_picture?: string

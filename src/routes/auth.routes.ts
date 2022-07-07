@@ -5,7 +5,6 @@ import { listUsers } from '../controllers/auth/test_handler'
 import { forgetPassword } from '../controllers/auth/forget_pass_handler'
 import { verifyCode } from '../controllers/auth/verify_code_handler'
 import { resetPassword } from '../controllers/auth/reset_pass_handler'
-import { hasToken } from '../middlewares/hasToken'
 import { isAuthenticated } from '../middlewares/isAuthenticated'
 
 const router = Router()
@@ -16,7 +15,7 @@ router.post('/forget_password', forgetPassword)
 router.post('/verify_code', verifyCode)
 router.post('/reset_password', resetPassword)
 
-//test hasToken, isAuthenticated
-router.get('/list', hasToken, isAuthenticated, listUsers)
+//test isAuthenticated
+router.get('/list', isAuthenticated, listUsers)
 
 export default router
