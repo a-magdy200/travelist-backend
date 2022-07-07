@@ -65,7 +65,7 @@ export class Program extends BaseEntity {
 	)
 	transportation?: Transportation
 
-	@ManyToMany((hotel) => Hotel)
+	@ManyToMany((hotel) => Hotel,{ onDelete: 'CASCADE' })
 	@JoinTable()
 	hotels?: Hotel[]
 }
