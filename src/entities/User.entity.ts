@@ -6,6 +6,8 @@ import {
 	ManyToMany,
 	JoinTable,
 } from 'typeorm'
+import { Group } from "./Group.entity";
+import { Country } from "./Country.entity";
 
 export type UserType = 'traveler' | 'company'
 
@@ -32,4 +34,8 @@ export class User extends BaseEntity {
 	@ManyToMany((type) => User)
 	@JoinTable()
 	friends: User[]
+
+	@ManyToMany(() => Group, group => group.followers)
+	@JoinTable()
+	groups: Group[];
 }
