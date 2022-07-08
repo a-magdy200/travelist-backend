@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { listCompanies } from '../controllers/companies/CompanyController'
+import { listCompanies, viewCompanyProfile } from "../controllers/companies/CompanyController";
 import { editCompanyProfile,uploadCoverPicture} from '../controllers/companies/CompanyController'
 import { storage } from "../helpers/common/storage-customizer";
 import { PROFILES_DIRECTORY } from "../helpers/constants/directories";
@@ -11,6 +11,6 @@ const router = Router()
 
 router.get('/', isAuthenticated,listCompanies)
 router.put('/:id', editCompanyProfile,isAuthenticated)
-// router.get('/:id', viewCompanyProfile)
+router.get('/:id', viewCompanyProfile)
 router.post('/:id', upload.single('cover_picture'),uploadCoverPicture,isAuthenticated)
 module.exports = router

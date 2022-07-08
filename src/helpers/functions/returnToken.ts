@@ -1,31 +1,14 @@
-import { Request, Response } from 'express'
-import jwt_decode from "jwt-decode";
- const returnToken = (req: Request, res: Response) => {
-	const bearerHeader = req.headers['authorization']
-
-	if (typeof bearerHeader !== 'undefined') {
-		const Token = bearerHeader.split(' ')[1]
-		//  console.log(Token)
-		return Token
+import { Request, Response } from "express";
+import jwt from "jsonwebtoken";
+import configurations from "../../config/configurations";
+const returnId = (req: Request, res: Response) => {
+	 const authorizationHeader = req.headers?.authorization || '';
+	 const tokenParts = authorizationHeader.split(" ");
+	if (tokenParts.length > 1){
+		const decoded :any = jwt.verify(tokenParts[1], configurations().secret);
+		return decoded.user.id
 	} else {
-		res.status(200).json({
-			success: false,
-			message: 'Error! you do not have authorization.',
-		})
-	}
-}
- const returnId = (req: Request, res: Response) => {
-	const Token = returnToken(req,res)
-	if (Token !==undefined){
-		var decoded :any = jwt_decode(Token);
-	}
-	if(decoded){
-		var userId = decoded.user.id
-		return userId
-	}
-	else{
 		return null
 	}
-	
- }
- export{returnToken,returnId}
+}
+export{returnId}

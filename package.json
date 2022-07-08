@@ -21,7 +21,6 @@
 		"nodemailer": "^6.7.6",
 		"reflect-metadata": "^0.1.13",
 		"typeorm": "^0.3.7",
-    "jwt-decode": "^3.1.2",
 		"winston": "^3.8.0"
 	},
 	"devDependencies": {

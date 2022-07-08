@@ -5,6 +5,8 @@ const bcrypt = require('bcrypt')
 import { Request, Response } from 'express'
 import { formatErrorResponse } from '../../helpers/functions/formatErrorResponse'
 import { ILoginRequestBody } from '../../helpers/interfaces/ILoginRequestBody.interface'
+import { valid } from "joi";
+import configurations from "../../config/configurations";
 
 const login = async (req: Request, res: Response, next: any) => {
 
@@ -18,16 +20,16 @@ const login = async (req: Request, res: Response, next: any) => {
 		const user = await AppDataSource.manager.findOneBy<User>(User, {
 			email: requestedEmail,
 		})
-		
+
 		if (user !== null) {
-			
+
 			const validPassword = await bcrypt.compare(
 				requestedPassword,
 				user.password
 			)
-
+			console.log(requestedPassword, user.password, validPassword);
 			if (validPassword) {
-				jwt.sign({ user }, 'secretkey', { expiresIn: '1h' },(err: any, token: any) => {
+				jwt.sign({ user }, configurations().secret, { expiresIn: '1h' },(err: any, token: any) => {
 					return res.status(200).json({
 						success: true,
 						data: {
