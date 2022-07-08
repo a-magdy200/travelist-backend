@@ -6,6 +6,7 @@ const getUserIdFromToken = (req: Request, res: Response) => {
 	 const tokenParts = authorizationHeader.split(" ");
 	if (tokenParts.length > 1){
 		const decoded :any = jwt.verify(tokenParts[1], configurations().secret);
+		console.log(decoded);
 		return decoded.user.id
 	} else {
 		return null

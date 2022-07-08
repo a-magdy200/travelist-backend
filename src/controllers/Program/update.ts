@@ -17,9 +17,10 @@ interface ProgramUpdateBody {
 }
 
 export const update = async (req: Request, res: Response) => {
-	
+
 	try {
 		const id: number | undefined = +req.params.id
+		console.log(req.body);
 		const validation: Program = await programUpdateValidation.validateAsync(req.body, {
 			abortEarly: false,
 		})
@@ -42,7 +43,7 @@ export const update = async (req: Request, res: Response) => {
 		    id: In(hotelsIds),
       	   })
 			 program.hotels = loadedHotels
-            
+
 
 			 const oldCoverPicture = program.cover_picture
 			 if (oldCoverPicture && oldCoverPicture !== '') {

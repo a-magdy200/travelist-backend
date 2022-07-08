@@ -23,7 +23,10 @@ export const create = async (req: Request, res: Response) => {
 	const validation: Program = await programValidation.validateAsync(req.body, {
 		abortEarly: false,
 	})
-	const bodyObject: ProgramCreateBody = { ...req.body }
+	const bodyObject: ProgramCreateBody = {
+		...req.body,
+		is_Recurring: req.body.is_Recurring === "1"
+	};
 	const path = `${req.file?.destination}${req.file?.filename}`.replace(
 		UPLOAD_DIRECTORY,
 		''
