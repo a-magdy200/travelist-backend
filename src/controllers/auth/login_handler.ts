@@ -7,6 +7,7 @@ import { formatErrorResponse } from '../../helpers/functions/formatErrorResponse
 import { ILoginRequestBody } from '../../helpers/interfaces/ILoginRequestBody.interface'
 import { valid } from "joi";
 import configurations from "../../config/configurations";
+import { sendAuthenticationResponse } from "../../helpers/functions/sendAuthenticationResponse";
 
 const login = async (req: Request, res: Response, next: any) => {
 
@@ -27,20 +28,8 @@ const login = async (req: Request, res: Response, next: any) => {
 				requestedPassword,
 				user.password
 			)
-			console.log(requestedPassword, user.password, validPassword);
 			if (validPassword) {
-				jwt.sign({ user }, configurations().secret, { expiresIn: '1h' },(err: any, token: any) => {
-					return res.status(200).json({
-						success: true,
-						data: {
-							access_token: token,
-							user: {
-								name: user.name,
-								// profile_picture: user.profile_picture,
-							},
-						},
-					})
-				})
+				sendAuthenticationResponse(user, res);
 			} else {
 				return res.status(404).json(formatErrorResponse(["Incorrect password"]));
 			}
