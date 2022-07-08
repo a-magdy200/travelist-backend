@@ -10,7 +10,6 @@ import { unlinkSync } from 'fs'
 import { returnId } from '../../helpers/functions/returnToken'
 
 const listTravelers = async (req: Request, res: Response) => {
-	console.log('before find')
 	const travelers: Traveler[] = await AppDataSource.manager.find<Traveler>(
 		Traveler,
 		{}
@@ -19,6 +18,7 @@ const listTravelers = async (req: Request, res: Response) => {
 		success: true,
 		data: travelers,
 	})
+	
 }
 
 const viewTravelerProfile: RequestHandler = async (req, res) => {
@@ -31,17 +31,18 @@ const viewTravelerProfile: RequestHandler = async (req, res) => {
 		},
 	})
 
-	// const userId = returnId(req, res)
+	 const userId = returnId(req, res)
 	// view My profile
-	// if (traveler) {
-	// 	if (traveler?.user?.id== userId) {
-	// 		res.json({
-	// 			success: true,
-	// 			data: [traveler],
-	// 		})
-	// 		// console.log(traveler?.user)
-	// 		// console.log(traveler?.user?.friends)
-	// 	}
+	if (traveler) {
+		if (traveler?.user?.id== userId) {
+			res.json({
+				success: true,
+				data: [traveler],
+			})
+		}
+		console.log(traveler?.user)
+		console.log(traveler?.user?.friends)
+	}
 		// traveler?.user?.friends.find(){wher}
 		// // view other profile as friend
 		//  else if (userId in  
@@ -93,35 +94,9 @@ const editTravelerProfile = async (req: Request, res: Response) => {
 		res.json(formatValidationErrors(error))
 	}
 }
-const uploadProfilePicture = async (req: Request, res: Response) => {
-	const id: number | undefined = +req.params.id
-	const traveler: Traveler | null =
-		await AppDataSource.manager.findOneBy<Traveler>(Traveler, {
-			id,
-		})
-	if (traveler && req.file?.filename) {
-		// Remove `uploads/` from path string
-		const oldCoverPicture = traveler.profile_picture
-		if (oldCoverPicture && oldCoverPicture !== '') {
-			await unlinkSync(`${UPLOAD_DIRECTORY}${oldCoverPicture}`)
-		}
-		const path = `${req.file.destination}${req.file.filename}`.replace(
-			UPLOAD_DIRECTORY,
-			''
-		)
-		traveler.profile_picture = path
-		await traveler.save()
-		res.json({
-			success: true,
-			path,
-		})
-	} else {
-		res.json(NotFoundResponse)
-	}
-}
+
 export {
 	listTravelers,
 	viewTravelerProfile,
-	editTravelerProfile,
-	uploadProfilePicture,
+	editTravelerProfile
 }

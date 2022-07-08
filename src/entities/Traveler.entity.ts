@@ -27,10 +27,12 @@ export class Traveler extends BaseEntity {
 	@Column()
 	is_guide?: boolean
 
-	@Column({ default: '' })
-	profile_picture?: string
-
-	@OneToOne(() => User)
-	@JoinColumn()
-	user: User
+	// @OneToOne(() => User)
+	// @JoinColumn()
+	// user: User
+	@OneToOne(() => User, (user) => user.friends, {
+        cascade: true,
+    })
+    user: User
 }
+

@@ -26,6 +26,8 @@ export class User extends BaseEntity {
 	@Column()
 	address?: string
 
+	@Column({ default: '' })
+	profile_picture?: string
 
 	@Column({
 		type: 'enum',
@@ -33,7 +35,7 @@ export class User extends BaseEntity {
 		default: 'traveler',
 	})
 	type!: UserType
-	
+
 	@ManyToMany((type) => User)
 	@JoinTable()
 	friends: User[]
