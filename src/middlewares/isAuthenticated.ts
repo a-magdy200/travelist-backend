@@ -16,19 +16,18 @@ const isAuthenticated = async (
 		//Decoding the token
 		 jwt.verify(Token, 'secretkey', (err: any, requestedUser: any) => {
 			if (err) {
-				res.status(404).json({
+				res.status(401).json({
 					success:false,
-					error: err
+					error: "not authorized"
 				});
 			} else {
-				req.body = requestedUser;
 				next()
 			}
 		});
 	} else {
-		res.status(200).json({
+		res.status(401).json({
 			success:false,
-			message: "Error!Token was not provided."
+			error: "not authorized"
 		});
 	}
 }

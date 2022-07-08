@@ -3,6 +3,7 @@ import { User } from '../../entities/User.entity'
 import { PasswordForget } from '../../entities/PasswordForget'
 import nodemailer from 'nodemailer'
 import { Request, Response } from 'express'
+import { formatErrorResponse } from '../../helpers/functions/formatErrorResponse'
 
 const forgetPassword = async (req: Request, res: Response, next: any) => {
 	if (req.body.email !== undefined) {
@@ -49,8 +50,7 @@ const forgetPassword = async (req: Request, res: Response, next: any) => {
 				to: 'ramez.youssef.fahmy@gmail.com',
 				subject: 'verify code to reset password',
 				// text:
-				// 	'please, copy the attached code to verify your account and reset a new password, the code: ' +
-				// 	code + ' kindly click the Link: front url hit verfiy code in back',
+				// 	'',
 				html: "<p>please, copy the attached code to verify your account, code: </p> <b>"+code+"</b><p> Click: <a href='http://localhost:3000/verify_code'>Here</a></p>", // html body
 				headers: { 'x-myheader': 'test header' },
 			})
@@ -60,16 +60,10 @@ const forgetPassword = async (req: Request, res: Response, next: any) => {
 				info,
 			})
 		} else {
-			return res.status(404).json({
-				success: false,
-				error: 'Invalid email, user not exist',
-			})
+			return res.status(404).json(formatErrorResponse(["Invalid email, user not exist"]));
 		}
 	} else {
-		return res.status(404).json({
-			success: false,
-			error: 'Missing email',
-		})
+		return res.status(404).json(formatErrorResponse(["Missing email"]));
 	}
 	// logger.log("error from forget_password_func"+json.stringify(req)+json.stringify(e));
 }
