@@ -7,55 +7,55 @@ import { companyValidation } from '../../helpers/validations/company.validation'
 import { formatValidationErrors } from '../../helpers/functions/formatValidationErrors'
 import { UPLOAD_DIRECTORY } from '../../helpers/constants/directories'
 import { unlinkSync } from 'fs'
-import { returnId } from '../../helpers/functions/returnToken'
+// import { returnId } from '../../helpers/functions/returnToken'
 const listCompanies = async (req: Request, res: Response) => {
-	const hotels: Company[] = await AppDataSource.manager.find<Company>(
+	const companies: Company[] = await AppDataSource.manager.find<Company>(
 		Company,
 		{}
 	)
 	res.json({
 		success: true,
-		data: hotels,
+		data: companies,
 	})
 }
 
-const viewCompanyProfile: RequestHandler = async (req, res) => {
-	const company = await AppDataSource.getRepository(Company).findOne({
-		where: {
-			id: parseInt(req.params.id),
-		},
-		relations: {
-			user: true,
-		},
-	})
+// const viewCompanyProfile: RequestHandler = async (req, res) => {
+// 	const company = await AppDataSource.getRepository(Company).findOne({
+// 		where: {
+// 			id: parseInt(req.params.id),
+// 		},
+// 		relations: {
+// 			user: true,
+// 		},
+// 	})
 
-	const userId = returnId(req, res)
-	// view My company profile
-	if (company) {
-		if (company?.user.id == userId) {
-			res.json({
-				success: true,
-				data: [company],
-			})
-		}
-		// view other company profile
-		else {
-			res.json({
-				success: true,
-				data: [
-					company?.description,
-					company?.programs,
-					company?.cover_picture,
-					company?.rate,
-				],
-			})
-		}
-	} else {
-		res
-			.status(404)
-			.json({ success: false, message: 'There is no company with this id' })
-	}
-}
+// 	const userId = returnId(req, res)
+// 	// view My company profile
+// 	if (company) {
+// 		if (company?.user.id == userId) {
+// 			res.json({
+// 				success: true,
+// 				data: [company],
+// 			})
+// 		}
+// 		// view other company profile
+// 		else {
+// 			res.json({
+// 				success: true,
+// 				data: [
+// 					company?.description,
+// 					company?.programs,
+// 					company?.cover_picture,
+// 					company?.rate,
+// 				],
+// 			})
+// 		}
+// 	} else {
+// 		res
+// 			.status(404)
+// 			.json({ success: false, message: 'There is no company with this id' })
+// 	}
+// }
 const editCompanyProfile = async (req: Request, res: Response) => {
 	try {
 		const id: number | undefined = +req.params.id
@@ -107,7 +107,7 @@ const uploadCoverPicture = async (req: Request, res: Response) => {
 
 export {
 	listCompanies,
-	viewCompanyProfile,
+	// viewCompanyProfile,
 	editCompanyProfile,
 	uploadCoverPicture,
 }

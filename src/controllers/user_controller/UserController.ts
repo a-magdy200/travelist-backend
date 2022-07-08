@@ -7,8 +7,6 @@ import { userValidation } from '../../helpers/validations/user.validation'
 import { passwordValidation } from '../../helpers/validations/password.validation'
 import { formatValidationErrors } from '../../helpers/functions/formatValidationErrors'
 import { UPLOAD_DIRECTORY } from '../../helpers/constants/directories'
-
-
 import { unlinkSync } from 'fs'
 const viewUserProfile: RequestHandler = async (req, res) => {
 	const user = await AppDataSource.getRepository(User).findOne({
@@ -19,11 +17,11 @@ const viewUserProfile: RequestHandler = async (req, res) => {
 			friends:true
 			},
 	})
-
-	const userFromToken = {
-		id: 3,
-	}
-	let returnvalue
+}
+	// const userFromToken = {
+	// 	id: 3,
+	// }
+	// let returnvalue
 	// view my profile 
 	// user?.find({
 	// 	where:[
@@ -50,8 +48,8 @@ const viewUserProfile: RequestHandler = async (req, res) => {
 	// 		description: '',
 	// 	}
 	// }
-	res.send(returnvalue)
-}
+// 	res.send(returnvalue)
+
 const editUserProfile = async (req: Request, res: Response) => {
 	try {
 		const id: number | undefined = +req.params.id

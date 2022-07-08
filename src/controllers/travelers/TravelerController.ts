@@ -19,8 +19,6 @@ const listTravelers = async (req: Request, res: Response) => {
 		success: true,
 		data: travelers,
 	})
-	console.log('after find')
-	console.log(travelers)	
 }
 
 const viewTravelerProfile: RequestHandler = async (req, res) => {
@@ -33,7 +31,7 @@ const viewTravelerProfile: RequestHandler = async (req, res) => {
 		},
 	})
 
-	const userId = returnId(req, res)
+	// const userId = returnId(req, res)
 	// view My profile
 	// if (traveler) {
 	// 	if (traveler?.user?.id== userId) {
