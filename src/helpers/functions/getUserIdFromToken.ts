@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import configurations from "../../config/configurations";
-const returnId = (req: Request, res: Response) => {
+const getUserIdFromToken = (req: Request, res: Response) => {
 	 const authorizationHeader = req.headers?.authorization || '';
 	 const tokenParts = authorizationHeader.split(" ");
 	if (tokenParts.length > 1){
@@ -11,4 +11,4 @@ const returnId = (req: Request, res: Response) => {
 		return null
 	}
 }
-export{returnId}
+export{getUserIdFromToken}
