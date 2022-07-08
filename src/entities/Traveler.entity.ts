@@ -30,7 +30,7 @@ export class Traveler extends BaseEntity {
 	@Column({ default: '' })
 	profile_picture?: string
 
-	@OneToOne(() => User, { eager: true })
+	@OneToOne(() => User)
 	@JoinColumn()
 	user: User
 }

@@ -34,7 +34,7 @@ export class User extends BaseEntity {
 	})
 	type!: UserType
 	
-	@ManyToMany((type) => User,{eager:true})
+	@ManyToMany((type) => User)
 	@JoinTable()
 	friends: User[]
 }

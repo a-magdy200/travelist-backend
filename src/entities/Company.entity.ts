@@ -32,7 +32,7 @@ export class Company extends BaseEntity {
 	@Column({ default: '' })
 	cover_picture?: string
 
-	@OneToOne(() => User, { eager: true })
+	@OneToOne(() => User)
 	@JoinColumn()
 	user: User
 
