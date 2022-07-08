@@ -1,7 +1,7 @@
 const Joi = require('joi').extend(require('@joi/date'));
 
 export const cycleValidation = Joi.object().keys({
-	name: Joi.string().alphanum().min(3).required(),
+	name: Joi.string().min(3).required(),
 	max_seats: Joi.number().required(),
 
     departure_date:Joi.date().format("YYYY-MM-DD").required(),
@@ -16,8 +16,8 @@ export const cycleValidation = Joi.object().keys({
 
     departureLocationId: Joi.number().required(),
     arrivalLocationId: Joi.number().required(),
-	returnArrivalLocationId: Joi.string().min(1).pattern(/^[0-9]+$/).required(),
-	returnLocationId: Joi.string().min(1).pattern(/^[0-9]+$/).required(),
+	returnArrivalLocationId: Joi.number().required(),
+	returnLocationId: Joi.number().required(),
     programId: Joi.number().required(),
 
 

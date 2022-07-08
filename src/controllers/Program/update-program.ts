@@ -7,14 +7,8 @@ import { formatValidationErrors } from '../../helpers/functions/formatValidation
 import { Hotel } from '../../entities/Hotel.entity'
 import { In } from 'typeorm'
 import { unlinkSync } from 'fs'
+import {IProgramInterface} from '../../helpers/interfaces/IProgram.interface'
 
-
-interface ProgramUpdateBody {
-	name:string
-	description: string
-	price: string
-	hotels: string | string[]
-}
 
 export const update = async (req: Request, res: Response) => {
 
@@ -24,13 +18,13 @@ export const update = async (req: Request, res: Response) => {
 		const validation: Program = await programUpdateValidation.validateAsync(req.body, {
 			abortEarly: false,
 		})
-		const bodyObject: ProgramUpdateBody = { ...req.body }
+		const bodyObject: IProgramInterface = { ...req.body }
 		const program:Program|null = await AppDataSource.getRepository(Program).findOne({
 			where: {
 				id: parseInt(req.params.id),
 			},
 		})
-		if(program &&validation && req.file?.filename)
+		if(program &&validation )
 		{
 			program.name=validation.name
 			program.description= validation.description
@@ -39,13 +33,15 @@ export const update = async (req: Request, res: Response) => {
 			? [parseInt(bodyObject.hotels, 10)]
 			: bodyObject.hotels?.map((hotelId: string) => parseInt(hotelId, 10))
 
+			if(hotelsIds){
 	        const loadedHotels = await AppDataSource.manager.findBy(Hotel, {
 		    id: In(hotelsIds),
       	   })
+	
 			 program.hotels = loadedHotels
-
-
-			 const oldCoverPicture = program.cover_picture
+			}
+              if(req.file?.filename)
+			{ const oldCoverPicture = program.cover_picture
 			 if (oldCoverPicture && oldCoverPicture !== '') {
 				 await unlinkSync(`${UPLOAD_DIRECTORY}${oldCoverPicture}`)
 			 }
@@ -53,7 +49,9 @@ export const update = async (req: Request, res: Response) => {
 				 UPLOAD_DIRECTORY,
 				 ''
 			 )
+		
 			 program.cover_picture = path
+			}
 			 await program.save()
 
 			res.json({

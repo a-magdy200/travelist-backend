@@ -5,6 +5,7 @@ import { Country } from "../../entities/Country.entity";
 import { Program } from "../../entities/Program.entity";
 import { cycleValidation } from '../../helpers/validations/cycle.validation'
 import { formatValidationErrors } from '../../helpers/functions/formatValidationErrors'
+import { ICycleInterface } from "../../helpers/interfaces/ICycle.interface";
 
 export const createCycle=async (req: Request, res: Response)=> {
   console.log(req.body);
@@ -12,12 +13,16 @@ export const createCycle=async (req: Request, res: Response)=> {
   const validation: Cycle = await cycleValidation.validateAsync(req.body, {
     abortEarly: false,
   })
+
+  const bodyObject: ICycleInterface = {
+		...req.body,
+	};
     const cycle = await AppDataSource.manager.create<Cycle>(Cycle,validation);
-    const program = await AppDataSource.getRepository(Program).findOneBy({ id: parseInt(req.body.programId), })
-    const departureCountry = await AppDataSource.getRepository(Country).findOneBy({ id: parseInt(req.body.departureLocationId), })
-    const arrivalCountry = await AppDataSource.getRepository(Country).findOneBy({ id: parseInt(req.body.arrivalLocationId), })
-    const returnCountry = await AppDataSource.getRepository(Country).findOneBy({ id: parseInt(req.body.returnLocationId), })
-    const returnArrivalCountry = await AppDataSource.getRepository(Country).findOneBy({ id: parseInt(req.body.returnArrivalLocationId), })
+    const program = await AppDataSource.getRepository(Program).findOneBy({ id: bodyObject.programId, })
+    const departureCountry = await AppDataSource.getRepository(Country).findOneBy({ id: bodyObject.departureLocationId, })
+    const arrivalCountry = await AppDataSource.getRepository(Country).findOneBy({ id: bodyObject.arrivalLocationId, })
+    const returnCountry = await AppDataSource.getRepository(Country).findOneBy({ id: bodyObject.returnLocationId, })
+    const returnArrivalCountry = await AppDataSource.getRepository(Country).findOneBy({ id: bodyObject.returnArrivalLocationId, })
     if( departureCountry && arrivalCountry && returnCountry&& returnArrivalCountry && program)
     {
        cycle.program=program;
