@@ -22,6 +22,8 @@ const isAuthenticated = async (
 					error: "not authorized"
 				});
 			} else {
+				req.body.userId = requestedUser.id
+				req.body.user_id = requestedUser.id
 				next()
 			}
 		});

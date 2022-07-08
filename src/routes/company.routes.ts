@@ -9,8 +9,8 @@ const upload = multer({storage:storage(PROFILES_DIRECTORY)})
 
 const router = Router()
 
-router.get('/', isAuthenticated,listCompanies)
-router.put('/:id', editCompanyProfile,isAuthenticated)
+router.get('/', listCompanies)
+router.put('/:id', isAuthenticated ,editCompanyProfile)
 router.get('/:id', viewCompanyProfile)
-router.post('/:id', upload.single('cover_picture'),uploadCoverPicture,isAuthenticated)
+router.post('/:id', isAuthenticated, upload.single('cover_picture'),uploadCoverPicture)
 module.exports = router
