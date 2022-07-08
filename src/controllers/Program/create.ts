@@ -9,12 +9,12 @@ import { UPLOAD_DIRECTORY } from '../../helpers/constants/directories'
 import { programValidation } from '../../helpers/validations/program.validation'
 import { formatValidationErrors } from '../../helpers/functions/formatValidationErrors'
 interface ProgramCreateBody {
-	name: string
-	description: string
-	price: string
-	is_Recurring: boolean
-	companyId: string
-	hotels: string | string[]
+  name: string;
+  description: string;
+  price: string;
+  is_Recurring: boolean;
+  companyId: string;
+  hotels: string | string[];
 }
 
 export const create = async (req: Request, res: Response) => {
@@ -38,25 +38,16 @@ export const create = async (req: Request, res: Response) => {
 		}
 	  );
 
-	const hotelsIds =
-		typeof bodyObject.hotels === 'string'
-			? [parseInt(bodyObject.hotels, 10)]
-			: bodyObject.hotels?.map((hotelId: string) => parseInt(hotelId, 10))
-	const loadedHotels = await AppDataSource.manager.findBy(Hotel, {
-		id: In(hotelsIds),
-	})
-	const company = await AppDataSource.getRepository(Company).findOneBy({
-		id: parseInt(bodyObject.companyId),
-	})
-	const transportation = await AppDataSource.getRepository(
-		Transportation
-	).findOneBy({ id: 1 })
+  const hotelsIds = typeof bodyObject.hotels === "string" ? [parseInt(bodyObject.hotels, 10)] : bodyObject.hotels?.map((hotelId: string) => parseInt(hotelId, 10));
+  const loadedHotels = await AppDataSource.manager.findBy(Hotel, { id: In(hotelsIds) });
+  const company = await AppDataSource.getRepository(Company).findOneBy({ id: parseInt(bodyObject.companyId) });
+  const transportation = await AppDataSource.getRepository(Transportation).findOneBy({ id: 1 });
 
-	program.hotels = loadedHotels
-	if (company && transportation) {
-		program.company = company
-		program.transportation = transportation
-	}
+  program.hotels = loadedHotels;
+  if (company && transportation) {
+    program.company = company;
+    program.transportation = transportation;
+  }
 
 	await AppDataSource.manager.save(program)
 	res.json({

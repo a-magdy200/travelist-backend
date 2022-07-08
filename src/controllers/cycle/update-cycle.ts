@@ -1,14 +1,14 @@
-import { Cycle } from '../../entities/Cycle.entity'
-import { AppDataSource } from '../../config/database/data-source'
-import { Request, Response } from 'express'
-import { Country } from '../../entities/Country.entity'
+import { Cycle } from "../../entities/Cycle.entity"
+import { AppDataSource } from "../../config/database/data-source"
+import { Request, Response } from "express"
+import { Country } from "../../entities/Country.entity";
 import { cycleValidation } from '../../helpers/validations/cycle.validation'
 import { formatValidationErrors } from '../../helpers/functions/formatValidationErrors'
 
-export const updateCycle = async (req: Request, res: Response) => {
-	try {
-		const id: number | undefined = parseInt(req.params.id)
-		const validation: Cycle = await cycleValidation.validateAsync(req.body, {
+export const updateCycle=async (req: Request, res: Response)=> {
+  try {
+    const id: number | undefined = parseInt(req.params.id);
+    const validation: Cycle = await cycleValidation.validateAsync(req.body, {
 			abortEarly: false,
 		})
 		const cycle:Cycle|null = await AppDataSource.getRepository(Cycle).findOne({
