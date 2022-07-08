@@ -7,7 +7,7 @@ import { companyValidation } from '../../helpers/validations/company.validation'
 import { formatValidationErrors } from '../../helpers/functions/formatValidationErrors'
 import { UPLOAD_DIRECTORY } from '../../helpers/constants/directories'
 import { unlinkSync } from 'fs'
- import { returnId } from '../../helpers/functions/returnToken'
+import { getUserIdFromToken } from '../../helpers/functions/getUserIdFromToken'
 const listCompanies = async (req: Request, res: Response) => {
 	const companies: Company[] = await AppDataSource.manager.find<Company>(
 		Company,
@@ -29,7 +29,7 @@ const viewCompanyProfile: RequestHandler = async (req, res) => {
 		},
 	})
 
-	const userId = returnId(req, res)
+	const userId = getUserIdFromToken(req, res)
 	// view My company profile
 	if (company) {
 		if (company?.user.id == userId) {
@@ -37,9 +37,7 @@ const viewCompanyProfile: RequestHandler = async (req, res) => {
 				success: true,
 				data: [company],
 			})
-		}
-		// view other company profile
-		else {
+		} else {
 			res.json({
 				success: true,
 				data: [
@@ -107,7 +105,7 @@ const uploadCoverPicture = async (req: Request, res: Response) => {
 
 export {
 	listCompanies,
-    viewCompanyProfile,
+	viewCompanyProfile,
 	editCompanyProfile,
 	uploadCoverPicture,
 }

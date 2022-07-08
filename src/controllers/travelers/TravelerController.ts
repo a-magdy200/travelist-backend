@@ -7,7 +7,7 @@ import { travelerValidation } from '../../helpers/validations/traveler.validatio
 import { formatValidationErrors } from '../../helpers/functions/formatValidationErrors'
 import { UPLOAD_DIRECTORY } from '../../helpers/constants/directories'
 import { unlinkSync } from 'fs'
-import { returnId } from '../../helpers/functions/returnToken'
+import { getUserIdFromToken } from '../../helpers/functions/getUserIdFromToken'
 
 const listTravelers = async (req: Request, res: Response) => {
 	const travelers: Traveler[] = await AppDataSource.manager.find<Traveler>(
@@ -31,23 +31,23 @@ const viewTravelerProfile: RequestHandler = async (req, res) => {
 		},
 	})
 
-	 const userId = returnId(req, res)
+	// const userId = getUserIdFromToken(req, res)
 	// view My profile
-	if (traveler) {
-		if (traveler?.user?.id== userId) {
-			res.json({
-				success: true,
-				data: [traveler],
-			})
-		}
-		console.log(traveler?.user)
-		console.log(traveler?.user?.friends)
-	}
+	// if (traveler) {
+	// 	if (traveler?.user?.id== userId) {
+	// 		res.json({
+	// 			success: true,
+	// 			data: [traveler],
+	// 		})
+	// 	}
+	// 	console.log(traveler?.user)
+	// 	console.log(traveler?.user?.friends)
+	// }
 		// traveler?.user?.friends.find(){wher}
 		// // view other profile as friend
-		//  else if (userId in  
-			
-			
+		//  else if (userId in
+
+
 		// 	) {
     //   const entries = await  connection.
 	//   traveler?.user.friends.find({

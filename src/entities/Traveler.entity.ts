@@ -24,7 +24,7 @@ export class Traveler extends BaseEntity {
 	@Column({ type: 'date' })
 	date_of_birth?: Date
 
-	@Column()
+	@Column({ default: false })
 	is_guide?: boolean
 
 	// @OneToOne(() => User)

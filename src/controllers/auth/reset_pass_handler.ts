@@ -2,6 +2,7 @@ import { AppDataSource } from '../../config/database/data-source'
 import { User } from '../../entities/User.entity'
 const bcrypt = require('bcrypt')
 import { Request, Response } from 'express'
+import { formatErrorResponse } from '../../helpers/functions/formatErrorResponse'
 
 const resetPassword = async (req: Request, res: Response, next: any) => {
 	if (req.body.email !== undefined) {
@@ -22,16 +23,10 @@ const resetPassword = async (req: Request, res: Response, next: any) => {
 				user,
 			})
 		} else {
-			return res.sendStatus(404).json({
-				success: false,
-				error: 'Missing password or user not found',
-			})
+			return res.sendStatus(404).json(formatErrorResponse(["Missing password or user not found"]));
 		}
 	} else {
-		return res.sendStatus(404).json({
-			success: false,
-			error: 'Missing email',
-		})
+		return res.sendStatus(404).json(formatErrorResponse(["Missing email"]));
 	}
 }
 
