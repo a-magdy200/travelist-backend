@@ -50,8 +50,7 @@ const forgetPassword = async (req: Request, res: Response, next: any) => {
 				to: 'ramez.youssef.fahmy@gmail.com',
 				subject: 'verify code to reset password',
 				// text:
-				// 	'please, copy the attached code to verify your account and reset a new password, the code: ' +
-				// 	code + ' kindly click the Link: front url hit verfiy code in back',
+				// 	'',
 				html: "<p>please, copy the attached code to verify your account, code: </p> <b>"+code+"</b><p> Click: <a href='http://localhost:3000/verify_code'>Here</a></p>", // html body
 				headers: { 'x-myheader': 'test header' },
 			})

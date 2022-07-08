@@ -12,6 +12,6 @@ export interface IRegisterRequestBody {
 	gender: Gender;
 	date_of_birth: Date;
 	is_guide: boolean;
-	// user: userId,
-    // description: string,
+    description: string,
+    // userId: number,
 }
