@@ -36,6 +36,10 @@ export class Company extends BaseEntity {
 	@JoinColumn()
 	user: User
 
+    // @OneToOne(() => User, (user) => user.id)
+    // @JoinColumn()
+    // user: User
+
 	@OneToMany(() => Program, (program) => program.company)
 	programs?: Program[]
 }

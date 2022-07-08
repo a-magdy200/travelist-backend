@@ -4,9 +4,9 @@ import {
 	Entity,
 	PrimaryGeneratedColumn,
 	ManyToMany,
-	JoinTable,
+	JoinTable,OneToOne,Relation
 } from 'typeorm'
-
+import { Company } from './Company.entity'
 export type UserType = 'traveler' | 'company'
 
 @Entity()
@@ -36,6 +36,9 @@ export class User extends BaseEntity {
 	})
 	type!: UserType
 	
+	// @OneToOne(() => Company, (company) => company.id)
+    // metadata: Relation<Company>
+
 	@ManyToMany((type) => User)
 	@JoinTable()
 	friends: User[]
