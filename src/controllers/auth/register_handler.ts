@@ -22,7 +22,7 @@ const register = async (req: Request, res: Response, next: any) => {
 		const requestBody : IRegisterRequestBody = {...req.body,};
 
 		if (!existedUser){
-			const validationUser : User = await userValidation.validateAsync(req.body, {
+			const validationUser : User = await userValidation.validateAsync(requestBody, {
 				abortEarly: false,
 			})
 			const validationTraveler : Traveler = await travelerValidation.validateAsync(req.body, {
