@@ -3,6 +3,7 @@ import { User } from '../../entities/User.entity'
 import { PasswordForget } from '../../entities/PasswordForget'
 import nodemailer from 'nodemailer'
 import { Request, Response } from 'express'
+import { formatErrorResponse } from '../../helpers/functions/formatErrorResponse'
 
 const forgetPassword = async (req: Request, res: Response, next: any) => {
 	if (req.body.email !== undefined) {
@@ -60,16 +61,10 @@ const forgetPassword = async (req: Request, res: Response, next: any) => {
 				info,
 			})
 		} else {
-			return res.status(404).json({
-				success: false,
-				error: 'Invalid email, user not exist',
-			})
+			return res.status(404).json(formatErrorResponse(["Invalid email, user not exist"]));
 		}
 	} else {
-		return res.status(404).json({
-			success: false,
-			error: 'Missing email',
-		})
+		return res.status(404).json(formatErrorResponse(["Missing email"]));
 	}
 	// logger.log("error from forget_password_func"+json.stringify(req)+json.stringify(e));
 }

@@ -7,6 +7,7 @@ const bcrypt = require('bcrypt')
 import { Request, Response } from 'express'
 import { userValidation } from '../../helpers/validations/user.validation'
 import jwt from 'jsonwebtoken'
+import { formatErrorResponse } from '../../helpers/functions/formatErrorResponse'
 
 const register = async (req: Request, res: Response, next: any) => {
 	try {
@@ -16,6 +17,8 @@ const register = async (req: Request, res: Response, next: any) => {
 		})
 
 		// console.log(existedUser);
+
+		// const requestBody : IRegisterRequestBody = {...req.body};
 
 		if (!existedUser){
 			// const validation = await userValidation.validateAsync(req.body, {
@@ -68,10 +71,7 @@ const register = async (req: Request, res: Response, next: any) => {
 			});
 			
 	    }else{
-			return res.status(404).json({
-				success: false,
-				error: 'User is exist',
-			})
+			return res.status(404).json(formatErrorResponse(["User is exist"]));	
 		}
 	} catch (error: any) {
 		return res.status(500).json({
