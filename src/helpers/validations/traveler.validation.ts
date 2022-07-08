@@ -1,4 +1,5 @@
-const Joi = require('joi').extend(require('@joi/date'))
+const Joi = require ('joi')
+.extend(require('@joi/date'));
 
 export const travelerValidation = Joi.object().keys({
 	gender: Joi.string().required(),

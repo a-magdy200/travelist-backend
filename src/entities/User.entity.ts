@@ -26,8 +26,6 @@ export class User extends BaseEntity {
 	@Column()
 	address?: string
 
-	@Column({ default: '' })
-	profile_picture?: string
 
 	@Column({
 		type: 'enum',

@@ -27,6 +27,9 @@ export class Traveler extends BaseEntity {
 	@Column({ default: false })
 	is_guide?: boolean
 
+	@Column({ default: '' })
+	profile_picture?: string
+
 	@OneToOne(() => User)
 	@JoinColumn()
 	user: User

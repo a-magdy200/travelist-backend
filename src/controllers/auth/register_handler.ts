@@ -9,6 +9,7 @@ import { formatErrorResponse } from "../../helpers/functions/formatErrorResponse
 import { IRegisterRequestBody } from "../../helpers/interfaces/IRegisterRequestBody.interface";
 import { travelerValidation } from "../../helpers/validations/traveler.validation";
 import { companyValidation } from "../../helpers/validations/company.validation";
+import configurations from "../../config/configurations";
 
 const bcrypt = require('bcrypt')
 
@@ -55,7 +56,7 @@ const register = async (req: Request, res: Response, next: any) => {
 
 			validationUser.password = await bcrypt.hash(req.body.password, salt);
 			// how to add hashed password in interface
-			const user = await AppDataSource.manager.insert<User>(User,requestBody,
+			const user = await AppDataSource.manager.insert<User>(User,validationUser,
 				// {password: pass,}
 			)
 
@@ -90,7 +91,7 @@ const register = async (req: Request, res: Response, next: any) => {
 
 			// check that both user and traveler inserted or user and company inserted (revert)
 
-			jwt.sign({ user }, 'secretkey', { expiresIn: '1h' },(err: any, token: any) => {
+			jwt.sign({ user }, configurations().secret, { expiresIn: '1h' },(err: any, token: any) => {
 				return res.status(200).json({
 					success: true,
 					data: user.generatedMaps,
