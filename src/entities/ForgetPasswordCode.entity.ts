@@ -8,10 +8,10 @@ import {
 } from 'typeorm'
 
 @Entity()
-export class PasswordForget extends BaseEntity {
+export class ForgetPasswordCode extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id?: number
-	@Column({ unique: true })
+	@Column()
 	email?: string
 	@Column({ unique: true })
 	code?: string

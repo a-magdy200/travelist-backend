@@ -15,7 +15,8 @@ const router = Router()
 router.get('/', listTravelers)
 router.get('/:id', viewTravelerProfile)
 router.put('/:id', editTravelerProfile)
-router.patch('/:id',
+router.patch(
+	'/:id',
 	upload.single('profile_picture'),
 	uploadProfilePicture,
 	isAuthenticated

@@ -1,1 +1,1 @@
-export type Type = "traveler" | "company";
+export type Type = 'traveler' | 'company'

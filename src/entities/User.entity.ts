@@ -6,8 +6,9 @@ import {
 	ManyToMany,
 	JoinTable,
 } from 'typeorm'
-import { Group } from "./Group.entity";
-import { Country } from "./Country.entity";
+import { Group } from './Group.entity'
+import { IsEnum, Length } from 'class-validator'
+import { UserTypeEnum } from '../helpers/enums/userType.enum'
 
 export type UserType = 'traveler' | 'company'
 
@@ -17,6 +18,7 @@ export class User extends BaseEntity {
 	id?: number
 
 	@Column()
+	@Length(3)
 	name?: string
 
 	@Column({ unique: true })
@@ -31,19 +33,23 @@ export class User extends BaseEntity {
 	@Column({ default: '' })
 	profile_picture?: string
 
-
 	@Column({
 		type: 'enum',
-		enum: ['traveler', 'company'],
-		default: 'traveler',
+		enum: UserTypeEnum,
+		default: UserTypeEnum.TRAVELER,
 	})
-	type!: UserType
+	@IsEnum(UserTypeEnum)
+	type: UserType
 
-	@ManyToMany((type) => User)
+	@ManyToMany(() => Group, (group) => group.followers, {})
 	@JoinTable()
-	friends: User[]
+	groups: Group[]
 
-	@ManyToMany(() => Group, group => group.followers)
+	@ManyToMany(() => User, (user) => user.reported_users, {})
 	@JoinTable()
-	groups: Group[];
+	reported_users: User[]
+
+	@ManyToMany(() => User, (user) => user.blocked_users, {})
+	@JoinTable()
+	blocked_users: User[]
 }

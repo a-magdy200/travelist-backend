@@ -6,5 +6,5 @@ export const programValidation = Joi.object().keys({
 	price: Joi.string().required(),
 	companyId: Joi.number().required(),
 	hotels: Joi.required(),
-	is_Recurring:Joi.string().valid("0", "1").required(),
+	is_Recurring: Joi.string().valid('0', '1').required(),
 })

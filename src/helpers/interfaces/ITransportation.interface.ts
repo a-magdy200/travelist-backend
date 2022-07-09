@@ -1,5 +1,4 @@
 export interface ITransportationInterface {
-    id?:number;
-    name?:string;
- }
-  
+	id?: number
+	name?: string
+}

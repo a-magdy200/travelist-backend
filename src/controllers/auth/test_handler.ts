@@ -3,7 +3,6 @@ import { User } from '../../entities/User.entity'
 import { Request, Response } from 'express'
 
 const listUsers = async (req: Request, res: Response, next: any) => {
-
 	// console.log(req.body);
 
 	// to get the request user id //login

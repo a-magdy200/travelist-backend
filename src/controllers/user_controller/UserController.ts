@@ -13,41 +13,37 @@ const viewUserProfile: RequestHandler = async (req, res) => {
 		where: {
 			id: parseInt(req.params.id),
 		},
-		relations: {
-			friends:true
-			},
 	})
 }
-	// const userFromToken = {
-	// 	id: 3,
-	// }
-	// let returnvalue
-	// view my profile 
-	// user?.find({
-	// 	where:[
-	// 		{
-	// 		//userId_1:userFromToken.id	
-	// 		// userId_2 : parseInt(req.params.id)
-	// 		},
-	// 	{
-	// 		//userId_2:userFromToken.id	
-	// 		// userId_1 : parseInt(req.params.id)
-	// 	}]
-	// })
+// const userFromToken = {
+// 	id: 3,
+// }
+// let returnvalue
+// view my profile
+// user?.find({
+// 	where:[
+// 		{
+// 		//userId_1:userFromToken.id
+// 		// userId_2 : parseInt(req.params.id)
+// 		},
+// 	{
+// 		//userId_2:userFromToken.id
+// 		// userId_1 : parseInt(req.params.id)
+// 	}]
+// })
 
-		// res.json({
-		// 	success: true,
-		// 	data: user,
-		// })
-	
+// res.json({
+// 	success: true,
+// 	data: user,
+// })
 
-	// view other friend profile
-	// else {
-	// 	returnvalue = {
-	// 		identification: '',
-	// 		description: '',
-	// 	}
-	// }
+// view other friend profile
+// else {
+// 	returnvalue = {
+// 		identification: '',
+// 		description: '',
+// 	}
+// }
 // 	res.send(returnvalue)
 
 const editUserProfile = async (req: Request, res: Response) => {
@@ -93,5 +89,4 @@ const updateUserPassword = async (req: Request, res: Response) => {
 	}
 }
 
-
-export {viewUserProfile,editUserProfile, updateUserPassword }
+export { viewUserProfile, editUserProfile, updateUserPassword }

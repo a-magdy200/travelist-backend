@@ -11,5 +11,5 @@ export default () => ({
 		password: process.env.DATABASE_PASS,
 		name: process.env.DATABASE_NAME,
 	},
-	secret: process.env.SECRET_KEY ?? 'travelist'
+	secret: process.env.SECRET_KEY ?? 'travelist',
 })

@@ -1,29 +1,28 @@
-import { AppDataSource } from "../../config/database/data-source";
-import { User } from "../../entities/User.entity";
-import { Traveler } from "../../entities/Traveler.entity";
-import { Company } from "../../entities/Company.entity";
-import { Request, Response } from "express";
-import { userValidation } from "../../helpers/validations/user.validation";
-import jwt from "jsonwebtoken";
-import { formatErrorResponse } from "../../helpers/functions/formatErrorResponse";
-import { IRegisterRequestBody } from "../../helpers/interfaces/IRegisterRequestBody.interface";
-import { travelerValidation } from "../../helpers/validations/traveler.validation";
-import { companyValidation } from "../../helpers/validations/company.validation";
-import configurations from "../../config/configurations";
-import { sendAuthenticationResponse } from "../../helpers/functions/sendAuthenticationResponse";
+import { AppDataSource } from '../../config/database/data-source'
+import { User } from '../../entities/User.entity'
+import { Traveler } from '../../entities/Traveler.entity'
+import { Company } from '../../entities/Company.entity'
+import { Request, Response } from 'express'
+import { userValidation } from '../../helpers/validations/user.validation'
+import jwt from 'jsonwebtoken'
+import { formatErrorResponse } from '../../helpers/functions/formatErrorResponse'
+import { IRegisterRequestBody } from '../../helpers/interfaces/IRegisterRequestBody.interface'
+import { travelerValidation } from '../../helpers/validations/traveler.validation'
+import { companyValidation } from '../../helpers/validations/company.validation'
+import configurations from '../../config/configurations'
+import { sendAuthenticationResponse } from '../../helpers/functions/sendAuthenticationResponse'
 
 const bcrypt = require('bcrypt')
 
 const register = async (req: Request, res: Response, next: any) => {
 	try {
-
 		const existedUser = await AppDataSource.manager.findOneBy<User>(User, {
 			email: req.body.email,
 		})
 
-		const requestBody : IRegisterRequestBody = {...req.body,};
-		const userType = req.body.type;
-		if (!existedUser){
+		const requestBody: IRegisterRequestBody = { ...req.body }
+		const userType = req.body.type
+		if (!existedUser) {
 			const userRequestBody = {
 				name: req.body.name,
 				email: req.body.email,
@@ -40,67 +39,84 @@ const register = async (req: Request, res: Response, next: any) => {
 			const companyRequestBody = {
 				description: req.body.description,
 			}
-			const validationUser : User = await userValidation.validateAsync(userRequestBody, {
-				abortEarly: false,
-			})
+			const validationUser: User = await userValidation.validateAsync(
+				userRequestBody,
+				{
+					abortEarly: false,
+				}
+			)
 			if (userType === 'traveler') {
-				const validationTraveler: Traveler = await travelerValidation.validateAsync(travelerRequestBody, {
-					abortEarly: false,
-				});
+				const validationTraveler: Traveler =
+					await travelerValidation.validateAsync(travelerRequestBody, {
+						abortEarly: false,
+					})
 			} else {
-				const validationCompany: Company = await companyValidation.validateAsync(companyRequestBody, {
-					abortEarly: false,
-				});
+				const validationCompany: Company =
+					await companyValidation.validateAsync(companyRequestBody, {
+						abortEarly: false,
+					})
 			}
 
 			const salt = await bcrypt.genSalt(10)
 
-			validationUser.password = await bcrypt.hash(req.body.password, salt);
+			validationUser.password = await bcrypt.hash(req.body.password, salt)
 			// how to add hashed password in interface
-			const user = await AppDataSource.manager.insert<User>(User,validationUser,
+			const user = await AppDataSource.manager.insert<User>(
+				User,
+				validationUser
 				// {password: pass,}
 			)
 
-			const userId = user.generatedMaps[0].id;
-
+			const userId = user.generatedMaps[0].id
 
 			// how to add foreign key in interface
 			const userEntity = await AppDataSource.manager.findOneBy<User>(User, {
-				id: userId
-			});
-			if(userType == 'traveler'){
-				const traveler = await AppDataSource.manager.insert<Traveler>(Traveler,requestBody);
-				const travelerId = traveler.generatedMaps[0].id;
-				const travelerEntity = await AppDataSource.manager.findOneBy<Traveler>(Traveler, {
-					id: travelerId
-				});
+				id: userId,
+			})
+			if (userType == 'traveler') {
+				const traveler = await AppDataSource.manager.insert<Traveler>(
+					Traveler,
+					requestBody
+				)
+				const travelerId = traveler.generatedMaps[0].id
+				const travelerEntity = await AppDataSource.manager.findOneBy<Traveler>(
+					Traveler,
+					{
+						id: travelerId,
+					}
+				)
 				if (travelerEntity && userEntity) {
-					travelerEntity.user = userEntity;
-					await travelerEntity.save();
+					travelerEntity.user = userEntity
+					await travelerEntity.save()
 				}
 			} else {
-				const company = await AppDataSource.manager.insert<Company>(Company,requestBody);
-				const companyId = company.generatedMaps[0].id;
-				const companyEntity = await AppDataSource.manager.findOneBy<Company>(Company, {
-					id: companyId
-				});
+				const company = await AppDataSource.manager.insert<Company>(
+					Company,
+					requestBody
+				)
+				const companyId = company.generatedMaps[0].id
+				const companyEntity = await AppDataSource.manager.findOneBy<Company>(
+					Company,
+					{
+						id: companyId,
+					}
+				)
 				if (companyEntity && userEntity) {
-					companyEntity.user = userEntity;
-					await companyEntity.save();
+					companyEntity.user = userEntity
+					await companyEntity.save()
 				}
 			}
 			if (userEntity) {
-				sendAuthenticationResponse(userEntity, res);
+				sendAuthenticationResponse(userEntity, res)
 			}
-
-	    } else {
-			return res.status(404).json(formatErrorResponse(["User is exist"]));
+		} else {
+			return res.status(404).json(formatErrorResponse(['User is exist']))
 		}
 	} catch (error: any) {
 		return res.status(500).json({
 			success: false,
 			// errors: error.details.map((e: Error) => e.message),
-			errors:error.details,
+			errors: error.details,
 		})
 	}
 }

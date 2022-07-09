@@ -40,12 +40,12 @@ const viewCompanyProfile: RequestHandler = async (req, res) => {
 		} else {
 			res.json({
 				success: true,
-				data: [
-					company?.description,
-					company?.programs,
-					company?.cover_picture,
-					company?.rate,
-				],
+				// data: [
+				// 	company?.description,
+				// 	company?.programs,
+				// 	company?.cover_picture,
+				// 	company?.rate,
+				// ],
 			})
 		}
 	} else {

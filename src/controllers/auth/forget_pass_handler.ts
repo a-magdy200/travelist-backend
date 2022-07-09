@@ -1,6 +1,6 @@
 import { AppDataSource } from '../../config/database/data-source'
 import { User } from '../../entities/User.entity'
-import { PasswordForget } from '../../entities/PasswordForget'
+import { ForgetPasswordCode } from '../../entities/ForgetPasswordCode.entity'
 import nodemailer from 'nodemailer'
 import { Request, Response } from 'express'
 import { formatErrorResponse } from '../../helpers/functions/formatErrorResponse'
@@ -16,7 +16,7 @@ const forgetPassword = async (req: Request, res: Response, next: any) => {
 			const code = Math.random().toString(20).substring(2, 12)
 
 			const user_pass_forget = await AppDataSource.manager.findOneBy(
-				PasswordForget,
+				ForgetPasswordCode,
 				{
 					email: email,
 				}
@@ -27,10 +27,13 @@ const forgetPassword = async (req: Request, res: Response, next: any) => {
 				await AppDataSource.manager.save(user_pass_forget)
 			} else {
 				const user_pass_forget =
-					await AppDataSource.manager.insert<PasswordForget>(PasswordForget, {
-						email: email,
-						code: code,
-					})
+					await AppDataSource.manager.insert<ForgetPasswordCode>(
+						ForgetPasswordCode,
+						{
+							email: email,
+							code: code,
+						}
+					)
 			}
 
 			const transporter = nodemailer.createTransport({
@@ -51,7 +54,10 @@ const forgetPassword = async (req: Request, res: Response, next: any) => {
 				subject: 'verify code to reset password',
 				// text:
 				// 	'',
-				html: "<p>please, copy the attached code to verify your account, code: </p> <b>"+code+"</b><p> Click: <a href='http://localhost:3000/verify_code'>Here</a></p>", // html body
+				html:
+					'<p>please, copy the attached code to verify your account, code: </p> <b>' +
+					code +
+					"</b><p> Click: <a href='http://localhost:3000/verify_code'>Here</a></p>", // html body
 				headers: { 'x-myheader': 'test header' },
 			})
 
@@ -60,10 +66,12 @@ const forgetPassword = async (req: Request, res: Response, next: any) => {
 				info,
 			})
 		} else {
-			return res.status(404).json(formatErrorResponse(["Invalid email, user not exist"]));
+			return res
+				.status(404)
+				.json(formatErrorResponse(['Invalid email, user not exist']))
 		}
 	} else {
-		return res.status(404).json(formatErrorResponse(["Missing email"]));
+		return res.status(404).json(formatErrorResponse(['Missing email']))
 	}
 	// logger.log("error from forget_password_func"+json.stringify(req)+json.stringify(e));
 }
