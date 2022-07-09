@@ -1,10 +1,10 @@
 import Joi from 'joi'
 
 export const programValidation = Joi.object().keys({
-	name: Joi.string().alphanum().min(3).required(),
-	description: Joi.string().alphanum().min(5).required(),
+	name: Joi.string().min(3).required(),
+	description: Joi.string().min(5).required(),
 	price: Joi.string().required(),
-	companyId: Joi.string().required(),
-	hotels: Joi.string().required(),
-	cover_picture: Joi.required(),
+	companyId: Joi.number().required(),
+	hotels: Joi.required(),
+	is_Recurring:Joi.string().valid("0", "1").required(),
 })
