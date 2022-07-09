@@ -4,11 +4,12 @@ import {
 	Entity,
 	PrimaryGeneratedColumn,
 	ManyToMany,
-	JoinTable,
-} from 'typeorm'
+	JoinTable, OneToMany
+} from "typeorm";
 import { Group } from './Group.entity'
 import { IsEnum, Length } from 'class-validator'
 import { UserTypeEnum } from '../helpers/enums/userType.enum'
+import { Notification } from "./notification.entity";
 
 export type UserType = 'traveler' | 'company'
 
@@ -40,6 +41,9 @@ export class User extends BaseEntity {
 	})
 	@IsEnum(UserTypeEnum)
 	type: UserType
+
+	@OneToMany(() => Notification, notification => notification.user)
+	notifications: Notification[];
 
 	@ManyToMany(() => Group, (group) => group.followers, {})
 	@JoinTable()
