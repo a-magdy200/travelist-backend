@@ -17,8 +17,9 @@ export const createCycle=async (req: Request, res: Response)=> {
   const bodyObject: ICycleInterface = {
 		...req.body,
 	};
-    const cycle = await AppDataSource.manager.create<Cycle>(Cycle,validation);
-    const program = await AppDataSource.getRepository(Program).findOneBy({ id: bodyObject.programId, })
+  const program = await AppDataSource.getRepository(Program).findOneBy({ id: bodyObject.programId, })
+  if(program?.is_Recurring)
+   { const cycle = await AppDataSource.manager.create<Cycle>(Cycle,validation);
     const departureCountry = await AppDataSource.getRepository(Country).findOneBy({ id: bodyObject.departureLocationId, })
     const arrivalCountry = await AppDataSource.getRepository(Country).findOneBy({ id: bodyObject.arrivalLocationId, })
     const returnCountry = await AppDataSource.getRepository(Country).findOneBy({ id: bodyObject.returnLocationId, })
@@ -36,8 +37,15 @@ export const createCycle=async (req: Request, res: Response)=> {
     res.json({
       success: true,
       data: cycle,
-    });
-  } catch (error: any) {
+    });}
+    else
+    {
+      res.json({
+        success: false,
+      });
+    }
+    }
+   catch (error: any) {
     res.json(formatValidationErrors(error));
     console.log(formatValidationErrors(error))
 }
