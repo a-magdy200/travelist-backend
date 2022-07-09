@@ -69,10 +69,10 @@ export class Program extends BaseEntity {
 	@JoinColumn()
 	transportation?: Transportation
 
-	@OneToMany(() => Country, (country) => country.programs, {})
+	@OneToMany(() => Country, (country) => country.programs)
 	@JoinColumn()
 	country: Country
-	@ManyToMany(() => Country, (country) => country.program_destination, {})
+	@ManyToMany(() => Country, (country) => country.program_destination)
 	@JoinTable()
 	destinations: Country[]
 

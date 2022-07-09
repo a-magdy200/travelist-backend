@@ -37,11 +37,11 @@ export class Post extends BaseEntity {
 	@DeleteDateColumn()
 	deleted_at: Date
 
-	@ManyToOne(() => Traveler, (traveler) => traveler.posts, {})
+	@ManyToOne(() => Traveler, (traveler) => traveler.posts)
 	@JoinColumn()
 	traveler: Traveler
 
-	@ManyToOne(() => Group, (group) => group.posts, {})
+	@ManyToOne(() => Group, (group) => group.posts)
 	@JoinColumn()
 	group: Group
 }

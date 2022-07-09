@@ -25,11 +25,11 @@ export class FriendRequest extends BaseEntity {
 	@IsEnum(FriendRequestStatusEnum)
 	status: FriendRequestStatusType
 
-	@ManyToOne(() => Traveler, (traveler) => traveler.sent_requests, {})
+	@ManyToOne(() => Traveler, (traveler) => traveler.sent_requests)
 	@JoinColumn()
 	sender: Traveler
 
-	@ManyToOne(() => Traveler, (traveler) => traveler.received_requests, {})
+	@ManyToOne(() => Traveler, (traveler) => traveler.received_requests)
 	@JoinColumn()
 	receiver: Traveler
 

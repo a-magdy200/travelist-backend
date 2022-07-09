@@ -4,7 +4,7 @@ import {
 	Entity,
 	PrimaryGeneratedColumn,
 	ManyToMany,
-	JoinTable, OneToMany
+	JoinTable, OneToMany, CreateDateColumn, UpdateDateColumn, DeleteDateColumn
 } from "typeorm";
 import { Group } from './Group.entity'
 import { IsEnum, Length } from 'class-validator'
@@ -14,8 +14,10 @@ import { ChatMessage } from "./ChatMessage.entity";
 import { ChatUser } from "./ChatUser.entity";
 import { SupportTicket } from "./SupportTicket.entity";
 import { SupportTicketResponse } from "./SupportTicketResponse.entity";
+import { AccountStatusEnum } from "../helpers/enums/accountStatus.enum";
+import { UserType } from "../helpers/types/user.type";
+import { UserReport } from "./UserReport.entity";
 
-export type UserType = 'traveler' | 'company'
 
 @Entity()
 export class User extends BaseEntity {
@@ -46,6 +48,20 @@ export class User extends BaseEntity {
 	@IsEnum(UserTypeEnum)
 	type: UserType
 
+	@Column({
+		type: "boolean",
+		default: false
+	})
+	is_verified: boolean;
+
+	@Column({
+		type: "enum",
+		enum: AccountStatusEnum,
+		default: AccountStatusEnum.ACTIVE
+	})
+	@IsEnum(AccountStatusEnum)
+	status: AccountStatusEnum;
+
 	@OneToMany(() => Notification, notification => notification.user)
 	notifications: Notification[];
 
@@ -61,15 +77,26 @@ export class User extends BaseEntity {
 	@ManyToMany(() => ChatUser, chat => chat.users)
 	chats: ChatUser[];
 
-	@ManyToMany(() => Group, (group) => group.followers, {})
+	@ManyToMany(() => Group, (group) => group.followers)
 	@JoinTable()
 	groups: Group[]
 
-	@ManyToMany(() => User, (user) => user.reported_users, {})
-	@JoinTable()
-	reported_users: User[]
+	@OneToMany(() => UserReport, (user) => user.reporter_user)
+	reported_users: UserReport[]
 
-	@ManyToMany(() => User, (user) => user.blocked_users, {})
+	@OneToMany(() => UserReport, (user) => user.reported_user)
+	reports: UserReport[]
+
+	@ManyToMany(() => User, (user) => user.blocked_users)
 	@JoinTable()
 	blocked_users: User[]
+
+	@CreateDateColumn()
+	created_at?: Date
+
+	@UpdateDateColumn()
+	updated_at?: Date
+
+	@DeleteDateColumn()
+	deleted_at?: Date
 }

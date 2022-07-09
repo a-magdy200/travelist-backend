@@ -9,8 +9,8 @@ import {
 	OneToOne,
 	JoinColumn,
 	ManyToMany,
-	JoinTable,
-} from 'typeorm'
+	JoinTable, DeleteDateColumn
+} from "typeorm";
 import { Program } from './Program.entity'
 import { User } from './User.entity'
 import { IsInt, IsNumber, Length } from 'class-validator'
@@ -21,11 +21,6 @@ export class Company extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id?: number
 
-	@CreateDateColumn({ name: 'created_at' })
-	createdAt?: Date
-
-	@UpdateDateColumn({ name: 'updated_at' })
-	updatedAt?: Date
 
 	@Column({ default: '' })
 	@Length(3)
@@ -43,7 +38,7 @@ export class Company extends BaseEntity {
 	@IsNumber()
 	average_rate?: number
 
-	@ManyToMany(() => Traveler, (traveler) => traveler.rating_company, {})
+	@ManyToMany(() => Traveler, (traveler) => traveler.rating_company)
 	@JoinTable()
 	rating_travelers: Traveler[]
 
@@ -54,6 +49,15 @@ export class Company extends BaseEntity {
 	@JoinColumn()
 	user: User
 
-	@OneToMany(() => Program, (program) => program.company, {})
+	@OneToMany(() => Program, (program) => program.company)
 	programs?: Program[]
+
+	@CreateDateColumn()
+	created_at?: Date
+
+	@UpdateDateColumn()
+	updated_at?: Date
+
+	@DeleteDateColumn()
+	deleted_at?: Date
 }

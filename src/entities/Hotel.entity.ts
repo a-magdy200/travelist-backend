@@ -28,7 +28,7 @@ export class Hotel extends BaseEntity {
 	@Column({ type: 'int' })
 	stars?: number
 
-	@ManyToOne(() => Country, (country) => country.hotels, {})
+	@ManyToOne(() => Country, (country) => country.hotels)
 	@JoinColumn()
 	country: Country
 

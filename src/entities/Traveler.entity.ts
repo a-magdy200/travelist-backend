@@ -8,8 +8,8 @@ import {
 	ManyToMany,
 	JoinTable,
 	Unique,
-	OneToMany,
-} from 'typeorm'
+	OneToMany, CreateDateColumn, UpdateDateColumn, DeleteDateColumn
+} from "typeorm";
 import { User } from './User.entity'
 import { IsDate, IsEnum, Length } from 'class-validator'
 import { Company } from './Company.entity'
@@ -43,11 +43,11 @@ export class Traveler extends BaseEntity {
 	@Column({ default: false, type: 'boolean' })
 	is_guide?: boolean
 
-	@ManyToMany(() => Company, (company) => company.rating_travelers, {})
+	@ManyToMany(() => Company, (company) => company.rating_travelers)
 	@JoinTable()
 	rating_company: Company[]
 
-	@OneToMany(() => FriendRequest, (friend_request) => friend_request.sender, {})
+	@OneToMany(() => FriendRequest, (friend_request) => friend_request.sender)
 	sent_requests: FriendRequest[]
 
 	@OneToMany(
@@ -57,7 +57,7 @@ export class Traveler extends BaseEntity {
 	)
 	received_requests: FriendRequest[]
 
-	@OneToMany(() => Post, (post) => post.traveler, {})
+	@OneToMany(() => Post, (post) => post.traveler)
 	posts: Post[]
 
 	@ManyToMany(() => Traveler)
@@ -68,7 +68,16 @@ export class Traveler extends BaseEntity {
 	@JoinColumn()
 	user: User
 
-	@ManyToMany(() => Cycle, (cycle) => cycle.travelers, {})
+	@ManyToMany(() => Cycle, (cycle) => cycle.travelers)
 	@JoinTable()
 	cycles: Cycle[]
+
+	@CreateDateColumn()
+	created_at?: Date
+
+	@UpdateDateColumn()
+	updated_at?: Date
+
+	@DeleteDateColumn()
+	deleted_at?: Date
 }

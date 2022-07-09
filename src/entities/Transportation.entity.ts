@@ -20,7 +20,7 @@ export class Transportation extends BaseEntity {
 	@Length(3)
 	name?: string
 
-	@OneToMany(() => Program, (program) => program.transportation, {})
+	@OneToMany(() => Program, (program) => program.transportation)
 	programs?: Program[]
 
 	@CreateDateColumn()

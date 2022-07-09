@@ -27,17 +27,17 @@ export class Country extends BaseEntity {
 	@Column()
 	name?: string
 
-	@ManyToOne(() => Program, (program) => program.country, {})
+	@ManyToOne(() => Program, (program) => program.country)
 	@JoinColumn()
 	programs: Program[]
 
-	@ManyToMany(() => Program, (program) => program.destinations, {})
+	@ManyToMany(() => Program, (program) => program.destinations)
 	program_destination: Program[]
 
-	@OneToMany(() => Hotel, (hotel) => hotel.country, {})
+	@OneToMany(() => Hotel, (hotel) => hotel.country)
 	hotels: Hotel[]
 
-	@OneToOne(() => Group, (group) => group.country, {})
+	@OneToOne(() => Group, (group) => group.country)
 	@JoinColumn()
 	group: Group
 

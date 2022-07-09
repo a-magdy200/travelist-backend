@@ -27,14 +27,14 @@ export class Group extends BaseEntity {
 	@Column()
 	cover_picture: string
 
-	@OneToOne(() => Country, (country) => country.group, {})
+	@OneToOne(() => Country, (country) => country.group)
 	@JoinColumn()
 	country: Country
 
-	@OneToMany(() => Post, (post) => post.group, {})
+	@OneToMany(() => Post, (post) => post.group)
 	posts: Post[]
 
-	@ManyToMany(() => User, (user) => user.groups, {})
+	@ManyToMany(() => User, (user) => user.groups)
 	@JoinTable()
 	followers: User[]
 

@@ -74,7 +74,7 @@ export class Cycle extends BaseEntity {
 	@Length(3)
 	return_arrival_location?: string
 
-	@ManyToMany(() => Traveler, (traveler) => traveler.cycles, {})
+	@ManyToMany(() => Traveler, (traveler) => traveler.cycles)
 	@JoinTable()
 	travelers?: Traveler[]
 }
