@@ -9,13 +9,14 @@ import {
 	JoinTable,
 	CreateDateColumn,
 	UpdateDateColumn,
-	JoinColumn,
-} from 'typeorm'
+	JoinColumn, DeleteDateColumn
+} from "typeorm";
 import { Company } from './Company.entity'
 import { Cycle } from './Cycle.entity'
 import { Hotel } from './Hotel.entity'
 import { Transportation } from './Transportation.entity'
 import { Country } from './Country.entity'
+import { IsBoolean, IsInt, IsNumber, IsString, Length } from "class-validator";
 
 @Entity()
 export class Program extends BaseEntity {
@@ -23,34 +24,38 @@ export class Program extends BaseEntity {
 	id?: number
 
 	@Column()
+	@Length(3)
+	@IsString()
 	name?: string
 
 	@Column()
+	@Length(10)
+	@IsString()
 	description?: string
 
-	@Column()
+	@Column({default: ''})
+	@IsString()
 	cover_picture?: string
 
 	@Column({ nullable: false, type: 'float', default: 0.0 })
+	@IsNumber()
 	price?: number
 
-	@Column({ type: 'boolean', default: true })
+	@Column({ type: 'boolean', default: false })
+	@IsBoolean()
 	is_Recurring?: boolean
 
 	@Column({ type: 'int', default: 0 })
+	@IsInt()
 	total_rating_value?: number
 
 	@Column({ type: 'int', default: 0 })
+	@IsInt()
 	total_rating_users?: number
 
 	@Column({ type: 'int', default: 0 })
+	@IsNumber()
 	average_rating?: number
-
-	@CreateDateColumn({ name: 'created_at' })
-	createdAt?: Date
-
-	@UpdateDateColumn({ name: 'updated_at' })
-	updatedAt?: Date
 
 	@ManyToOne(() => Company, (company) => company.programs, {
 		onDelete: 'CASCADE',
@@ -79,4 +84,13 @@ export class Program extends BaseEntity {
 	@ManyToMany((hotel) => Hotel, { onDelete: 'CASCADE' })
 	@JoinTable()
 	hotels?: Hotel[]
+
+	@CreateDateColumn()
+	created_at?: Date
+
+	@UpdateDateColumn()
+	updated_at?: Date
+
+	@DeleteDateColumn()
+	deleted_at?: Date
 }

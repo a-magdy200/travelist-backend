@@ -1,7 +1,7 @@
 import {
 	BaseEntity,
 	Column,
-	CreateDateColumn,
+	CreateDateColumn, DeleteDateColumn,
 	Entity,
 	JoinColumn,
 	JoinTable,
@@ -10,11 +10,11 @@ import {
 	OneToMany,
 	OneToOne,
 	PrimaryGeneratedColumn,
-	UpdateDateColumn,
-} from 'typeorm'
+	UpdateDateColumn
+} from "typeorm";
 import { Cycle } from './Cycle.entity'
 import { Group } from './Group.entity'
-import { IsInt } from 'class-validator'
+import { IsInt, IsString, Length } from "class-validator";
 import { User } from './User.entity'
 import { Hotel } from './Hotel.entity'
 import { Program } from './Program.entity'
@@ -25,6 +25,8 @@ export class Country extends BaseEntity {
 	id?: number
 
 	@Column()
+	@Length(3)
+	@IsString()
 	name?: string
 
 	@ManyToOne(() => Program, (program) => program.country)
@@ -53,9 +55,12 @@ export class Country extends BaseEntity {
 	@IsInt()
 	ratings_count: number
 
-	@CreateDateColumn({ name: 'created_at' })
-	createdAt?: Date
+	@CreateDateColumn()
+	created_at?: Date
 
-	@UpdateDateColumn({ name: 'updated_at' })
-	updatedAt?: Date
+	@UpdateDateColumn()
+	updated_at?: Date
+
+	@DeleteDateColumn()
+	deleted_at?: Date
 }

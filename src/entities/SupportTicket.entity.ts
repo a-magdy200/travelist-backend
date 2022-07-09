@@ -8,7 +8,7 @@ import {
 } from "typeorm";
 import { Chat } from "./Chat.entity";
 import { MessageStatusEnum } from "../helpers/enums/messageStatus.enum";
-import { IsEmail, IsEnum, Length } from "class-validator";
+import { IsEmail, IsEnum, IsString, Length } from "class-validator";
 import { User } from "./User.entity";
 import { SupportTicketStatusEnum } from "../helpers/enums/supportTicketStatus.enum";
 import { SupportTicketResponse } from "./SupportTicketResponse.entity";
@@ -20,6 +20,7 @@ export class SupportTicket extends BaseEntity {
 
   @Column()
   @Length(3)
+  @IsString()
   subject: string;
 
   @Column()
@@ -37,6 +38,7 @@ export class SupportTicket extends BaseEntity {
   @Column({
     type: "longtext"
   })
+  @IsString()
   content: string;
 
   @ManyToOne(() => User, user => user.tickets, {nullable: true})

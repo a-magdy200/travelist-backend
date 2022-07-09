@@ -11,7 +11,7 @@ import {
 	OneToMany, CreateDateColumn, UpdateDateColumn, DeleteDateColumn
 } from "typeorm";
 import { User } from './User.entity'
-import { IsDate, IsEnum, Length } from 'class-validator'
+import { IsBoolean, IsDate, IsEnum, IsString, Length } from "class-validator";
 import { Company } from './Company.entity'
 import { Post } from './Post.entity'
 import { GenderEnum } from '../helpers/enums/gender.enum'
@@ -26,6 +26,7 @@ export class Traveler extends BaseEntity {
 
 	@Column({ unique: true, nullable: true })
 	@Length(14, 14)
+	@IsString()
 	national_id?: string
 
 	@Column({
@@ -41,6 +42,7 @@ export class Traveler extends BaseEntity {
 	date_of_birth?: Date
 
 	@Column({ default: false, type: 'boolean' })
+	@IsBoolean()
 	is_guide?: boolean
 
 	@ManyToMany(() => Company, (company) => company.rating_travelers)

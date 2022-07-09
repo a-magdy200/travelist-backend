@@ -1,7 +1,7 @@
 import {
 	BaseEntity,
 	Column,
-	CreateDateColumn,
+	CreateDateColumn, DeleteDateColumn,
 	Entity, JoinColumn,
 	ManyToOne,
 	PrimaryGeneratedColumn,
@@ -34,7 +34,11 @@ export class FriendRequest extends BaseEntity {
 	receiver: Traveler
 
 	@CreateDateColumn()
-	created_at: Date
+	created_at?: Date
+
 	@UpdateDateColumn()
-	updated_at: Date
+	updated_at?: Date
+
+	@DeleteDateColumn()
+	deleted_at?: Date
 }

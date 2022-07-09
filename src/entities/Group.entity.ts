@@ -15,6 +15,7 @@ import {
 import { Country } from './Country.entity'
 import { User } from './User.entity'
 import { Post } from './Post.entity'
+import { IsInt, IsString } from "class-validator";
 
 @Entity()
 export class Group extends BaseEntity {
@@ -22,9 +23,13 @@ export class Group extends BaseEntity {
 	id: number
 
 	@Column({ type: 'int', default: 0 })
+	@IsInt()
 	followers_count: number
 
-	@Column()
+	@Column({
+		default: ''
+	})
+	@IsString()
 	cover_picture: string
 
 	@OneToOne(() => Country, (country) => country.group)

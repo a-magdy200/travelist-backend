@@ -8,7 +8,7 @@ import {
 } from "typeorm";
 import { User } from "./User.entity";
 import { NotificationEnum } from "../helpers/enums/notification.enum";
-import { IsEnum, Length } from "class-validator";
+import { IsEnum, IsString, Length } from "class-validator";
 import { NotificationStatusEnum } from "../helpers/enums/notificationStatus.enum";
 
 @Entity()
@@ -26,10 +26,12 @@ export class Notification extends BaseEntity {
 
   @Column()
   @Length(3)
+  @IsString()
   title: string;
 
   @Column()
   @Length(3)
+  @IsString()
   content: string;
 
   @Column({

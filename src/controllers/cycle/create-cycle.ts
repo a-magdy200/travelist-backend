@@ -20,19 +20,11 @@ export const createCycle=async (req: Request, res: Response)=> {
   const program = await AppDataSource.getRepository(Program).findOneBy({ id: bodyObject.programId, })
   if(program?.is_Recurring)
    { const cycle = await AppDataSource.manager.create<Cycle>(Cycle,validation);
-    const departureCountry = await AppDataSource.getRepository(Country).findOneBy({ id: bodyObject.departureLocationId, })
-    const arrivalCountry = await AppDataSource.getRepository(Country).findOneBy({ id: bodyObject.arrivalLocationId, })
-    const returnCountry = await AppDataSource.getRepository(Country).findOneBy({ id: bodyObject.returnLocationId, })
-    const returnArrivalCountry = await AppDataSource.getRepository(Country).findOneBy({ id: bodyObject.returnArrivalLocationId, })
-    if( departureCountry && arrivalCountry && returnCountry&& returnArrivalCountry && program)
-    {
-       cycle.program=program;
-       cycle.departure_location=departureCountry;
-       cycle.arrival_location=arrivalCountry;
-       cycle.return_location=returnCountry;
-       cycle.return_arrival_location=returnArrivalCountry;
+if (program) {
+  cycle.program = program;
+}
 
-    }
+
     await cycle.save();
     res.json({
       success: true,

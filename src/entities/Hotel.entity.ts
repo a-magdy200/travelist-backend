@@ -9,7 +9,7 @@ import {
 	PrimaryGeneratedColumn,
 	UpdateDateColumn,
 } from 'typeorm'
-import { Length } from 'class-validator'
+import { IsInt, IsString, Length } from "class-validator";
 import { Country } from './Country.entity'
 
 @Entity()
@@ -19,13 +19,16 @@ export class Hotel extends BaseEntity {
 
 	@Column()
 	@Length(3)
+	@IsString()
 	name?: string
 
 	@Column()
 	@Length(3)
+	@IsString()
 	address?: string
 
 	@Column({ type: 'int' })
+	@IsInt()
 	stars?: number
 
 	@ManyToOne(() => Country, (country) => country.hotels)
@@ -33,6 +36,7 @@ export class Hotel extends BaseEntity {
 	country: Country
 
 	@Column({ default: '' })
+	@IsString()
 	cover_picture?: string
 
 	@CreateDateColumn()

@@ -9,7 +9,7 @@ import {
 	UpdateDateColumn
 } from "typeorm";
 import { Program } from './Program.entity'
-import { Length } from 'class-validator'
+import { IsString, Length } from "class-validator";
 
 @Entity()
 export class Transportation extends BaseEntity {
@@ -18,6 +18,7 @@ export class Transportation extends BaseEntity {
 
 	@Column()
 	@Length(3)
+	@IsString()
 	name?: string
 
 	@OneToMany(() => Program, (program) => program.transportation)

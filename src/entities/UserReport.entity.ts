@@ -7,7 +7,7 @@ import {
 	JoinTable, OneToMany, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, ManyToOne, JoinColumn
 } from "typeorm";
 import { Group } from './Group.entity'
-import { IsEnum, Length } from 'class-validator'
+import { IsEnum, IsString, Length } from "class-validator";
 import { UserTypeEnum } from '../helpers/enums/userType.enum'
 import { Notification } from "./notification.entity";
 import { ChatMessage } from "./ChatMessage.entity";
@@ -25,6 +25,7 @@ export class UserReport extends BaseEntity {
 	@Column({
 		type: "longtext"
 	})
+	@IsString()
 	reason: string;
 
 	@ManyToOne(() => User, user => user.reports)

@@ -8,7 +8,7 @@ import {
 } from "typeorm";
 import { Chat } from "./Chat.entity";
 import { MessageStatusEnum } from "../helpers/enums/messageStatus.enum";
-import { IsEnum } from "class-validator";
+import { IsEnum, IsString, Length } from "class-validator";
 import { User } from "./User.entity";
 
 @Entity()
@@ -31,6 +31,8 @@ export class ChatMessage extends BaseEntity {
   @Column({
     type: "longtext"
   })
+  @Length(1)
+  @IsString()
   content: string;
 
   @ManyToOne(() => User, user => user.messages)

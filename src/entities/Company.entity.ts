@@ -13,7 +13,7 @@ import {
 } from "typeorm";
 import { Program } from './Program.entity'
 import { User } from './User.entity'
-import { IsInt, IsNumber, Length } from 'class-validator'
+import { IsInt, IsNumber, IsString, Length } from "class-validator";
 import { Traveler } from './Traveler.entity'
 
 @Entity()
@@ -23,7 +23,8 @@ export class Company extends BaseEntity {
 
 
 	@Column({ default: '' })
-	@Length(3)
+	@Length(10)
+	@IsString()
 	description?: string
 
 	@Column({ default: 0, type: 'int' })
@@ -43,6 +44,7 @@ export class Company extends BaseEntity {
 	rating_travelers: Traveler[]
 
 	@Column({ default: '' })
+	@IsString()
 	cover_picture?: string
 
 	@OneToOne(() => User)

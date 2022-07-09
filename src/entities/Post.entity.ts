@@ -9,7 +9,7 @@ import {
 	PrimaryGeneratedColumn,
 	UpdateDateColumn,
 } from 'typeorm'
-import { IsDate, IsEnum, Length } from 'class-validator'
+import { IsDate, IsEnum, IsString, Length } from "class-validator";
 import { Group } from './Group.entity'
 import { Traveler } from './Traveler.entity'
 import { PostStatusType } from '../helpers/types/postStatus.type'
@@ -22,6 +22,7 @@ export class Post extends BaseEntity {
 
 	@Column({ type: 'longtext' })
 	@Length(10)
+	@IsString()
 	content: string
 
 	@Column({ type: 'enum', enum: PostStatusEnum })

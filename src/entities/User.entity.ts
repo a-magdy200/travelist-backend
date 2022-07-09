@@ -7,7 +7,7 @@ import {
 	JoinTable, OneToMany, CreateDateColumn, UpdateDateColumn, DeleteDateColumn
 } from "typeorm";
 import { Group } from './Group.entity'
-import { IsEnum, Length } from 'class-validator'
+import { IsBoolean, IsEmail, IsEnum, IsString, Length } from "class-validator";
 import { UserTypeEnum } from '../helpers/enums/userType.enum'
 import { Notification } from "./notification.entity";
 import { ChatMessage } from "./ChatMessage.entity";
@@ -26,18 +26,24 @@ export class User extends BaseEntity {
 
 	@Column()
 	@Length(3)
+	@IsString()
 	name?: string
 
 	@Column({ unique: true })
+	@IsEmail()
 	email?: string
 
 	@Column()
+	@Length(6)
+	@IsString()
 	password?: string
 
 	@Column()
+	@IsString()
 	address?: string
 
 	@Column({ default: '' })
+	@IsString()
 	profile_picture?: string
 
 	@Column({
@@ -52,6 +58,7 @@ export class User extends BaseEntity {
 		type: "boolean",
 		default: false
 	})
+	@IsBoolean()
 	is_verified: boolean;
 
 	@Column({
