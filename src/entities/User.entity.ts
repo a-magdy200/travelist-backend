@@ -10,6 +10,8 @@ import { Group } from './Group.entity'
 import { IsEnum, Length } from 'class-validator'
 import { UserTypeEnum } from '../helpers/enums/userType.enum'
 import { Notification } from "./notification.entity";
+import { ChatMessage } from "./ChatMessage.entity";
+import { ChatUser } from "./ChatUser.entity";
 
 export type UserType = 'traveler' | 'company'
 
@@ -44,6 +46,12 @@ export class User extends BaseEntity {
 
 	@OneToMany(() => Notification, notification => notification.user)
 	notifications: Notification[];
+
+	@OneToMany(() => ChatMessage, message => message.user)
+	messages: ChatMessage[];
+
+	@ManyToMany(() => ChatUser, chat => chat.users)
+	chats: ChatUser[];
 
 	@ManyToMany(() => Group, (group) => group.followers, {})
 	@JoinTable()
