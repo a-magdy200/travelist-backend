@@ -12,6 +12,8 @@ import { UserTypeEnum } from '../helpers/enums/userType.enum'
 import { Notification } from "./notification.entity";
 import { ChatMessage } from "./ChatMessage.entity";
 import { ChatUser } from "./ChatUser.entity";
+import { SupportTicket } from "./SupportTicket.entity";
+import { SupportTicketResponse } from "./SupportTicketResponse.entity";
 
 export type UserType = 'traveler' | 'company'
 
@@ -46,6 +48,12 @@ export class User extends BaseEntity {
 
 	@OneToMany(() => Notification, notification => notification.user)
 	notifications: Notification[];
+
+	@OneToMany(() => SupportTicket, supportTicket => supportTicket.user)
+	tickets: SupportTicket[];
+
+	@OneToMany(() => SupportTicketResponse, supportTicketResponse => supportTicketResponse.user)
+	supportTicketsResponses: SupportTicketResponse[];
 
 	@OneToMany(() => ChatMessage, message => message.user)
 	messages: ChatMessage[];

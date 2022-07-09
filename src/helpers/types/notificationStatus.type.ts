@@ -1,3 +1,3 @@
-export type NotificationStatusTypes =
+export type NotificationStatusType =
   'read' |
   'unread';

@@ -1,13 +1,13 @@
 import {
 	BaseEntity,
 	Column,
-	CreateDateColumn,
+	CreateDateColumn, DeleteDateColumn,
 	Entity,
 	ManyToOne,
 	OneToMany,
 	PrimaryGeneratedColumn,
-	UpdateDateColumn,
-} from 'typeorm'
+	UpdateDateColumn
+} from "typeorm";
 import { Program } from './Program.entity'
 import { Length } from 'class-validator'
 
@@ -23,9 +23,12 @@ export class Transportation extends BaseEntity {
 	@OneToMany(() => Program, (program) => program.transportation, {})
 	programs?: Program[]
 
-	@CreateDateColumn({ name: 'created_at' })
-	createdAt?: Date
+	@CreateDateColumn()
+	created_at?: Date
 
-	@UpdateDateColumn({ name: 'updated_at' })
-	updatedAt?: Date
+	@UpdateDateColumn()
+	updated_at?: Date
+
+	@DeleteDateColumn()
+	deleted_at?: Date
 }

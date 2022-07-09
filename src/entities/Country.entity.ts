@@ -28,6 +28,7 @@ export class Country extends BaseEntity {
 	name?: string
 
 	@ManyToOne(() => Program, (program) => program.country, {})
+	@JoinColumn()
 	programs: Program[]
 
 	@ManyToMany(() => Program, (program) => program.destinations, {})

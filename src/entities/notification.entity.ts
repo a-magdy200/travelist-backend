@@ -2,7 +2,7 @@ import {
   BaseEntity, Column,
   CreateDateColumn,
   DeleteDateColumn,
-  Entity, ManyToOne,
+  Entity, JoinColumn, ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from "typeorm";
@@ -40,6 +40,7 @@ export class Notification extends BaseEntity {
   type: NotificationEnum;
 
   @ManyToOne(() => User, user => user.notifications)
+  @JoinColumn()
   user: User
 
   @CreateDateColumn()

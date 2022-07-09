@@ -55,6 +55,7 @@ export class Program extends BaseEntity {
 	@ManyToOne(() => Company, (company) => company.programs, {
 		onDelete: 'CASCADE',
 	})
+	@JoinColumn()
 	company?: Company
 
 	@OneToMany(() => Cycle, (cycle) => cycle.program, { onDelete: 'CASCADE' })
@@ -65,6 +66,7 @@ export class Program extends BaseEntity {
 		(transportation) => transportation.programs,
 		{ onDelete: 'CASCADE' }
 	)
+	@JoinColumn()
 	transportation?: Transportation
 
 	@OneToMany(() => Country, (country) => country.programs, {})

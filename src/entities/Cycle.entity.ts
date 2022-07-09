@@ -7,8 +7,8 @@ import {
 	ManyToMany,
 	JoinTable,
 	CreateDateColumn,
-	UpdateDateColumn,
-} from 'typeorm'
+	UpdateDateColumn, JoinColumn
+} from "typeorm";
 import { IsDate, IsIn, IsInt, Length } from 'class-validator'
 import { Program } from './Program.entity'
 import { User } from './User.entity'
@@ -55,6 +55,7 @@ export class Cycle extends BaseEntity {
 	@ManyToOne(() => Program, (program) => program.cycles, {
 		onUpdate: 'CASCADE',
 	})
+	@JoinColumn()
 	program?: Program
 
 	@Column()

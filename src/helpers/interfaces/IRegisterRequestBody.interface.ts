@@ -1,5 +1,5 @@
 import { GenderType } from '../types/gender.type'
-import { Type } from '../types/userType.type'
+import { UserType } from '../types/user.type'
 
 export interface IRegisterRequestBody {
 	name: string
@@ -7,7 +7,7 @@ export interface IRegisterRequestBody {
 	password: string
 	address: string
 	profile_picture: string
-	type: Type
+	type: UserType
 	national_id: string
 	gender: GenderType
 	date_of_birth: Date

@@ -12,7 +12,7 @@ import {
 import { IsDate, IsEnum, Length } from 'class-validator'
 import { Group } from './Group.entity'
 import { Traveler } from './Traveler.entity'
-import { PostStatus } from '../helpers/types/postStatus.type'
+import { PostStatusType } from '../helpers/types/postStatus.type'
 import { PostStatusEnum } from '../helpers/enums/postStatus.enum'
 
 @Entity()
@@ -26,7 +26,7 @@ export class Post extends BaseEntity {
 
 	@Column({ type: 'enum', enum: PostStatusEnum })
 	@IsEnum(PostStatusEnum)
-	status: PostStatus
+	status: PostStatusType
 
 	@CreateDateColumn()
 	created_at: Date

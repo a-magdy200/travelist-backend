@@ -2,11 +2,11 @@ import {
 	BaseEntity,
 	Column,
 	CreateDateColumn,
-	Entity,
+	Entity, JoinColumn,
 	ManyToOne,
 	PrimaryGeneratedColumn,
-	UpdateDateColumn,
-} from 'typeorm'
+	UpdateDateColumn
+} from "typeorm";
 import { Traveler } from './Traveler.entity'
 import { FriendRequestStatusEnum } from '../helpers/enums/friendRequestStatus.enum'
 import { IsEnum } from 'class-validator'
@@ -26,9 +26,11 @@ export class FriendRequest extends BaseEntity {
 	status: FriendRequestStatusType
 
 	@ManyToOne(() => Traveler, (traveler) => traveler.sent_requests, {})
+	@JoinColumn()
 	sender: Traveler
 
 	@ManyToOne(() => Traveler, (traveler) => traveler.received_requests, {})
+	@JoinColumn()
 	receiver: Traveler
 
 	@CreateDateColumn()

@@ -1,1 +1,1 @@
-export type PostStatus = 'active' | 'inactive' | 'reported' | 'closed'
+export type PostStatusType = 'active' | 'inactive' | 'reported' | 'closed'

@@ -10,30 +10,23 @@ import { Chat } from "./Chat.entity";
 import { MessageStatusEnum } from "../helpers/enums/messageStatus.enum";
 import { IsEnum } from "class-validator";
 import { User } from "./User.entity";
+import { SupportTicket } from "./SupportTicket.entity";
 
 @Entity()
-export class ChatMessage extends BaseEntity {
+export class SupportTicketResponse extends BaseEntity {
   @PrimaryGeneratedColumn()
   id?: number
-
-  @ManyToOne(() => Chat, chat => chat.messages)
-  @JoinColumn()
-  chat: Chat[];
-
-  @Column({
-    type: "enum",
-    enum: MessageStatusEnum,
-    default: MessageStatusEnum.UNREAD
-  })
-  @IsEnum(MessageStatusEnum)
-  status: MessageStatusEnum;
 
   @Column({
     type: "longtext"
   })
   content: string;
 
-  @ManyToOne(() => User, user => user.messages)
+  @ManyToOne(() => SupportTicket, supportTicket => supportTicket.responses)
+  @JoinColumn()
+  ticket: SupportTicket;
+
+  @ManyToOne(() => User, user => user.supportTicketsResponses)
   @JoinColumn()
   user: User;
 
