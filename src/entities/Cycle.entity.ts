@@ -53,7 +53,7 @@ export class Cycle extends BaseEntity {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt?: Date;
   
-  @ManyToOne(() => Program, (program) => program.cycles,{onUpdate: 'CASCADE'})
+  @ManyToOne(() => Program, (program) => program.cycles,{onUpdate: 'CASCADE',eager: true })
   program?: Program
 
   @ManyToOne(() => Country, (country) => country.cycles,{onUpdate: 'CASCADE'})
