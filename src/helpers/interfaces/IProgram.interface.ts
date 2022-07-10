@@ -9,6 +9,6 @@ export interface IProgramInterface {
 	description: string
 	price: string
 	is_Recurring?: boolean
-	transportation?: ITransportationInterface
+	transportationId?: string
 	hotels?: string | string[]
 }

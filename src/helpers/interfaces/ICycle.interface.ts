@@ -10,6 +10,6 @@ export interface ICycleInterface {
 	departure_location?: string
 	arrival_location?: string
 	return_location?: string
-	return_arrival_location?: string
+	return_arrival_location?:string
 	programId: number
 }

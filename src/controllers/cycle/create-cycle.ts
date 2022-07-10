@@ -12,6 +12,7 @@ import { sendSuccessResponse } from "../../helpers/responses/sendSuccessResponse
 
 export const createCycle = async (req: Request, res: Response) => {
 	try {
+		console.log(req.body)
 		const validation: ICycleInterface = await cycleValidation.validateAsync(req.body, {
 			abortEarly: false,
 		})
