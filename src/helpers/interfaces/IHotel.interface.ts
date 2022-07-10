@@ -1,5 +1,4 @@
 export interface IHotelInterface {
-    id?:number;
-    name?:string;
- }
-  
+	id?: number
+	name?: string
+}

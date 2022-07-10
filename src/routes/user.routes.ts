@@ -1,10 +1,13 @@
 import { Router } from 'express'
 const router = Router()
 const multer = require('multer')
-// import {viewUserProfile} from "../controllers/user_controller/UserController";
-import { updateUserPassword } from '../controllers/user_controller/UserController'
-import { editUserProfile } from '../controllers/user_controller/UserController'
+import { updateUserPassword, viewUserProfile, editUserProfile, uploadProfilePicture } from '../controllers/user_controller/UserController'
+import { storage } from "../helpers/common/storage-customizer";
+import { USER_DIRECTORY } from "../helpers/constants/directories";
+const upload = multer({ storage: storage(USER_DIRECTORY) })
 
 router.patch('/:id', updateUserPassword)
 router.put('/:id', editUserProfile)
+router.put('/:id/profile_picture', upload.single("profile_picture"), uploadProfilePicture)
+router.get('/:id', viewUserProfile)
 export default router

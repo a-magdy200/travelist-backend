@@ -1,37 +1,33 @@
 import { Request, Response } from 'express'
 import { AppDataSource } from '../../config/database/data-source'
 import { Hotel } from '../../entities/Hotel.entity'
-import { NotFoundResponse } from '../../helpers/responses/404.response'
+import { sendNotFoundResponse } from '../../helpers/responses/404.response'
 import { hotelValidation } from '../../helpers/validations/hotel.validation'
 import { formatValidationErrors } from '../../helpers/functions/formatValidationErrors'
 import { UPLOAD_DIRECTORY } from '../../helpers/constants/directories'
 import { unlinkSync } from 'fs'
+import { sendErrorResponse } from '../../helpers/responses/sendErrorResponse'
+import { StatusCodes } from '../../helpers/constants/statusCodes'
+import { sendSuccessResponse } from "../../helpers/responses/sendSuccessResponse";
 
 const listHotels = async (req: Request, res: Response) => {
-	const hotels: Hotel[] = await AppDataSource.manager.find<Hotel>(Hotel, {
-		// withDeleted: true, // to return soft deleted records
-	})
-	res.json({
-		success: true,
-		data: hotels,
-	})
+	const hotels: Hotel[] = await AppDataSource.manager.find<Hotel>(Hotel)
+	sendSuccessResponse<Hotel[]>(res, hotels);
 }
 
 const showHotel = async (req: Request, res: Response) => {
 	const id: number | undefined = +req.params.id
-	const hotel: Hotel | null = await AppDataSource.manager.findOneBy<Hotel>(
+	const hotel: Hotel | null = await AppDataSource.manager.findOne<Hotel>(
 		Hotel,
 		{
-			id,
+			where: {id,},
+			relations: ["reviews", "country", "programs", "programs.company"]
 		}
 	)
 	if (hotel) {
-		res.json({
-			success: true,
-			data: hotel,
-		})
+		sendSuccessResponse<Hotel>(res, hotel);
 	} else {
-		res.status(404).json(NotFoundResponse)
+		sendNotFoundResponse(res)
 	}
 }
 
@@ -41,7 +37,7 @@ const updateHotel = async (req: Request, res: Response) => {
 		const validation: Hotel = await hotelValidation.validateAsync(req.body, {
 			abortEarly: false,
 		})
-		const updateResult = await AppDataSource.manager.update<Hotel>(
+		await AppDataSource.manager.update<Hotel>(
 			Hotel,
 			{
 				id,
@@ -49,24 +45,28 @@ const updateHotel = async (req: Request, res: Response) => {
 			validation
 		)
 
-		res.json({
-			success: updateResult.affected === 1,
-		})
+		sendSuccessResponse(res);
 	} catch (error: any) {
-		res.json(formatValidationErrors(error))
+		sendErrorResponse(
+			formatValidationErrors(error),
+			res,
+			StatusCodes.NOT_ACCEPTABLE
+		)
 	}
 }
 const deleteHotel = async (req: Request, res: Response) => {
 	try {
 		const id: number | undefined = +req.params.id
-		const updateResult = await AppDataSource.manager.softDelete<Hotel>(Hotel, {
+		await AppDataSource.manager.softDelete<Hotel>(Hotel, {
 			id,
 		})
-		res.json({
-			success: updateResult.affected === 1,
-		})
+		sendSuccessResponse(res);
 	} catch (error: any) {
-		res.json(formatValidationErrors(error))
+		sendErrorResponse(
+			formatValidationErrors(error),
+			res,
+			StatusCodes.NOT_ACCEPTABLE
+		)
 	}
 }
 const createHotel = async (req: Request, res: Response) => {
@@ -76,12 +76,13 @@ const createHotel = async (req: Request, res: Response) => {
 		})
 		const hotel = await AppDataSource.manager.create<Hotel>(Hotel, validation)
 		await hotel.save()
-		res.json({
-			success: true,
-			data: hotel,
-		})
+		sendSuccessResponse<Hotel>(res, hotel);
 	} catch (error: any) {
-		res.json(formatValidationErrors(error))
+		sendErrorResponse(
+			formatValidationErrors(error),
+			res,
+			StatusCodes.NOT_ACCEPTABLE
+		)
 	}
 }
 const updateHotelCover = async (req: Request, res: Response) => {
@@ -104,12 +105,9 @@ const updateHotelCover = async (req: Request, res: Response) => {
 		)
 		hotel.cover_picture = path
 		await hotel.save()
-		res.json({
-			success: true,
-			path,
-		})
+		sendSuccessResponse(res)
 	} else {
-		res.json(NotFoundResponse)
+		sendNotFoundResponse(res)
 	}
 }
 export {
