@@ -41,7 +41,7 @@ export class User extends BaseEntity {
 	@IsEmail()
 	email: string
 
-	@Column()
+	@Column({select: false})
 	@Length(6)
 	@IsString()
 	password: string
@@ -82,11 +82,9 @@ export class User extends BaseEntity {
 	post_reports: PostReport[]
 
 	@OneToOne(() => Traveler, (traveler) => traveler.user)
-	@JoinColumn()
 	traveler: Traveler
 
 	@OneToOne(() => Company, (company) => company.user)
-	@JoinColumn()
 	company: Company
 
 	@OneToMany(() => Notification, (notification) => notification.user)

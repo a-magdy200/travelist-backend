@@ -1,4 +1,4 @@
-import { Request, response, Response } from 'express'
+import { Request, Response } from 'express'
 import e, { RequestHandler } from 'express'
 import { Company } from '../../entities/Company.entity'
 import { AppDataSource } from '../../config/database/data-source'
@@ -11,6 +11,7 @@ import { getUserIdFromToken } from '../../helpers/functions/getUserIdFromToken'
 import { sendSuccessResponse } from '../../helpers/responses/sendSuccessResponse'
 import { sendErrorResponse } from '../../helpers/responses/sendErrorResponse'
 import { StatusCodes } from '../../helpers/constants/statusCodes'
+import { User } from "../../entities/User.entity";
 const listCompanies = async (req: Request, res: Response) => {
 	const companies: Company[] = await AppDataSource.manager.find<Company>(
 		Company,
@@ -22,30 +23,29 @@ const listCompanies = async (req: Request, res: Response) => {
 const viewCompanyProfile: RequestHandler = async (req, res) => {
 	const company = await AppDataSource.getRepository(Company).findOne({
 		where: {
-			id: parseInt(req.params.id),
+			id: parseInt(req.params.id, 10),
 		},
 		relations: {
 			user: true,
 		},
 	})
-
 	const userId = getUserIdFromToken(req, res)
 	// view My company profile
 	if (company) {
-		if (company?.user.id == userId) {
+		// if (company?.user.id == userId) {
 			sendSuccessResponse<Company>(res, company)
-		} else {
-			res.json({
-				success: true,
-				// data: [
-				// 	company?.description,
-				// 	company?.programs,
-				// 	company?.cover_picture,
-				// 	company?.rate,
-				// ],
-			})
-			// TODO:: fix this
-		}
+		// } else {
+		// 	res.json({
+		// 		success: true,
+		// 		// data: [
+		// 		// 	company?.description,
+		// 		// 	company?.programs,
+		// 		// 	company?.cover_picture,
+		// 		// 	company?.rate,
+		// 		// ],
+		// 	})
+		// 	// TODO:: fix this
+		// }
 	} else {
 		sendNotFoundResponse(res, ['There is no company with this id'])
 	}

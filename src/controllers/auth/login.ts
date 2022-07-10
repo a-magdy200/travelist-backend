@@ -14,15 +14,19 @@ export const login = async (req: Request, res: Response) => {
 		const requestBody: ILoginRequestBody = await loginValidation.validateAsync(
 			req.body
 		)
-		const user = await AppDataSource.manager.findOneBy<User>(User, {
-			email: requestBody.email,
+		const existingUser = await AppDataSource.manager.findOne<User>(User, {
+			where: {
+				email: requestBody.email,
+			},
+			select: ['password', 'email']
 		})
-		if (user !== null) {
+		if (existingUser) {
 			const validPassword = await bcrypt.compare(
 				requestBody.password,
-				user.password
+				existingUser.password
 			)
 			if (validPassword) {
+				const user = await AppDataSource.manager.findOneByOrFail(User, {email: requestBody.email});
 				sendAuthenticationResponse(user, res)
 			} else {
 				sendErrorResponse(
