@@ -18,8 +18,8 @@ router.put('/:id', editTravelerProfile)
 router.patch(
 	'/:id',
 	upload.single('profile_picture'),
-	uploadProfilePicture,
-	isAuthenticated
+	isAuthenticated,
+	uploadProfilePicture
 )
 
 export default router
