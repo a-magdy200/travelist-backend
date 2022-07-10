@@ -1,11 +1,13 @@
 import { Request, Response } from 'express'
 import { AppDataSource } from '../../config/database/data-source'
 import { Hotel } from '../../entities/Hotel.entity'
-import { NotFoundResponse } from '../../helpers/responses/404.response'
+import { sendNotFoundResponse } from '../../helpers/responses/404.response'
 import { hotelValidation } from '../../helpers/validations/hotel.validation'
 import { formatValidationErrors } from '../../helpers/functions/formatValidationErrors'
 import { UPLOAD_DIRECTORY } from '../../helpers/constants/directories'
 import { unlinkSync } from 'fs'
+import { sendErrorResponse } from '../../helpers/responses/sendErrorResponse'
+import { StatusCodes } from '../../helpers/constants/statusCodes'
 
 const listHotels = async (req: Request, res: Response) => {
 	const hotels: Hotel[] = await AppDataSource.manager.find<Hotel>(Hotel, {
@@ -31,7 +33,7 @@ const showHotel = async (req: Request, res: Response) => {
 			data: hotel,
 		})
 	} else {
-		res.status(404).json(NotFoundResponse)
+		sendNotFoundResponse(res)
 	}
 }
 
@@ -53,7 +55,11 @@ const updateHotel = async (req: Request, res: Response) => {
 			success: updateResult.affected === 1,
 		})
 	} catch (error: any) {
-		res.json(formatValidationErrors(error))
+		sendErrorResponse(
+			formatValidationErrors(error),
+			res,
+			StatusCodes.NOT_ACCEPTABLE
+		)
 	}
 }
 const deleteHotel = async (req: Request, res: Response) => {
@@ -66,7 +72,11 @@ const deleteHotel = async (req: Request, res: Response) => {
 			success: updateResult.affected === 1,
 		})
 	} catch (error: any) {
-		res.json(formatValidationErrors(error))
+		sendErrorResponse(
+			formatValidationErrors(error),
+			res,
+			StatusCodes.NOT_ACCEPTABLE
+		)
 	}
 }
 const createHotel = async (req: Request, res: Response) => {
@@ -81,7 +91,11 @@ const createHotel = async (req: Request, res: Response) => {
 			data: hotel,
 		})
 	} catch (error: any) {
-		res.json(formatValidationErrors(error))
+		sendErrorResponse(
+			formatValidationErrors(error),
+			res,
+			StatusCodes.NOT_ACCEPTABLE
+		)
 	}
 }
 const updateHotelCover = async (req: Request, res: Response) => {
@@ -109,7 +123,7 @@ const updateHotelCover = async (req: Request, res: Response) => {
 			path,
 		})
 	} else {
-		res.json(NotFoundResponse)
+		sendNotFoundResponse(res)
 	}
 }
 export {

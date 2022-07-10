@@ -9,6 +9,8 @@ import { UPLOAD_DIRECTORY } from '../../helpers/constants/directories'
 import { programValidation } from '../../helpers/validations/program.validation'
 import { formatValidationErrors } from '../../helpers/functions/formatValidationErrors'
 import { IProgramInterface } from '../../helpers/interfaces/IProgram.interface'
+import { sendErrorResponse } from '../../helpers/responses/sendErrorResponse'
+import { StatusCodes } from '../../helpers/constants/statusCodes'
 /*interface ProgramCreateBody {
   name: string;
   description: string;
@@ -72,7 +74,10 @@ export const create = async (req: Request, res: Response) => {
 			data: program,
 		})
 	} catch (error: any) {
-		res.json(formatValidationErrors(error))
-		console.log(formatValidationErrors(error))
+		sendErrorResponse(
+			formatValidationErrors(error),
+			res,
+			StatusCodes.NOT_ACCEPTABLE
+		)
 	}
 }

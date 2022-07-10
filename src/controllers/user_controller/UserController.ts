@@ -2,12 +2,11 @@ import { RequestHandler } from 'express'
 import { User } from '../../entities/User.entity'
 import { Request, Response } from 'express'
 import { AppDataSource } from '../../config/database/data-source'
-import { NotFoundResponse } from '../../helpers/responses/404.response'
 import { userValidation } from '../../helpers/validations/user.validation'
 import { passwordValidation } from '../../helpers/validations/password.validation'
 import { formatValidationErrors } from '../../helpers/functions/formatValidationErrors'
-import { UPLOAD_DIRECTORY } from '../../helpers/constants/directories'
-import { unlinkSync } from 'fs'
+import { sendErrorResponse } from '../../helpers/responses/sendErrorResponse'
+import { StatusCodes } from '../../helpers/constants/statusCodes'
 const viewUserProfile: RequestHandler = async (req, res) => {
 	const user = await AppDataSource.getRepository(User).findOne({
 		where: {
@@ -64,7 +63,11 @@ const editUserProfile = async (req: Request, res: Response) => {
 			success: updateResult.affected === 1,
 		})
 	} catch (error: any) {
-		res.json(formatValidationErrors(error))
+		sendErrorResponse(
+			formatValidationErrors(error),
+			res,
+			StatusCodes.NOT_ACCEPTABLE
+		)
 	}
 }
 const updateUserPassword = async (req: Request, res: Response) => {
@@ -85,7 +88,11 @@ const updateUserPassword = async (req: Request, res: Response) => {
 			success: updateResult.affected === 1,
 		})
 	} catch (error: any) {
-		res.json(formatValidationErrors(error))
+		sendErrorResponse(
+			formatValidationErrors(error),
+			res,
+			StatusCodes.NOT_ACCEPTABLE
+		)
 	}
 }
 

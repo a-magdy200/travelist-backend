@@ -8,6 +8,8 @@ import { Hotel } from '../../entities/Hotel.entity'
 import { In } from 'typeorm'
 import { unlinkSync } from 'fs'
 import { IProgramInterface } from '../../helpers/interfaces/IProgram.interface'
+import { sendErrorResponse } from '../../helpers/responses/sendErrorResponse'
+import { StatusCodes } from '../../helpers/constants/statusCodes'
 
 export const update = async (req: Request, res: Response) => {
 	try {
@@ -63,6 +65,10 @@ export const update = async (req: Request, res: Response) => {
 			})
 		}
 	} catch (error: any) {
-		res.json(formatValidationErrors(error))
+		sendErrorResponse(
+			formatValidationErrors(error),
+			res,
+			StatusCodes.NOT_ACCEPTABLE
+		)
 	}
 }

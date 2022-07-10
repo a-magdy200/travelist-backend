@@ -1,6 +1,7 @@
 import * as dotenv from 'dotenv'
+import { IConfigInterface } from '../helpers/interfaces/IConfig.interface'
 dotenv.config()
-export default () => ({
+export default (): IConfigInterface => ({
 	port: process.env.PORT ? parseInt(process.env.PORT, 10) || 4000 : 4000,
 	database: {
 		host: process.env.DATABASE_HOST,
@@ -12,4 +13,16 @@ export default () => ({
 		name: process.env.DATABASE_NAME,
 	},
 	secret: process.env.SECRET_KEY ?? 'travelist',
+	websiteUrl: process.env.WEBSITE_URL ?? 'http://localhost:3000',
+	email: {
+		host: process.env.EMAIL_HOST,
+		port: process.env.EMAIL_PORT ? parseInt(process.env.EMAIL_PORT, 10) : 465,
+		secure: process.env.EMAIL_IS_SECURE === '1',
+		requireTLS: process.env.EMAIL_REQUIRE_TLS === '1',
+		auth: {
+			user: process.env.EMAIL_AUTH_USER,
+			pass: process.env.EMAIL_AUTH_PASSWORD,
+		},
+		logger: process.env.EMAIL_LOGGER === '1',
+	},
 })

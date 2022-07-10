@@ -2,12 +2,13 @@ import { RequestHandler } from 'express'
 import { Traveler } from '../../entities/Traveler.entity'
 import { Request, Response } from 'express'
 import { AppDataSource } from '../../config/database/data-source'
-import { NotFoundResponse } from '../../helpers/responses/404.response'
+import { sendNotFoundResponse } from '../../helpers/responses/404.response'
 import { travelerValidation } from '../../helpers/validations/traveler.validation'
 import { formatValidationErrors } from '../../helpers/functions/formatValidationErrors'
 import { UPLOAD_DIRECTORY } from '../../helpers/constants/directories'
 import { unlinkSync } from 'fs'
-import { getUserIdFromToken } from '../../helpers/functions/getUserIdFromToken'
+import { sendErrorResponse } from '../../helpers/responses/sendErrorResponse'
+import { StatusCodes } from '../../helpers/constants/statusCodes'
 
 const listTravelers = async (req: Request, res: Response) => {
 	console.log('before find')
@@ -89,7 +90,11 @@ const editTravelerProfile = async (req: Request, res: Response) => {
 			success: updateResult.affected === 1,
 		})
 	} catch (error: any) {
-		res.json(formatValidationErrors(error))
+		sendErrorResponse(
+			formatValidationErrors(error),
+			res,
+			StatusCodes.NOT_ACCEPTABLE
+		)
 	}
 }
 const uploadProfilePicture = async (req: Request, res: Response) => {
@@ -120,7 +125,7 @@ const uploadProfilePicture = async (req: Request, res: Response) => {
 			path,
 		})
 	} else {
-		res.json(NotFoundResponse)
+		sendNotFoundResponse(res)
 	}
 }
 export {

@@ -35,16 +35,16 @@ export class User extends BaseEntity {
 	@Column()
 	@Length(3)
 	@IsString()
-	name?: string
+	name: string
 
 	@Column({ unique: true })
 	@IsEmail()
-	email?: string
+	email: string
 
 	@Column()
 	@Length(6)
 	@IsString()
-	password?: string
+	password: string
 
 	@Column()
 	@IsString()

@@ -4,6 +4,8 @@ import { Request, Response } from 'express'
 import { cycleValidation } from '../../helpers/validations/cycle.validation'
 import { formatValidationErrors } from '../../helpers/functions/formatValidationErrors'
 import { ICycleInterface } from '../../helpers/interfaces/ICycle.interface'
+import { sendErrorResponse } from '../../helpers/responses/sendErrorResponse'
+import { StatusCodes } from '../../helpers/constants/statusCodes'
 
 export const updateCycle = async (req: Request, res: Response) => {
 	try {
@@ -39,7 +41,10 @@ export const updateCycle = async (req: Request, res: Response) => {
 			})
 		}
 	} catch (error: any) {
-		res.json(formatValidationErrors(error))
-		console.log(formatValidationErrors(error))
+		sendErrorResponse(
+			formatValidationErrors(error),
+			res,
+			StatusCodes.NOT_ACCEPTABLE
+		)
 	}
 }

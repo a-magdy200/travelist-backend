@@ -6,6 +6,8 @@ import { Program } from '../../entities/Program.entity'
 import { cycleValidation } from '../../helpers/validations/cycle.validation'
 import { formatValidationErrors } from '../../helpers/functions/formatValidationErrors'
 import { ICycleInterface } from '../../helpers/interfaces/ICycle.interface'
+import { sendErrorResponse } from '../../helpers/responses/sendErrorResponse'
+import { StatusCodes } from '../../helpers/constants/statusCodes'
 
 export const createCycle = async (req: Request, res: Response) => {
 	console.log(req.body)
@@ -37,7 +39,10 @@ export const createCycle = async (req: Request, res: Response) => {
 			})
 		}
 	} catch (error: any) {
-		res.json(formatValidationErrors(error))
-		console.log(formatValidationErrors(error))
+		sendErrorResponse(
+			formatValidationErrors(error),
+			res,
+			StatusCodes.NOT_ACCEPTABLE
+		)
 	}
 }
