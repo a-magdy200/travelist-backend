@@ -44,6 +44,14 @@ await AppDataSource.getRepository(Company).findOne({
 		user: true,
 	},
 })
+// Find with nested relations example
+const cycle = await AppDataSource.getRepository(Cycle).findOne({
+	where: {
+		id
+	},
+	relations: ["program", "program.company", "bookings", "reviews"],
+})
+
 ```
 
 ### Hashing
