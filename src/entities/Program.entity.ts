@@ -88,7 +88,7 @@ export class Program extends BaseEntity {
 	@JoinColumn()
 	transportation?: Transportation
 
-	@OneToMany(() => Country, (country) => country.programs)
+	@ManyToOne(() => Country, (country) => country.programs)
 	@JoinColumn()
 	country: Country
 
