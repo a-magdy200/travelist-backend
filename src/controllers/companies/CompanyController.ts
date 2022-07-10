@@ -21,6 +21,8 @@ const listCompanies = async (req: Request, res: Response) => {
 }
 
 const viewCompanyProfile: RequestHandler = async (req, res) => {
+	// TODO:: get id from token if not exist in params
+	const userId = getUserIdFromToken(req, res)
 	const company = await AppDataSource.getRepository(Company).findOne({
 		where: {
 			id: parseInt(req.params.id, 10),
@@ -29,23 +31,8 @@ const viewCompanyProfile: RequestHandler = async (req, res) => {
 			user: true,
 		},
 	})
-	const userId = getUserIdFromToken(req, res)
-	// view My company profile
 	if (company) {
-		// if (company?.user.id == userId) {
-			sendSuccessResponse<Company>(res, company)
-		// } else {
-		// 	res.json({
-		// 		success: true,
-		// 		// data: [
-		// 		// 	company?.description,
-		// 		// 	company?.programs,
-		// 		// 	company?.cover_picture,
-		// 		// 	company?.rate,
-		// 		// ],
-		// 	})
-		// 	// TODO:: fix this
-		// }
+		sendSuccessResponse<Company>(res, company)
 	} else {
 		sendNotFoundResponse(res, ['There is no company with this id'])
 	}
@@ -53,6 +40,7 @@ const viewCompanyProfile: RequestHandler = async (req, res) => {
 const editCompanyProfile = async (req: Request, res: Response) => {
 	try {
 		const id: number | undefined = +req.params.id
+		// TODO:: get id from token
 		const validation: Company = await companyValidation.validateAsync(
 			req.body,
 			{ abortEarly: false }
@@ -79,6 +67,7 @@ const editCompanyProfile = async (req: Request, res: Response) => {
 }
 const uploadCoverPicture = async (req: Request, res: Response) => {
 	const id: number | undefined = +req.params.id
+	// TODO:: get id from token
 	const company: Company | null =
 		await AppDataSource.manager.findOneBy<Company>(Company, {
 			id,

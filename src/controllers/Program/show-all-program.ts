@@ -1,25 +1,14 @@
 import { Program } from '../../entities/Program.entity'
 import { AppDataSource } from '../../config/database/data-source'
 import { Request, Response } from 'express'
+import { sendSuccessResponse } from "../../helpers/responses/sendSuccessResponse";
 
 export const showAll = async (req: Request, res: Response) => {
-	/* const programs = await AppDataSource.getRepository(Program).find()
-    console.log(programs)
-    if(programs.length==0)
-    res.send("empty programs")
-    else
-    res.json(programs)
-*/
 	const programs: Program[] = await AppDataSource.manager.find<Program>(
 		Program,
 		{
-			relations: {
-				company: true,
-			},
+			relations: ["company", "cycles", "reviews", "hotels", "transportation", "country"],
 		}
 	)
-	res.json({
-		success: true,
-		data: programs,
-	})
+	sendSuccessResponse<Program[]>(res, programs);
 }

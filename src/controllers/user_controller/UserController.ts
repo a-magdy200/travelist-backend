@@ -7,12 +7,14 @@ import { passwordValidation } from '../../helpers/validations/password.validatio
 import { formatValidationErrors } from '../../helpers/functions/formatValidationErrors'
 import { sendErrorResponse } from '../../helpers/responses/sendErrorResponse'
 import { StatusCodes } from '../../helpers/constants/statusCodes'
+import { sendSuccessResponse } from "../../helpers/responses/sendSuccessResponse";
 const viewUserProfile: RequestHandler = async (req, res) => {
-	const user = await AppDataSource.getRepository(User).findOne({
-		where: {
+	// TODO:: get id from token
+	const user = await AppDataSource.getRepository(User).findOneByOrFail(
+		{
 			id: parseInt(req.params.id),
-		},
 	})
+	sendSuccessResponse<User>(res, user);
 }
 // const userFromToken = {
 // 	id: 3,
@@ -48,6 +50,7 @@ const viewUserProfile: RequestHandler = async (req, res) => {
 const editUserProfile = async (req: Request, res: Response) => {
 	try {
 		const id: number | undefined = +req.params.id
+		// TODO:: get id from token
 		const validation: User = await userValidation.validateAsync(req.body, {
 			abortEarly: false,
 		})
@@ -73,20 +76,19 @@ const editUserProfile = async (req: Request, res: Response) => {
 const updateUserPassword = async (req: Request, res: Response) => {
 	try {
 		const id: number | undefined = +req.params.id
+		// TODO:: get id from token
 		const password_validation: User = await passwordValidation.validateAsync(
 			req.body,
 			{ abortEarly: false }
 		)
-		const updateResult = await AppDataSource.manager.update<User>(
+		await AppDataSource.manager.update<User>(
 			User,
 
 			id,
-			{ password: req.body.password }
+			{ password: password_validation.password }
 		)
 
-		res.json({
-			success: updateResult.affected === 1,
-		})
+		sendSuccessResponse(res)
 	} catch (error: any) {
 		sendErrorResponse(
 			formatValidationErrors(error),

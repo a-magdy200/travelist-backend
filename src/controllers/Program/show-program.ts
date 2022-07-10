@@ -1,6 +1,8 @@
 import { Program } from '../../entities/Program.entity'
 import { AppDataSource } from '../../config/database/data-source'
 import { Request, Response } from 'express'
+import { sendSuccessResponse } from "../../helpers/responses/sendSuccessResponse";
+import { sendNotFoundResponse } from "../../helpers/responses/404.response";
 
 export const show = async (req: Request, res: Response) => {
 	/* const program = await AppDataSource.getRepository(Program).findOneBy({
@@ -16,18 +18,11 @@ export const show = async (req: Request, res: Response) => {
 		where: {
 			id: parseInt(req.params.id),
 		},
-		relations: {
-			company: true,
-			transportation: true,
-			hotels: true,
-		},
+		relations: ["company", "company.user", "cycles", "reviews", "hotels", "transportation", "country"],
 	})
 	if (program) {
-		res.json({
-			success: true,
-			data: program,
-		})
+		sendSuccessResponse<Program>(res, program)
 	} else {
-		res.status(404).json({ success: false })
+		sendNotFoundResponse(res)
 	}
 }

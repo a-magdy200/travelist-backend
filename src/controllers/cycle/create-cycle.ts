@@ -15,7 +15,6 @@ export const createCycle = async (req: Request, res: Response) => {
 		const validation: ICycleInterface = await cycleValidation.validateAsync(req.body, {
 			abortEarly: false,
 		})
-
 		const program = await AppDataSource.getRepository(Program).findOneBy({
 			id: validation.programId,
 		})

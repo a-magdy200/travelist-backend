@@ -9,27 +9,20 @@ import { UPLOAD_DIRECTORY } from '../../helpers/constants/directories'
 import { unlinkSync } from 'fs'
 import { sendErrorResponse } from '../../helpers/responses/sendErrorResponse'
 import { StatusCodes } from '../../helpers/constants/statusCodes'
+import { sendSuccessResponse } from "../../helpers/responses/sendSuccessResponse";
 
 const listTravelers = async (req: Request, res: Response) => {
-	console.log('before find')
 	const travelers: Traveler[] = await AppDataSource.manager.find<Traveler>(
 		Traveler,
 		{}
 	)
-	res.json({
-		success: true,
-		data: travelers,
-	})
+	sendSuccessResponse<Traveler[]>(res, travelers)
 }
 
 const viewTravelerProfile: RequestHandler = async (req, res) => {
-	const traveler = await AppDataSource.getRepository(Traveler).findOne({
-		where: {
-			id: parseInt(req.params.id),
-		},
-		relations: {
-			user: true,
-		},
+	// TODO:: get id from path, if not exist get id from token
+	const traveler = await AppDataSource.getRepository(Traveler).findOneByOrFail({
+		id: parseInt(req.params.id)
 	})
 
 	// const userId = getUserIdFromToken(req, res)
@@ -74,21 +67,19 @@ const viewTravelerProfile: RequestHandler = async (req, res) => {
 const editTravelerProfile = async (req: Request, res: Response) => {
 	try {
 		const id: number | undefined = +req.params.id
+		// TODO:: get id from token
 		const validation: Traveler = await travelerValidation.validateAsync(
 			req.body,
 			{ abortEarly: false }
 		)
-		const updateResult = await AppDataSource.manager.update<Traveler>(
+		await AppDataSource.manager.update<Traveler>(
 			Traveler,
 			{
 				id,
 			},
 			validation
 		)
-
-		res.json({
-			success: updateResult.affected === 1,
-		})
+		sendSuccessResponse(res)
 	} catch (error: any) {
 		sendErrorResponse(
 			formatValidationErrors(error),
@@ -99,6 +90,7 @@ const editTravelerProfile = async (req: Request, res: Response) => {
 }
 const uploadProfilePicture = async (req: Request, res: Response) => {
 	const id: number | undefined = +req.params.id
+	// TODO:: get id from token
 	const traveler: Traveler | null =
 		await AppDataSource.manager.findOne<Traveler>(Traveler, {
 			where: {
@@ -120,10 +112,7 @@ const uploadProfilePicture = async (req: Request, res: Response) => {
 		)
 		traveler.user.profile_picture = path
 		await traveler.user.save()
-		res.json({
-			success: true,
-			path,
-		})
+		sendSuccessResponse<string>(res, path)
 	} else {
 		sendNotFoundResponse(res)
 	}

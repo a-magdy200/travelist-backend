@@ -11,28 +11,17 @@ import { formatValidationErrors } from '../../helpers/functions/formatValidation
 import { IProgramInterface } from '../../helpers/interfaces/IProgram.interface'
 import { sendErrorResponse } from '../../helpers/responses/sendErrorResponse'
 import { StatusCodes } from '../../helpers/constants/statusCodes'
-/*interface ProgramCreateBody {
-  name: string;
-  description: string;
-  price: string;
-  is_Recurring: boolean;
-  companyId: string;
-  hotels: string | string[];
-}*/
+import { sendSuccessResponse } from "../../helpers/responses/sendSuccessResponse";
 
 export const create = async (req: Request, res: Response) => {
 	console.log(req.body)
 	try {
-		const validation: Program = await programValidation.validateAsync(
+		const bodyObject: IProgramInterface = await programValidation.validateAsync(
 			req.body,
 			{
 				abortEarly: false,
 			}
 		)
-		const bodyObject: IProgramInterface = {
-			...req.body,
-			is_Recurring: req.body.is_Recurring === '1',
-		}
 		const path = `${req.file?.destination}${req.file?.filename}`.replace(
 			UPLOAD_DIRECTORY,
 			''
@@ -43,7 +32,7 @@ export const create = async (req: Request, res: Response) => {
 			description: bodyObject.description,
 			cover_picture: path,
 			price: parseInt(bodyObject.price),
-			is_Recurring: req.body.is_Recurring,
+			is_Recurring: bodyObject.is_Recurring,
 		})
 
 		const hotelsIds =
@@ -69,10 +58,7 @@ export const create = async (req: Request, res: Response) => {
 			}
 		}
 		await AppDataSource.manager.save(program)
-		res.json({
-			success: true,
-			data: program,
-		})
+		sendSuccessResponse<Program>(res, program)
 	} catch (error: any) {
 		sendErrorResponse(
 			formatValidationErrors(error),

@@ -1,18 +1,18 @@
 import { Program } from '../../entities/Program.entity'
 import { AppDataSource } from '../../config/database/data-source'
 import { Request, Response } from 'express'
-import { DeleteResult } from 'typeorm'
+import { sendSuccessResponse } from "../../helpers/responses/sendSuccessResponse";
+import { sendErrorResponse } from "../../helpers/responses/sendErrorResponse";
+import { StatusCodes } from "../../helpers/constants/statusCodes";
 
 export const deleteProgram = async (req: Request, res: Response) => {
 	try {
 		const id: number | undefined = +req.params.id
-		const updateResult = await AppDataSource.manager.delete<Program>(Program, {
+		await AppDataSource.manager.softDelete<Program>(Program, {
 			id,
 		})
-		res.json({
-			success: updateResult.affected === 1,
-		})
+		sendSuccessResponse(res)
 	} catch (error: any) {
-		res.json(error)
+		sendErrorResponse(error, res, StatusCodes.NOT_FOUND)
 	}
 }
