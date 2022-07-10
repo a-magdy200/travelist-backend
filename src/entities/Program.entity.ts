@@ -9,16 +9,25 @@ import {
 	JoinTable,
 	CreateDateColumn,
 	UpdateDateColumn,
-	JoinColumn, DeleteDateColumn
-} from "typeorm";
+	JoinColumn,
+	DeleteDateColumn,
+} from 'typeorm'
 import { Company } from './Company.entity'
 import { Cycle } from './Cycle.entity'
 import { Hotel } from './Hotel.entity'
 import { Transportation } from './Transportation.entity'
 import { Country } from './Country.entity'
-import { IsBoolean, IsInt, IsNumber, IsString, Length } from "class-validator";
+import {
+	IsBoolean,
+	IsInt,
+	IsNumber,
+	IsString,
+	Length,
+	Max,
+	Min,
+} from 'class-validator'
 
-@Entity()
+@Entity('programs')
 export class Program extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id?: number
@@ -33,29 +42,34 @@ export class Program extends BaseEntity {
 	@IsString()
 	description?: string
 
-	@Column({default: ''})
+	@Column({ default: '' })
 	@IsString()
 	cover_picture?: string
 
 	@Column({ nullable: false, type: 'float', default: 0.0 })
 	@IsNumber()
+	@Min(0)
 	price?: number
 
 	@Column({ type: 'boolean', default: false })
 	@IsBoolean()
 	is_Recurring?: boolean
 
-	@Column({ type: 'int', default: 0 })
+	@Column({ default: 0, type: 'int' })
 	@IsInt()
-	total_rating_value?: number
+	@Min(0)
+	total_rate?: number
 
-	@Column({ type: 'int', default: 0 })
+	@Column({ default: 0, type: 'int' })
 	@IsInt()
-	total_rating_users?: number
+	@Min(0)
+	ratings_count?: number
 
-	@Column({ type: 'int', default: 0 })
+	@Column({ default: 0, type: 'float' })
 	@IsNumber()
-	average_rating?: number
+	@Min(0)
+	@Max(5)
+	average_rate?: number
 
 	@ManyToOne(() => Company, (company) => company.programs, {
 		onDelete: 'CASCADE',
@@ -77,12 +91,17 @@ export class Program extends BaseEntity {
 	@OneToMany(() => Country, (country) => country.programs)
 	@JoinColumn()
 	country: Country
+
 	@ManyToMany(() => Country, (country) => country.program_destination)
-	@JoinTable()
+	@JoinTable({
+		name: 'program_destination',
+	})
 	destinations: Country[]
 
-	@ManyToMany((hotel) => Hotel, { onDelete: 'CASCADE' })
-	@JoinTable()
+	@ManyToMany(() => Hotel, (hotel) => hotel.programs, { onDelete: 'CASCADE' })
+	@JoinTable({
+		name: 'program_hotel',
+	})
 	hotels?: Hotel[]
 
 	@CreateDateColumn()

@@ -1,27 +1,28 @@
 import {
-  BaseEntity,
-  CreateDateColumn,
-  DeleteDateColumn,
-  Entity, ManyToMany, ManyToOne, OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn
-} from "typeorm";
-import { ChatMessage } from "./ChatMessage.entity";
+	BaseEntity,
+	CreateDateColumn,
+	DeleteDateColumn,
+	Entity,
+	OneToMany,
+	PrimaryGeneratedColumn,
+	UpdateDateColumn,
+} from 'typeorm'
+import { ChatMessage } from './ChatMessage.entity'
 
-@Entity()
+@Entity('chats')
 export class Chat extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  id?: number
+	@PrimaryGeneratedColumn()
+	id?: number
 
-  @OneToMany(() => ChatMessage, message => message.chat)
-  messages: ChatMessage[];
+	@OneToMany(() => ChatMessage, (message) => message.chat)
+	messages: ChatMessage[]
 
-  @CreateDateColumn()
-  created_at: Date
+	@CreateDateColumn()
+	created_at: Date
 
-  @UpdateDateColumn()
-  updated_at: Date
+	@UpdateDateColumn()
+	updated_at: Date
 
-  @DeleteDateColumn()
-  deleted_at: Date
+	@DeleteDateColumn()
+	deleted_at: Date
 }

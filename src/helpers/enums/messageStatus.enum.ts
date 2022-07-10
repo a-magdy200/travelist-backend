@@ -1,4 +1,4 @@
 export enum MessageStatusEnum {
-  READ = 'read',
-  UNREAD = 'unread'
+	READ = 'read',
+	UNREAD = 'unread',
 }

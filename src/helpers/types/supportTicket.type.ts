@@ -1,4 +1,1 @@
-export type SupportTicketType =
-  'pending'|
-  'in_progress'|
-  'closed';
+export type SupportTicketType = 'pending' | 'in_progress' | 'closed'

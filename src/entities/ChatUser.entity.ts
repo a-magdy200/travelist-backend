@@ -1,38 +1,41 @@
 import {
-  BaseEntity, Column,
-  CreateDateColumn,
-  DeleteDateColumn,
-  Entity, ManyToMany, ManyToOne, OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn
-} from "typeorm";
-import { ChatMessage } from "./ChatMessage.entity";
-import { User } from "./User.entity";
-import { MessageStatusEnum } from "../helpers/enums/messageStatus.enum";
-import { IsEnum } from "class-validator";
-import { ChatStatusEnum } from "../helpers/enums/chatStatus.enum";
+	BaseEntity,
+	Column,
+	CreateDateColumn,
+	DeleteDateColumn,
+	Entity,
+	JoinColumn,
+	ManyToOne,
+	PrimaryGeneratedColumn,
+	UpdateDateColumn,
+} from 'typeorm'
+import { User } from './User.entity'
+import { IsEnum } from 'class-validator'
+import { ChatStatusEnum } from '../helpers/enums/chatStatus.enum'
 
-@Entity()
+@Entity('chat_user')
 export class ChatUser extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  id?: number
-  @Column({
-    type: "enum",
-    enum: ChatStatusEnum,
-    default: ChatStatusEnum.ACTIVE
-  })
-  @IsEnum(ChatStatusEnum)
-  status: ChatStatusEnum;
+	@PrimaryGeneratedColumn()
+	id?: number
 
-  @ManyToMany(() => User, user => user.chats)
-  users: User[];
+	@Column({
+		type: 'enum',
+		enum: ChatStatusEnum,
+		default: ChatStatusEnum.ACTIVE,
+	})
+	@IsEnum(ChatStatusEnum)
+	status: ChatStatusEnum
 
-  @CreateDateColumn()
-  created_at: Date
+	@ManyToOne(() => User, (user) => user.chats)
+	@JoinColumn()
+	users: User[]
 
-  @UpdateDateColumn()
-  updated_at: Date
+	@CreateDateColumn()
+	created_at: Date
 
-  @DeleteDateColumn()
-  deleted_at: Date
+	@UpdateDateColumn()
+	updated_at: Date
+
+	@DeleteDateColumn()
+	deleted_at: Date
 }

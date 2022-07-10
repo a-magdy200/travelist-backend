@@ -1,14 +1,15 @@
 import {
 	BaseEntity,
 	Column,
-	CreateDateColumn, DeleteDateColumn,
+	CreateDateColumn,
+	DeleteDateColumn,
 	Entity,
 	PrimaryGeneratedColumn,
-	UpdateDateColumn
-} from "typeorm";
-import { IsEmail, IsString, Length } from "class-validator";
+	UpdateDateColumn,
+} from 'typeorm'
+import { IsEmail, IsString, Length } from 'class-validator'
 
-@Entity()
+@Entity('forget_password_codes')
 export class ForgetPasswordCode extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id?: number

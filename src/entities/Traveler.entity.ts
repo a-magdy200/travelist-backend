@@ -7,19 +7,36 @@ import {
 	JoinColumn,
 	ManyToMany,
 	JoinTable,
-	Unique,
-	OneToMany, CreateDateColumn, UpdateDateColumn, DeleteDateColumn
-} from "typeorm";
+	OneToMany,
+	CreateDateColumn,
+	UpdateDateColumn,
+	DeleteDateColumn,
+} from 'typeorm'
 import { User } from './User.entity'
-import { IsBoolean, IsDate, IsEnum, IsString, Length } from "class-validator";
-import { Company } from './Company.entity'
+import {
+	IsBoolean,
+	IsDate,
+	IsEnum,
+	IsInt,
+	IsNumber,
+	IsString,
+	Length,
+	Max,
+	Min,
+} from 'class-validator'
 import { Post } from './Post.entity'
 import { GenderEnum } from '../helpers/enums/gender.enum'
 import { GenderType } from '../helpers/types/gender.type'
 import { Cycle } from './Cycle.entity'
 import { FriendRequest } from './FriendRequest.entity'
+import { HotelReview } from './HotelReview.entity'
+import { GuideReview } from './GuideReview.entity'
+import { CountryReview } from './CountryReview.entity'
+import { CompanyReview } from './CompanyReview.entity'
+import { CycleReview } from './CycleReview.entity'
+import { CycleBooking } from './CycleBooking'
 
-@Entity()
+@Entity('travelers')
 export class Traveler extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id?: number
@@ -45,34 +62,61 @@ export class Traveler extends BaseEntity {
 	@IsBoolean()
 	is_guide?: boolean
 
-	@ManyToMany(() => Company, (company) => company.rating_travelers)
-	@JoinTable()
-	rating_company: Company[]
+	@Column({ default: 0, type: 'int' })
+	@IsInt()
+	@Min(0)
+	total_rate?: number
+
+	@Column({ default: 0, type: 'int' })
+	@IsInt()
+	@Min(0)
+	ratings_count?: number
+
+	@Column({ default: 0, type: 'float' })
+	@IsNumber()
+	@Min(0)
+	@Max(5)
+	average_rate?: number
 
 	@OneToMany(() => FriendRequest, (friend_request) => friend_request.sender)
 	sent_requests: FriendRequest[]
 
-	@OneToMany(
-		() => FriendRequest,
-		(friend_request) => friend_request.receiver,
-		{}
-	)
+	@OneToMany(() => HotelReview, (hotelReview) => hotelReview.traveler)
+	hotels_reviews: HotelReview[]
+
+	@OneToMany(() => CycleReview, (cycleReview) => cycleReview.traveler)
+	cycles_reviews: CycleReview[]
+
+	@OneToMany(() => CompanyReview, (companyReview) => companyReview.traveler)
+	companies_reviews: CompanyReview[]
+
+	@OneToMany(() => GuideReview, (guideReview) => guideReview.traveler)
+	reviews: GuideReview[]
+
+	@OneToMany(() => GuideReview, (guideReview) => guideReview.traveler)
+	guide_reviews: GuideReview[]
+
+	@OneToMany(() => CountryReview, (countryReview) => countryReview.traveler)
+	country_reviews: CountryReview[]
+
+	@OneToMany(() => FriendRequest, (friend_request) => friend_request.receiver)
 	received_requests: FriendRequest[]
 
 	@OneToMany(() => Post, (post) => post.traveler)
 	posts: Post[]
 
 	@ManyToMany(() => Traveler)
-	@JoinTable()
+	@JoinTable({
+		name: 'traveler_friends',
+	})
 	friends: Traveler[]
 
-	@OneToOne(() => User)
+	@OneToOne(() => User, (user) => user.traveler)
 	@JoinColumn()
 	user: User
 
-	@ManyToMany(() => Cycle, (cycle) => cycle.travelers)
-	@JoinTable()
-	cycles: Cycle[]
+	@OneToMany(() => CycleBooking, (booking) => booking.travelers)
+	bookings: CycleBooking[]
 
 	@CreateDateColumn()
 	created_at?: Date

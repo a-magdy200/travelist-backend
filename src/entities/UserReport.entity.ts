@@ -3,38 +3,34 @@ import {
 	Column,
 	Entity,
 	PrimaryGeneratedColumn,
-	ManyToMany,
-	JoinTable, OneToMany, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, ManyToOne, JoinColumn
-} from "typeorm";
-import { Group } from './Group.entity'
-import { IsEnum, IsString, Length } from "class-validator";
-import { UserTypeEnum } from '../helpers/enums/userType.enum'
-import { Notification } from "./notification.entity";
-import { ChatMessage } from "./ChatMessage.entity";
-import { ChatUser } from "./ChatUser.entity";
-import { SupportTicket } from "./SupportTicket.entity";
-import { SupportTicketResponse } from "./SupportTicketResponse.entity";
-import { AccountStatusEnum } from "../helpers/enums/accountStatus.enum";
-import { User } from "./User.entity";
+	CreateDateColumn,
+	UpdateDateColumn,
+	DeleteDateColumn,
+	ManyToOne,
+	JoinColumn,
+} from 'typeorm'
+import { IsString, Length } from 'class-validator'
+import { User } from './User.entity'
 
-@Entity()
+@Entity('user_reports')
 export class UserReport extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id?: number
 
 	@Column({
-		type: "longtext"
+		type: 'longtext',
 	})
 	@IsString()
-	reason: string;
+	@Length(10)
+	reason: string
 
-	@ManyToOne(() => User, user => user.reports)
+	@ManyToOne(() => User, (user) => user.reports)
 	@JoinColumn()
-	reported_user: User;
+	reported_user: User
 
-	@ManyToOne(() => User, user => user.reported_users)
+	@ManyToOne(() => User, (user) => user.reported_users)
 	@JoinColumn()
-	reporter_user: User;
+	reporter_user: User
 
 	@CreateDateColumn()
 	created_at?: Date

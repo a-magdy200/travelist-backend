@@ -1,3 +1,1 @@
-export type MessageStatusType =
-  'read' |
-  'unread';
+export type MessageStatusType = 'read' | 'unread'

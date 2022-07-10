@@ -1,17 +1,17 @@
 import {
 	BaseEntity,
 	Column,
-	CreateDateColumn, DeleteDateColumn,
+	CreateDateColumn,
+	DeleteDateColumn,
 	Entity,
-	ManyToOne,
 	OneToMany,
 	PrimaryGeneratedColumn,
-	UpdateDateColumn
-} from "typeorm";
+	UpdateDateColumn,
+} from 'typeorm'
 import { Program } from './Program.entity'
-import { IsString, Length } from "class-validator";
+import { IsString, Length } from 'class-validator'
 
-@Entity()
+@Entity('transportations')
 export class Transportation extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id?: number

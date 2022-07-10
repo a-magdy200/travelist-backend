@@ -1,4 +1,1 @@
-export type AccountStatusType =
- 'active' |
-'reported' |
-  'banned';
+export type AccountStatusType = 'active' | 'reported' | 'banned'

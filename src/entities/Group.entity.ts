@@ -15,19 +15,20 @@ import {
 import { Country } from './Country.entity'
 import { User } from './User.entity'
 import { Post } from './Post.entity'
-import { IsInt, IsString } from "class-validator";
+import { IsInt, IsString, Min } from 'class-validator'
 
-@Entity()
+@Entity('groups')
 export class Group extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id: number
 
 	@Column({ type: 'int', default: 0 })
 	@IsInt()
+	@Min(0)
 	followers_count: number
 
 	@Column({
-		default: ''
+		default: '',
 	})
 	@IsString()
 	cover_picture: string
@@ -40,7 +41,9 @@ export class Group extends BaseEntity {
 	posts: Post[]
 
 	@ManyToMany(() => User, (user) => user.groups)
-	@JoinTable()
+	@JoinTable({
+		name: 'group_follower',
+	})
 	followers: User[]
 
 	@CreateDateColumn()

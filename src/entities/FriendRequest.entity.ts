@@ -1,18 +1,20 @@
 import {
 	BaseEntity,
 	Column,
-	CreateDateColumn, DeleteDateColumn,
-	Entity, JoinColumn,
+	CreateDateColumn,
+	DeleteDateColumn,
+	Entity,
+	JoinColumn,
 	ManyToOne,
 	PrimaryGeneratedColumn,
-	UpdateDateColumn
-} from "typeorm";
+	UpdateDateColumn,
+} from 'typeorm'
 import { Traveler } from './Traveler.entity'
 import { FriendRequestStatusEnum } from '../helpers/enums/friendRequestStatus.enum'
 import { IsEnum } from 'class-validator'
 import { FriendRequestStatusType } from '../helpers/types/friendRequestStatus.type'
 
-@Entity()
+@Entity('friend_requests')
 export class FriendRequest extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id?: number

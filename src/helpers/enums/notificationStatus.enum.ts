@@ -1,4 +1,4 @@
 export enum NotificationStatusEnum {
-  READ = 'read',
-  UNREAD = 'unread'
+	READ = 'read',
+	UNREAD = 'unread',
 }

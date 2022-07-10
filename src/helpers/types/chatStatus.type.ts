@@ -1,3 +1,1 @@
-export type ChatStatusType =
-  'active' |
-  'archived';
+export type ChatStatusType = 'active' | 'archived'

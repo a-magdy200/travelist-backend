@@ -6,16 +6,18 @@ import {
 	Entity,
 	JoinColumn,
 	ManyToOne,
+	OneToMany,
 	PrimaryGeneratedColumn,
 	UpdateDateColumn,
 } from 'typeorm'
-import { IsDate, IsEnum, IsString, Length } from "class-validator";
+import { IsEnum, IsString, Length } from 'class-validator'
 import { Group } from './Group.entity'
 import { Traveler } from './Traveler.entity'
 import { PostStatusType } from '../helpers/types/postStatus.type'
 import { PostStatusEnum } from '../helpers/enums/postStatus.enum'
+import { PostReport } from './PostReport.entity'
 
-@Entity()
+@Entity('posts')
 export class Post extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id?: number
@@ -29,14 +31,8 @@ export class Post extends BaseEntity {
 	@IsEnum(PostStatusEnum)
 	status: PostStatusType
 
-	@CreateDateColumn()
-	created_at: Date
-
-	@UpdateDateColumn()
-	updated_at: Date
-
-	@DeleteDateColumn()
-	deleted_at: Date
+	@OneToMany(() => PostReport, (postReport) => postReport.post)
+	reports: PostReport[]
 
 	@ManyToOne(() => Traveler, (traveler) => traveler.posts)
 	@JoinColumn()
@@ -45,4 +41,13 @@ export class Post extends BaseEntity {
 	@ManyToOne(() => Group, (group) => group.posts)
 	@JoinColumn()
 	group: Group
+
+	@CreateDateColumn()
+	created_at: Date
+
+	@UpdateDateColumn()
+	updated_at: Date
+
+	@DeleteDateColumn()
+	deleted_at: Date
 }

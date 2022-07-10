@@ -1,7 +1,8 @@
 import {
 	BaseEntity,
 	Column,
-	CreateDateColumn, DeleteDateColumn,
+	CreateDateColumn,
+	DeleteDateColumn,
 	Entity,
 	JoinColumn,
 	JoinTable,
@@ -10,16 +11,15 @@ import {
 	OneToMany,
 	OneToOne,
 	PrimaryGeneratedColumn,
-	UpdateDateColumn
-} from "typeorm";
-import { Cycle } from './Cycle.entity'
+	UpdateDateColumn,
+} from 'typeorm'
 import { Group } from './Group.entity'
-import { IsInt, IsString, Length } from "class-validator";
-import { User } from './User.entity'
+import { IsInt, IsString, Length, Max, Min } from 'class-validator'
 import { Hotel } from './Hotel.entity'
 import { Program } from './Program.entity'
+import { CountryReview } from './CountryReview.entity'
 
-@Entity()
+@Entity('countries')
 export class Country extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id?: number
@@ -29,11 +29,34 @@ export class Country extends BaseEntity {
 	@IsString()
 	name?: string
 
+	@Column({ type: 'int', default: 0 })
+	@IsInt()
+	@Min(0)
+	total_rate: number
+
+	@Column({ type: 'float', default: 0 })
+	@IsInt()
+	@Min(0)
+	@Max(5)
+	average_rate: number
+
+	@Column({ type: 'int', default: 0 })
+	@IsInt()
+	@Min(0)
+	ratings_count: number
+
 	@ManyToOne(() => Program, (program) => program.country)
 	@JoinColumn()
 	programs: Program[]
 
+	@ManyToOne(() => CountryReview, (countryReview) => countryReview.country)
+	@JoinColumn()
+	reviews: CountryReview[]
+
 	@ManyToMany(() => Program, (program) => program.destinations)
+	@JoinTable({
+		name: 'program_destination',
+	})
 	program_destination: Program[]
 
 	@OneToMany(() => Hotel, (hotel) => hotel.country)
@@ -42,18 +65,6 @@ export class Country extends BaseEntity {
 	@OneToOne(() => Group, (group) => group.country)
 	@JoinColumn()
 	group: Group
-
-	@Column({ type: 'int', default: 0 })
-	@IsInt()
-	total_rate: number
-
-	@Column({ type: 'float', default: 0 })
-	@IsInt()
-	average_rate: number
-
-	@Column({ type: 'int', default: 0 })
-	@IsInt()
-	ratings_count: number
 
 	@CreateDateColumn()
 	created_at?: Date

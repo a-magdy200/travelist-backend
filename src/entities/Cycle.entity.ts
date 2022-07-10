@@ -1,21 +1,32 @@
 import {
-  BaseEntity,
-  Column,
-  Entity,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  ManyToMany,
-  JoinTable,
-  CreateDateColumn,
-  UpdateDateColumn, JoinColumn, DeleteDateColumn
-} from "typeorm";
-import { IsDate, IsIn, IsInt, IsString, Length } from "class-validator";
+	BaseEntity,
+	Column,
+	Entity,
+	ManyToOne,
+	PrimaryGeneratedColumn,
+	ManyToMany,
+	JoinTable,
+	CreateDateColumn,
+	UpdateDateColumn,
+	JoinColumn,
+	DeleteDateColumn,
+	OneToMany,
+} from 'typeorm'
+import {
+	IsDate,
+	IsInt,
+	IsNumber,
+	IsString,
+	Length,
+	Max,
+	Min,
+} from 'class-validator'
 import { Program } from './Program.entity'
-import { User } from './User.entity'
-import { Country } from './Country.entity'
 import { Traveler } from './Traveler.entity'
+import { CycleReview } from './CycleReview.entity'
+import { CycleBooking } from './CycleBooking'
 
-@Entity()
+@Entity('cycles')
 export class Cycle extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id?: number
@@ -26,14 +37,16 @@ export class Cycle extends BaseEntity {
 	name?: string
 
 	@Column({
-		type: "int",
+		type: 'int',
 		default: 0,
 	})
 	@IsInt()
+	@Min(0)
 	max_seats?: number
 
 	@Column({ type: 'int', default: 0 })
 	@IsInt()
+	@Min(0)
 	current_seats?: number
 
 	@Column()
@@ -52,12 +65,21 @@ export class Cycle extends BaseEntity {
 	@IsDate()
 	return_arrival_date?: Date
 
+	@Column({ default: 0, type: 'int' })
+	@IsInt()
+	@Min(0)
+	total_rate?: number
 
-	@ManyToOne(() => Program, (program) => program.cycles, {
-		onUpdate: 'CASCADE',
-	})
-	@JoinColumn()
-	program?: Program
+	@Column({ default: 0, type: 'int' })
+	@IsInt()
+	@Min(0)
+	ratings_count?: number
+
+	@Column({ default: 0, type: 'float' })
+	@IsNumber()
+	@Min(0)
+	@Max(5)
+	average_rate?: number
 
 	@Column()
 	@Length(3)
@@ -79,17 +101,24 @@ export class Cycle extends BaseEntity {
 	@IsString()
 	return_arrival_location?: string
 
-	@ManyToMany(() => Traveler, (traveler) => traveler.cycles)
-	@JoinTable()
-	travelers?: Traveler[]
+	@OneToMany(() => CycleReview, (review) => review.cycle)
+	reviews: CycleReview[]
 
+	@OneToMany(() => CycleBooking, (booking) => booking.cycle)
+	bookings: CycleBooking[]
 
-  @CreateDateColumn()
-  created_at?: Date
+	@ManyToOne(() => Program, (program) => program.cycles, {
+		onUpdate: 'CASCADE',
+	})
+	@JoinColumn()
+	program?: Program
 
-  @UpdateDateColumn()
-  updated_at?: Date
+	@CreateDateColumn()
+	created_at?: Date
 
-  @DeleteDateColumn()
-  deleted_at?: Date
+	@UpdateDateColumn()
+	updated_at?: Date
+
+	@DeleteDateColumn()
+	deleted_at?: Date
 }

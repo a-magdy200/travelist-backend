@@ -9,12 +9,12 @@ import {
 	PrimaryGeneratedColumn,
 	UpdateDateColumn,
 } from 'typeorm'
-import { IsString } from 'class-validator'
 import { User } from './User.entity'
-import { SupportTicket } from './SupportTicket.entity'
+import { Post } from './Post.entity'
+import { IsString, Length } from 'class-validator'
 
-@Entity('support_ticket_responses')
-export class SupportTicketResponse extends BaseEntity {
+@Entity('post_reports')
+export class PostReport extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id?: number
 
@@ -22,15 +22,16 @@ export class SupportTicketResponse extends BaseEntity {
 		type: 'longtext',
 	})
 	@IsString()
-	content: string
+	@Length(10)
+	reason: string
 
-	@ManyToOne(() => SupportTicket, (supportTicket) => supportTicket.responses)
-	@JoinColumn()
-	ticket: SupportTicket
-
-	@ManyToOne(() => User, (user) => user.supportTicketsResponses)
+	@ManyToOne(() => User, (user) => user.post_reports)
 	@JoinColumn()
 	user: User
+
+	@ManyToOne(() => Post, (post) => post.reports)
+	@JoinColumn()
+	post: Post
 
 	@CreateDateColumn()
 	created_at: Date
