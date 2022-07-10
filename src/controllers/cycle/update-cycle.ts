@@ -6,16 +6,14 @@ import { formatValidationErrors } from '../../helpers/functions/formatValidation
 import { ICycleInterface } from '../../helpers/interfaces/ICycle.interface'
 import { sendErrorResponse } from '../../helpers/responses/sendErrorResponse'
 import { StatusCodes } from '../../helpers/constants/statusCodes'
+import { sendSuccessResponse } from "../../helpers/responses/sendSuccessResponse";
 
 export const updateCycle = async (req: Request, res: Response) => {
 	try {
 		const id: number | undefined = parseInt(req.params.id)
-		const validation: Cycle = await cycleValidation.validateAsync(req.body, {
+		const bodyObject: ICycleInterface = await cycleValidation.validateAsync(req.body, {
 			abortEarly: false,
 		})
-		const bodyObject: ICycleInterface = {
-			...req.body,
-		}
 		const cycle: Cycle | null = await AppDataSource.getRepository(
 			Cycle
 		).findOne({
@@ -35,10 +33,7 @@ export const updateCycle = async (req: Request, res: Response) => {
 			cycle.return_location = bodyObject.return_location
 			cycle.return_arrival_location = bodyObject.return_arrival_location
 			await cycle.save()
-			res.json({
-				success: true,
-				data: cycle,
-			})
+			sendSuccessResponse<Cycle>(res, cycle)
 		}
 	} catch (error: any) {
 		sendErrorResponse(

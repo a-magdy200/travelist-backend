@@ -8,36 +8,24 @@ import { formatValidationErrors } from '../../helpers/functions/formatValidation
 import { ICycleInterface } from '../../helpers/interfaces/ICycle.interface'
 import { sendErrorResponse } from '../../helpers/responses/sendErrorResponse'
 import { StatusCodes } from '../../helpers/constants/statusCodes'
+import { sendSuccessResponse } from "../../helpers/responses/sendSuccessResponse";
 
 export const createCycle = async (req: Request, res: Response) => {
-	console.log(req.body)
 	try {
-		const validation: Cycle = await cycleValidation.validateAsync(req.body, {
+		const validation: ICycleInterface = await cycleValidation.validateAsync(req.body, {
 			abortEarly: false,
 		})
 
-		const bodyObject: ICycleInterface = {
-			...req.body,
-		}
 		const program = await AppDataSource.getRepository(Program).findOneBy({
-			id: bodyObject.programId,
+			id: validation.programId,
 		})
-		if (program?.is_Recurring) {
-			const cycle = await AppDataSource.manager.create<Cycle>(Cycle, validation)
-			if (program) {
-				cycle.program = program
-			}
-
-			await cycle.save()
-			res.json({
-				success: true,
-				data: cycle,
-			})
-		} else {
-			res.json({
-				success: false,
-			})
+		const cycle = await AppDataSource.manager.create<Cycle>(Cycle, validation)
+		if (program) {
+			cycle.program = program
 		}
+
+		await cycle.save()
+		sendSuccessResponse<Cycle>(res, cycle);
 	} catch (error: any) {
 		sendErrorResponse(
 			formatValidationErrors(error),
