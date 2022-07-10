@@ -15,4 +15,4 @@ router.post('/create', createCycle)
 router.put('/update/:id', updateCycle)
 router.delete('/delete/:id', deleteCycle)
 
-module.exports = router
+export default router;

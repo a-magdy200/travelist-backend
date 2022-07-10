@@ -4,7 +4,7 @@ import configurations from '../../config/configurations'
 import { sendErrorResponse } from "../responses/sendErrorResponse";
 import { formatValidationErrors } from "./formatValidationErrors";
 import { StatusCodes } from "../constants/statusCodes";
-const getUserIdFromToken = (req: Request, res: Response) => {
+const getUserIdFromToken = (req: Request) => {
 	const authorizationHeader = req.headers?.authorization || ''
 	const tokenParts = authorizationHeader.split(' ')
 	if (tokenParts.length > 1) {

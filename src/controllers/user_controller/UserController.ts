@@ -8,53 +8,46 @@ import { formatValidationErrors } from '../../helpers/functions/formatValidation
 import { sendErrorResponse } from '../../helpers/responses/sendErrorResponse'
 import { StatusCodes } from '../../helpers/constants/statusCodes'
 import { sendSuccessResponse } from "../../helpers/responses/sendSuccessResponse";
+import { getUserIdFromToken } from "../../helpers/functions/getUserIdFromToken";
+import { Traveler } from "../../entities/Traveler.entity";
+import { unlinkSync } from "fs";
+import { UPLOAD_DIRECTORY } from "../../helpers/constants/directories";
+import { sendNotFoundResponse } from "../../helpers/responses/404.response";
 const viewUserProfile: RequestHandler = async (req, res) => {
-	// TODO:: get id from token
-	const user = await AppDataSource.getRepository(User).findOneByOrFail(
-		{
-			id: parseInt(req.params.id),
+	const id = getUserIdFromToken(req);
+	const user = await AppDataSource.getRepository(User).findOneByOrFail({
+		id
 	})
 	sendSuccessResponse<User>(res, user);
 }
-// const userFromToken = {
-// 	id: 3,
-// }
-// let returnvalue
-// view my profile
-// user?.find({
-// 	where:[
-// 		{
-// 		//userId_1:userFromToken.id
-// 		// userId_2 : parseInt(req.params.id)
-// 		},
-// 	{
-// 		//userId_2:userFromToken.id
-// 		// userId_1 : parseInt(req.params.id)
-// 	}]
-// })
+const uploadProfilePicture = async (req: Request, res: Response) => {
+	if (req.file) {
+		const id = getUserIdFromToken(req);
+		const user = await AppDataSource.manager.findOneByOrFail(User, { id });
+		const oldCoverPicture = user.profile_picture
+		if (oldCoverPicture && oldCoverPicture !== '') {
+			await unlinkSync(`${UPLOAD_DIRECTORY}${oldCoverPicture}`)
+		}
+		const path = `${req.file.destination}${req.file.filename}`.replace(
+			UPLOAD_DIRECTORY,
+			''
+		)
+		user.profile_picture = path
+		await user.save()
+		sendSuccessResponse<string>(res, path)
+	} else {
+		sendErrorResponse(["Invalid file upload"], res, StatusCodes.NOT_ACCEPTABLE)
+	}
 
-// res.json({
-// 	success: true,
-// 	data: user,
-// })
-
-// view other friend profile
-// else {
-// 	returnvalue = {
-// 		identification: '',
-// 		description: '',
-// 	}
-// }
-// 	res.send(returnvalue)
+}
 
 const editUserProfile = async (req: Request, res: Response) => {
 	try {
-		const id: number | undefined = +req.params.id
-		// TODO:: get id from token
+		const id = getUserIdFromToken(req);
 		const validation: User = await userValidation.validateAsync(req.body, {
 			abortEarly: false,
 		})
-		const updateResult = await AppDataSource.manager.update<User>(
+		await AppDataSource.manager.update<User>(
 			User,
 			{
 				id,
@@ -62,9 +55,7 @@ const editUserProfile = async (req: Request, res: Response) => {
 			validation
 		)
 
-		res.json({
-			success: updateResult.affected === 1,
-		})
+		sendSuccessResponse(res);
 	} catch (error: any) {
 		sendErrorResponse(
 			formatValidationErrors(error),
@@ -75,15 +66,14 @@ const editUserProfile = async (req: Request, res: Response) => {
 }
 const updateUserPassword = async (req: Request, res: Response) => {
 	try {
-		const id: number | undefined = +req.params.id
-		// TODO:: get id from token
+		const id = getUserIdFromToken(req);
+
 		const password_validation: User = await passwordValidation.validateAsync(
 			req.body,
 			{ abortEarly: false }
 		)
 		await AppDataSource.manager.update<User>(
 			User,
-
 			id,
 			{ password: password_validation.password }
 		)
@@ -98,4 +88,4 @@ const updateUserPassword = async (req: Request, res: Response) => {
 	}
 }
 
-export { viewUserProfile, editUserProfile, updateUserPassword }
+export { uploadProfilePicture, viewUserProfile, editUserProfile, updateUserPassword }

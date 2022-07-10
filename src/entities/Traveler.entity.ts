@@ -16,14 +16,14 @@ import { User } from './User.entity'
 import {
 	IsBoolean,
 	IsDate,
-	IsEnum,
+	IsEnum, IsIn,
 	IsInt,
 	IsNumber,
 	IsString,
 	Length,
 	Max,
-	Min,
-} from 'class-validator'
+	Min
+} from "class-validator";
 import { Post } from './Post.entity'
 import { GenderEnum } from '../helpers/enums/gender.enum'
 import { GenderType } from '../helpers/types/gender.type'
@@ -77,6 +77,12 @@ export class Traveler extends BaseEntity {
 	@Min(0)
 	@Max(5)
 	average_rate?: number
+
+	@Column({
+		type: "int"
+	})
+	@IsInt()
+	userId: number;
 
 	@OneToMany(() => FriendRequest, (friend_request) => friend_request.sender)
 	sent_requests: FriendRequest[]

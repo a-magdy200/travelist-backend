@@ -10,11 +10,10 @@ import hotelsRoutes from './src/routes/hotels.routes'
 import userRouter from './src/routes/user.routes'
 import travelerRouter from './src/routes/traveler.routes'
 import authRouter from './src/routes/auth.routes'
-const companyRouter = require('./src/routes/company.routes')
-const indexRouter = require('./src/routes')
-const programRouter = require('./src/routes/programs.routes')
-const cycleRouter = require('./src/routes/cycles.routes')
-
+import cycleRoutes from "./src/routes/cycle.routes";
+import companyRoutes from "./src/routes/company.routes";
+import appRoutes from "./src/routes/app.routes";
+import programsRoutes from "./src/routes/programs.routes";
 const app = express()
 app.use(cors({ origin: true, credentials: true }))
 
@@ -30,13 +29,13 @@ AppDataSource.initialize()
 		const config = configurations()
 		// app.use('/', indexRouter);
 		app.use('/auth', authRouter)
-		app.use('/api/companies', companyRouter)
+		app.use('/api/companies', companyRoutes)
 		app.use('/api/hotels', hotelsRoutes)
 		app.use('/api/users', userRouter)
 		app.use('/api/travelers', travelerRouter)
-		app.use('/', indexRouter)
-		app.use('/cycles', cycleRouter)
-		app.use('/programs', programRouter)
+		app.use('/', appRoutes)
+		app.use('/cycles', cycleRoutes)
+		app.use('/programs', programsRoutes)
 		app.listen(config.port, () => {
 			console.log(`Server running on PORT: ${config.port}`)
 		})

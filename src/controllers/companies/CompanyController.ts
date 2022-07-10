@@ -1,17 +1,13 @@
-import { Request, Response } from 'express'
-import e, { RequestHandler } from 'express'
+import { Request, Response, RequestHandler } from 'express'
 import { Company } from '../../entities/Company.entity'
 import { AppDataSource } from '../../config/database/data-source'
 import { sendNotFoundResponse } from '../../helpers/responses/404.response'
 import { companyValidation } from '../../helpers/validations/company.validation'
 import { formatValidationErrors } from '../../helpers/functions/formatValidationErrors'
-import { UPLOAD_DIRECTORY } from '../../helpers/constants/directories'
-import { unlinkSync } from 'fs'
 import { getUserIdFromToken } from '../../helpers/functions/getUserIdFromToken'
 import { sendSuccessResponse } from '../../helpers/responses/sendSuccessResponse'
 import { sendErrorResponse } from '../../helpers/responses/sendErrorResponse'
 import { StatusCodes } from '../../helpers/constants/statusCodes'
-import { User } from "../../entities/User.entity";
 const listCompanies = async (req: Request, res: Response) => {
 	const companies: Company[] = await AppDataSource.manager.find<Company>(
 		Company,
@@ -21,12 +17,18 @@ const listCompanies = async (req: Request, res: Response) => {
 }
 
 const viewCompanyProfile: RequestHandler = async (req, res) => {
-	// TODO:: get id from token if not exist in params
-	const userId = getUserIdFromToken(req, res)
+	let criteria;
+	if (req.params.id) {
+		criteria = {
+			id: +req.params.id,
+		}
+	} else {
+		criteria = {
+			userId: getUserIdFromToken(req)
+		}
+	}
 	const company = await AppDataSource.getRepository(Company).findOne({
-		where: {
-			id: parseInt(req.params.id, 10),
-		},
+		where: criteria,
 		relations: {
 			user: true,
 		},
@@ -39,8 +41,7 @@ const viewCompanyProfile: RequestHandler = async (req, res) => {
 }
 const editCompanyProfile = async (req: Request, res: Response) => {
 	try {
-		const id: number | undefined = +req.params.id
-		// TODO:: get id from token
+		const userId = getUserIdFromToken(req)
 		const validation: Company = await companyValidation.validateAsync(
 			req.body,
 			{ abortEarly: false }
@@ -48,14 +49,14 @@ const editCompanyProfile = async (req: Request, res: Response) => {
 		const updateResult = await AppDataSource.manager.update<Company>(
 			Company,
 			{
-				id,
+				userId,
 			},
 			validation
 		)
 		if (updateResult.affected === 1) {
 			sendSuccessResponse(res)
 		} else {
-			sendErrorResponse(['failed to update'], res, StatusCodes.NO_CHANGE)
+			sendErrorResponse(['Failed to update'], res, StatusCodes.NO_CHANGE)
 		}
 	} catch (error: any) {
 		sendErrorResponse(
@@ -65,34 +66,8 @@ const editCompanyProfile = async (req: Request, res: Response) => {
 		)
 	}
 }
-const uploadCoverPicture = async (req: Request, res: Response) => {
-	const id: number | undefined = +req.params.id
-	// TODO:: get id from token
-	const company: Company | null =
-		await AppDataSource.manager.findOneBy<Company>(Company, {
-			id,
-		})
-	if (company && req.file?.filename) {
-		// Remove `uploads/` from path string
-		const oldProfilePicture = company.cover_picture
-		if (oldProfilePicture && oldProfilePicture !== '') {
-			await unlinkSync(`${UPLOAD_DIRECTORY}${oldProfilePicture}`)
-		}
-		const path = `${req.file.destination}${req.file.filename}`.replace(
-			UPLOAD_DIRECTORY,
-			''
-		)
-		company.cover_picture = path
-		await company.save()
-		sendSuccessResponse<string>(res, path)
-	} else {
-		sendNotFoundResponse(res)
-	}
-}
-
 export {
 	listCompanies,
 	viewCompanyProfile,
 	editCompanyProfile,
-	uploadCoverPicture,
 }

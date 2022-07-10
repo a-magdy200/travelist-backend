@@ -41,6 +41,13 @@ export class Company extends BaseEntity {
 	@Max(5)
 	average_rate?: number
 
+
+	@Column({
+		type: "int"
+	})
+	@IsInt()
+	userId: number;
+
 	@Column({ default: '' })
 	@IsString()
 	cover_picture?: string
