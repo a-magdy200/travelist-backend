@@ -77,7 +77,7 @@ export class Program extends BaseEntity {
 	@JoinColumn()
 	company?: Company
 
-	@OneToMany(() => Cycle, (cycle) => cycle.program, { onDelete: 'CASCADE' })
+	@OneToMany(() => Cycle, (cycle) => cycle.program,   )
 	cycles?: Cycle[]
 
 	@ManyToOne(
@@ -88,17 +88,17 @@ export class Program extends BaseEntity {
 	@JoinColumn()
 	transportation?: Transportation
 
-	@ManyToOne(() => Country, (country) => country.programs)
+	@ManyToOne(() => Country, (country) => country.programs,{ onDelete: 'CASCADE' })
 	@JoinColumn()
 	country: Country
 
-	@ManyToMany(() => Country, (country) => country.program_destination)
+	@ManyToMany(() => Country,{ onDelete: 'CASCADE' })
 	@JoinTable({
 		name: 'program_destination',
 	})
 	destinations: Country[]
 
-	@ManyToMany(() => Hotel, (hotel) => hotel.programs, { onDelete: 'CASCADE' })
+	@ManyToMany(() => Hotel, { onDelete: 'CASCADE' })
 	@JoinTable({
 		name: 'program_hotel',
 	})

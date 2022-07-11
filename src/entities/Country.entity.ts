@@ -53,11 +53,11 @@ export class Country extends BaseEntity {
 	@JoinColumn()
 	reviews: CountryReview[]
 
-	@ManyToMany(() => Program, (program) => program.destinations)
-	@JoinTable({
-		name: 'program_destination',
-	})
-	program_destination: Program[]
+	//@ManyToMany(() => Program, (program) => program.destinations)
+	//@JoinTable({
+	//	name: 'program_destination',
+	//})
+	//program_destination: Program[]
 
 	@OneToMany(() => Hotel, (hotel) => hotel.country)
 	hotels: Hotel[]
