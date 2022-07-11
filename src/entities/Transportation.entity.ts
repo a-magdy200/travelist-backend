@@ -1,20 +1,35 @@
-import {BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
-import { Program } from "./Program.entity";
+import {
+	BaseEntity,
+	Column,
+	CreateDateColumn,
+	DeleteDateColumn,
+	Entity,
+	OneToMany,
+	PrimaryGeneratedColumn,
+	UpdateDateColumn,
+} from 'typeorm'
+import { Program } from './Program.entity'
+import { IsString, Length } from 'class-validator'
 
-@Entity()
+@Entity('transportations')
 export class Transportation extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id?: number
 
 	@Column()
+	@Length(3)
+	@IsString()
 	name?: string
 
-  @OneToMany(() => Program, (program) => program.transportation)
-  programs?: Program[]
+	@OneToMany(() => Program, (program) => program.transportation)
+	programs?: Program[]
 
-  @CreateDateColumn({ name: 'created_at' })
-  createdAt?: Date;
+	@CreateDateColumn()
+	created_at?: Date
 
-	@UpdateDateColumn({ name: 'updated_at' })
-	updatedAt?: Date
+	@UpdateDateColumn()
+	updated_at?: Date
+
+	@DeleteDateColumn()
+	deleted_at?: Date
 }

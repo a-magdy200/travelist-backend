@@ -1,8 +1,8 @@
-import { showAll } from './showAll'
-import { show } from './show'
-import { create } from './create'
-import { update } from './update'
-import { deleteProgram } from './delete'
+import { showAll } from './show-all-program'
+import { show } from './show-program'
+import { create } from './create-program'
+import { update } from './update-program'
+import { deleteProgram } from './delete-program'
 
 export const Program = {
 	showAll,

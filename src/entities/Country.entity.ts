@@ -1,27 +1,76 @@
-import {BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
-import { Cycle } from "./Cycle.entity";
+import {
+	BaseEntity,
+	Column,
+	CreateDateColumn,
+	DeleteDateColumn,
+	Entity,
+	JoinColumn,
+	JoinTable,
+	ManyToMany,
+	ManyToOne,
+	OneToMany,
+	OneToOne,
+	PrimaryGeneratedColumn,
+	UpdateDateColumn,
+} from 'typeorm'
+import { Group } from './Group.entity'
+import { IsInt, IsString, Length, Max, Min } from 'class-validator'
+import { Hotel } from './Hotel.entity'
+import { Program } from './Program.entity'
+import { CountryReview } from './CountryReview.entity'
 
-@Entity()
+@Entity('countries')
 export class Country extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id?: number
 
 	@Column()
+	@Length(3)
+	@IsString()
 	name?: string
 
-  @OneToMany(() => Cycle, (cycle) => cycle.departure_location,)
-  @OneToMany(() => Cycle, (cycle) => cycle.return_location)
-  @OneToMany(() => Cycle, (cycle) => cycle.return_arrival_location)
-  @OneToMany(() => Cycle, (cycle) => cycle.arrival_location)
-  cycles?: Cycle[]
+	@Column({ type: 'int', default: 0 })
+	@IsInt()
+	@Min(0)
+	total_rate: number
 
- // @OneToMany(() => Cycle, (cycle) => cycle.return_location)
- // @JoinColumn({ name: "return_location" })
-  //cycles2?: Cycle[]
-  
-  @CreateDateColumn({ name: 'created_at' })
-  createdAt?: Date;
+	@Column({ type: 'float', default: 0 })
+	@IsInt()
+	@Min(0)
+	@Max(5)
+	average_rate: number
 
-	@UpdateDateColumn({ name: 'updated_at' })
-	updatedAt?: Date
+	@Column({ type: 'int', default: 0 })
+	@IsInt()
+	@Min(0)
+	ratings_count: number
+
+	@OneToMany(() => Program, (program) => program.country)
+	programs: Program[]
+
+	@ManyToOne(() => CountryReview, (countryReview) => countryReview.country)
+	@JoinColumn()
+	reviews: CountryReview[]
+
+	//@ManyToMany(() => Program, (program) => program.destinations)
+	//@JoinTable({
+	//	name: 'program_destination',
+	//})
+	//program_destination: Program[]
+
+	@OneToMany(() => Hotel, (hotel) => hotel.country)
+	hotels: Hotel[]
+
+	@OneToOne(() => Group, (group) => group.country)
+	@JoinColumn()
+	group: Group
+
+	@CreateDateColumn()
+	created_at?: Date
+
+	@UpdateDateColumn()
+	updated_at?: Date
+
+	@DeleteDateColumn()
+	deleted_at?: Date
 }

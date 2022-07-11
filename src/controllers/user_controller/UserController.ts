@@ -2,61 +2,32 @@ import { RequestHandler } from 'express'
 import { User } from '../../entities/User.entity'
 import { Request, Response } from 'express'
 import { AppDataSource } from '../../config/database/data-source'
-import { NotFoundResponse } from '../../helpers/responses/404.response'
 import { userValidation } from '../../helpers/validations/user.validation'
 import { passwordValidation } from '../../helpers/validations/password.validation'
 import { formatValidationErrors } from '../../helpers/functions/formatValidationErrors'
-import { UPLOAD_DIRECTORY } from '../../helpers/constants/directories'
-import { unlinkSync } from 'fs'
+import { sendErrorResponse } from '../../helpers/responses/sendErrorResponse'
+import { StatusCodes } from '../../helpers/constants/statusCodes'
+import { sendSuccessResponse } from "../../helpers/responses/sendSuccessResponse";
+import { getUserIdFromToken } from "../../helpers/functions/getUserIdFromToken";
+import { Traveler } from "../../entities/Traveler.entity";
+import { unlinkSync } from "fs";
+import { UPLOAD_DIRECTORY } from "../../helpers/constants/directories";
+import { sendNotFoundResponse } from "../../helpers/responses/404.response";
 const viewUserProfile: RequestHandler = async (req, res) => {
-	const user = await AppDataSource.getRepository(User).findOne({
-		where: {
-			id: parseInt(req.params.id),
-		},
-		relations: {
-			friends:true
-			},
+	const id = getUserIdFromToken(req);
+	const user = await AppDataSource.getRepository(User).findOneByOrFail({
+		id
 	})
+	sendSuccessResponse<User>(res, user);
 }
-	// const userFromToken = {
-	// 	id: 3,
-	// }
-	// let returnvalue
-	// view my profile 
-	// user?.find({
-	// 	where:[
-	// 		{
-	// 		//userId_1:userFromToken.id	
-	// 		// userId_2 : parseInt(req.params.id)
-	// 		},
-	// 	{
-	// 		//userId_2:userFromToken.id	
-	// 		// userId_1 : parseInt(req.params.id)
-	// 	}]
-	// })
-
-		// res.json({
-		// 	success: true,
-		// 	data: user,
-		// })
-	
-
-	// view other friend profile
-	// else {
-	// 	returnvalue = {
-	// 		identification: '',
-	// 		description: '',
-	// 	}
-	// }
-// 	res.send(returnvalue)
 
 const editUserProfile = async (req: Request, res: Response) => {
 	try {
-		const id: number | undefined = +req.params.id
+		const id = getUserIdFromToken(req);
 		const validation: User = await userValidation.validateAsync(req.body, {
 			abortEarly: false,
 		})
-		const updateResult = await AppDataSource.manager.update<User>(
+		await AppDataSource.manager.update<User>(
 			User,
 			{
 				id,
@@ -64,32 +35,36 @@ const editUserProfile = async (req: Request, res: Response) => {
 			validation
 		)
 
-		res.json({
-			success: updateResult.affected === 1,
-		})
+		sendSuccessResponse(res);
 	} catch (error: any) {
-		res.json(formatValidationErrors(error))
+		sendErrorResponse(
+			formatValidationErrors(error),
+			res,
+			StatusCodes.NOT_ACCEPTABLE
+		)
 	}
 }
 const updateUserPassword = async (req: Request, res: Response) => {
 	try {
-		const id: number | undefined = +req.params.id
+		const id = getUserIdFromToken(req);
+
 		const password_validation: User = await passwordValidation.validateAsync(
 			req.body,
 			{ abortEarly: false }
 		)
-		const updateResult = await AppDataSource.manager.update<User>(
+		await AppDataSource.manager.update<User>(
 			User,
-
 			id,
-			{ password: req.body.password }
+			{ password: password_validation.password }
 		)
 
-		res.json({
-			success: updateResult.affected === 1,
-		})
+		sendSuccessResponse(res)
 	} catch (error: any) {
-		res.json(formatValidationErrors(error))
+		sendErrorResponse(
+			formatValidationErrors(error),
+			res,
+			StatusCodes.NOT_ACCEPTABLE
+		)
 	}
 }
 const uploadProfilePicture = async (req: Request, res: Response) => {
@@ -115,8 +90,8 @@ const uploadProfilePicture = async (req: Request, res: Response) => {
 			path,
 		})
 	} else {
-		res.json(NotFoundResponse)
+		res.json(sendNotFoundResponse)
 	}
 }
 
-export {viewUserProfile,editUserProfile, updateUserPassword,uploadProfilePicture }
+export { uploadProfilePicture, viewUserProfile, editUserProfile, updateUserPassword }

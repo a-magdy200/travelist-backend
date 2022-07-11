@@ -9,5 +9,4 @@ const router = Router()
 router.get('/', listTravelers)
 router.get('/:id', viewTravelerProfile)
 router.put('/:id', editTravelerProfile)
-
 export default router

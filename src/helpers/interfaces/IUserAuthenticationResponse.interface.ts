@@ -1,7 +1,6 @@
-
-import { IUserInterface } from "./IUser.interface";
+import { IUserInterface } from './IUser.interface'
 
 export interface IUserAuthenticationResponse {
-  access_token: string;
-  user: IUserInterface
+	access_token: string
+	user: IUserInterface
 }
