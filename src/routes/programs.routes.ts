@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { Program } from '../controllers/Program'
+import { Program } from '../controllers/program'
 import multer from 'multer'
 import { storage } from '../helpers/common/storage-customizer'
 import { PROGRAMS_DIRECTORY } from '../helpers/constants/directories'

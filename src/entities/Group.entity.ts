@@ -33,7 +33,8 @@ export class Group extends BaseEntity {
 	@IsString()
 	cover_picture: string
 
-	@OneToOne(() => Country, (country) => country.group)
+	//@OneToOne(() => Country, (country) => country.group)
+	@OneToOne(() => Country)
 	@JoinColumn()
 	country: Country
 
