@@ -1,62 +1,47 @@
-import { Request, response, Response } from 'express'
-import e, { RequestHandler } from 'express'
+import { Request, Response, RequestHandler } from 'express'
 import { Company } from '../../entities/Company.entity'
 import { AppDataSource } from '../../config/database/data-source'
-import { NotFoundResponse } from '../../helpers/responses/404.response'
+import { sendNotFoundResponse } from '../../helpers/responses/404.response'
 import { companyValidation } from '../../helpers/validations/company.validation'
 import { formatValidationErrors } from '../../helpers/functions/formatValidationErrors'
-import { UPLOAD_DIRECTORY } from '../../helpers/constants/directories'
-import { unlinkSync } from 'fs'
 import { getUserIdFromToken } from '../../helpers/functions/getUserIdFromToken'
+import { sendSuccessResponse } from '../../helpers/responses/sendSuccessResponse'
+import { sendErrorResponse } from '../../helpers/responses/sendErrorResponse'
+import { StatusCodes } from '../../helpers/constants/statusCodes'
 const listCompanies = async (req: Request, res: Response) => {
 	const companies: Company[] = await AppDataSource.manager.find<Company>(
 		Company,
 		{}
 	)
-	res.json({
-		success: true,
-		data: companies,
-	})
+	sendSuccessResponse<Company[]>(res, companies)
 }
 
 const viewCompanyProfile: RequestHandler = async (req, res) => {
+	let criteria;
+	if (req.params.id) {
+		criteria = {
+			id: +req.params.id,
+		}
+	} else {
+		criteria = {
+			userId: getUserIdFromToken(req)
+		}
+	}
 	const company = await AppDataSource.getRepository(Company).findOne({
-		where: {
-			id: parseInt(req.params.id),
-		},
+		where: criteria,
 		relations: {
 			user: true,
 		},
 	})
-
-	const userId = getUserIdFromToken(req, res)
-	// view My company profile
 	if (company) {
-		if (company?.user.id == userId) {
-			res.json({
-				success: true,
-				data: [company],
-			})
-		} else {
-			res.json({
-				success: true,
-				data: [
-					company?.description,
-					company?.programs,
-					company?.cover_picture,
-					company?.rate,
-				],
-			})
-		}
+		sendSuccessResponse<Company>(res, company)
 	} else {
-		res
-			.status(404)
-			.json({ success: false, message: 'There is no company with this id' })
+		sendNotFoundResponse(res, ['There is no company with this id'])
 	}
 }
 const editCompanyProfile = async (req: Request, res: Response) => {
 	try {
-		const id: number | undefined = +req.params.id
+		const userId = getUserIdFromToken(req)
 		const validation: Company = await companyValidation.validateAsync(
 			req.body,
 			{ abortEarly: false }
@@ -64,48 +49,25 @@ const editCompanyProfile = async (req: Request, res: Response) => {
 		const updateResult = await AppDataSource.manager.update<Company>(
 			Company,
 			{
-				id,
+				userId,
 			},
 			validation
 		)
-
-		res.json({
-			success: updateResult.affected === 1,
-		})
-	} catch (error: any) {
-		res.json(formatValidationErrors(error))
-	}
-}
-const uploadCoverPicture = async (req: Request, res: Response) => {
-	const id: number | undefined = +req.params.id
-	const company: Company | null =
-		await AppDataSource.manager.findOneBy<Company>(Company, {
-			id,
-		})
-	if (company && req.file?.filename) {
-		// Remove `uploads/` from path string
-		const oldProfilePicture = company.cover_picture
-		if (oldProfilePicture && oldProfilePicture !== '') {
-			await unlinkSync(`${UPLOAD_DIRECTORY}${oldProfilePicture}`)
+		if (updateResult.affected === 1) {
+			sendSuccessResponse(res)
+		} else {
+			sendErrorResponse(['Failed to update'], res, StatusCodes.NO_CHANGE)
 		}
-		const path = `${req.file.destination}${req.file.filename}`.replace(
-			UPLOAD_DIRECTORY,
-			''
+	} catch (error: any) {
+		sendErrorResponse(
+			formatValidationErrors(error),
+			res,
+			StatusCodes.NOT_ACCEPTABLE
 		)
-		company.cover_picture = path
-		await company.save()
-		res.json({
-			success: true,
-			path,
-		})
-	} else {
-		res.json(NotFoundResponse)
 	}
 }
-
 export {
 	listCompanies,
 	viewCompanyProfile,
 	editCompanyProfile,
-	uploadCoverPicture,
 }

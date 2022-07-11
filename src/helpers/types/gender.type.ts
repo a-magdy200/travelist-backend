@@ -1,2 +1,1 @@
-
-export type Gender = "male" | "female";
+export type GenderType = 'male' | 'female'
