@@ -78,8 +78,8 @@ export const register = async (req: Request, res: Response, next: any) => {
 			})
 			if (userType == 'traveler') {
 				const traveler = await AppDataSource.manager.insert<Traveler>(
-					Traveler,
-					// roleValidatedBody as ITravelerRequestBodyInterface,
+					Traveler,	
+					// todo::roleValidatedBody as ITravelerRequestBodyInterface,
 					{
 						gender: requestBody.gender,
 						date_of_birth: requestBody.date_of_birth,
@@ -102,7 +102,7 @@ export const register = async (req: Request, res: Response, next: any) => {
 			} else {
 				const company = await AppDataSource.manager.insert<Company>(
 					Company,
-					// roleValidatedBody as ICompanyRequestBodyInterface
+					//todo::roleValidatedBody as ICompanyRequestBodyInterface
 					{
 						description: requestBody.description,
 						userId: userEntity?.id
