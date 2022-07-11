@@ -12,19 +12,33 @@ import { sendSuccessResponse } from "../../helpers/responses/sendSuccessResponse
 
 export const createCycle = async (req: Request, res: Response) => {
 	try {
+		console.log(req.body)
 		const validation: ICycleInterface = await cycleValidation.validateAsync(req.body, {
 			abortEarly: false,
 		})
 		const program = await AppDataSource.getRepository(Program).findOneBy({
 			id: validation.programId,
 		})
+		if(program?.is_Recurring)
+     	{
 		const cycle = await AppDataSource.manager.create<Cycle>(Cycle, validation)
 		if (program) {
 			cycle.program = program
 		}
 
 		await cycle.save()
+	
 		sendSuccessResponse<Cycle>(res, cycle);
+	   }
+	   else
+	   {
+		const error:any=['program not recurring ']
+		sendErrorResponse(
+			formatValidationErrors(error),
+			res,
+			StatusCodes.NOT_ACCEPTABLE
+		)
+	   }
 	} catch (error: any) {
 		sendErrorResponse(
 			formatValidationErrors(error),

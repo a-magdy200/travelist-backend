@@ -65,13 +65,13 @@ export class Hotel extends BaseEntity {
 	@JoinColumn()
 	country: Country
 
-	@ManyToMany(() => Program, (program) => program.hotels, {
-		onDelete: 'CASCADE',
-	})
-	@JoinTable({
-		name: 'program_hotel',
-	})
-	programs: Program[]
+	//@ManyToMany(() => Program, (program) => program.hotels, {
+	//	onDelete: 'CASCADE',
+	//})
+	//@JoinTable({
+	//	name: 'program_hotel',
+	//})
+	//programs: Program[]
 
 	@CreateDateColumn()
 	created_at?: Date

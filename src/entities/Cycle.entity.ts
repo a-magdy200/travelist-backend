@@ -109,6 +109,7 @@ export class Cycle extends BaseEntity {
 
 	@ManyToOne(() => Program, (program) => program.cycles, {
 		onUpdate: 'CASCADE',
+		onDelete: 'CASCADE' 
 	})
 	@JoinColumn()
 	program?: Program

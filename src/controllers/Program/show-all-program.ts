@@ -7,7 +7,7 @@ export const showAll = async (req: Request, res: Response) => {
 	const programs: Program[] = await AppDataSource.manager.find<Program>(
 		Program,
 		{
-			relations: ["company", "cycles", "reviews", "hotels", "transportation", "country"],
+			relations: ["company", "cycles", "hotels", "transportation", "country"],
 		}
 	)
 	sendSuccessResponse<Program[]>(res, programs);

@@ -12,6 +12,7 @@ import { IProgramInterface } from '../../helpers/interfaces/IProgram.interface'
 import { sendErrorResponse } from '../../helpers/responses/sendErrorResponse'
 import { StatusCodes } from '../../helpers/constants/statusCodes'
 import { sendSuccessResponse } from "../../helpers/responses/sendSuccessResponse";
+import { Country } from '../../entities/Country.entity'
 
 export const create = async (req: Request, res: Response) => {
 	console.log(req.body)
@@ -39,21 +40,39 @@ export const create = async (req: Request, res: Response) => {
 			typeof bodyObject.hotels === 'string'
 				? [parseInt(bodyObject.hotels, 10)]
 				: bodyObject.hotels?.map((hotelId: string) => parseInt(hotelId, 10))
-		if (hotelsIds && bodyObject.companyId) {
+
+		const destinationIds =
+			typeof bodyObject.destinations === 'string'
+				? [parseInt(bodyObject.destinations, 10)]
+				: bodyObject.destinations?.map((destinationId: string) => parseInt(destinationId, 10))
+			
+		if (hotelsIds && destinationIds&& bodyObject.companyId&&bodyObject.countryId &&bodyObject.transportationId) {
 			const loadedHotels = await AppDataSource.manager.findBy(Hotel, {
 				id: In(hotelsIds),
 			})
+			
+			const loadedDestinations = await AppDataSource.manager.findBy(Country, {
+				id: In(destinationIds),
+			})
+
+			program.hotels = loadedHotels
+			program.destinations = loadedDestinations
+
 			const company = await AppDataSource.getRepository(Company).findOneBy({
 				id: parseInt(bodyObject.companyId),
 			})
-			program.hotels = loadedHotels
+
+			const country = await AppDataSource.getRepository(Country).findOneBy({
+				id: parseInt(bodyObject.countryId),
+			})
 
 			const transportation = await AppDataSource.getRepository(
 				Transportation
-			).findOneBy({ id: 1 })
+			).findOneBy({ id: parseInt(bodyObject.transportationId) })
 
-			if (company && transportation) {
+			if (company && transportation && country) {
 				program.company = company
+				program.country = country
 				program.transportation = transportation
 			}
 		}

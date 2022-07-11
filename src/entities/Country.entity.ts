@@ -45,7 +45,7 @@ export class Country extends BaseEntity {
 	@Min(0)
 	ratings_count: number
 
-	@ManyToOne(() => Program, (program) => program.country)
+	@OneToMany(() => Program, (program) => program.country)
 	@JoinColumn()
 	programs: Program[]
 
@@ -53,11 +53,11 @@ export class Country extends BaseEntity {
 	@JoinColumn()
 	reviews: CountryReview[]
 
-	@ManyToMany(() => Program, (program) => program.destinations)
-	@JoinTable({
-		name: 'program_destination',
-	})
-	program_destination: Program[]
+	//@ManyToMany(() => Program, (program) => program.destinations)
+	//@JoinTable({
+	//	name: 'program_destination',
+	//})
+	//program_destination: Program[]
 
 	@OneToMany(() => Hotel, (hotel) => hotel.country)
 	hotels: Hotel[]
