@@ -46,7 +46,7 @@ export const create = async (req: Request, res: Response) => {
 				? [parseInt(bodyObject.destinations, 10)]
 				: bodyObject.destinations?.map((destinationId: string) => parseInt(destinationId, 10))
 			
-		if (hotelsIds && destinationIds&& bodyObject.companyId &&bodyObject.transportationId) {
+		if (hotelsIds && destinationIds&& bodyObject.companyId&&bodyObject.countryId &&bodyObject.transportationId) {
 			const loadedHotels = await AppDataSource.manager.findBy(Hotel, {
 				id: In(hotelsIds),
 			})
@@ -61,13 +61,18 @@ export const create = async (req: Request, res: Response) => {
 			const company = await AppDataSource.getRepository(Company).findOneBy({
 				id: parseInt(bodyObject.companyId),
 			})
-			
+
+			const country = await AppDataSource.getRepository(Country).findOneBy({
+				id: parseInt(bodyObject.countryId),
+			})
+
 			const transportation = await AppDataSource.getRepository(
 				Transportation
 			).findOneBy({ id: parseInt(bodyObject.transportationId) })
 
-			if (company && transportation) {
+			if (company && transportation && country) {
 				program.company = company
+				program.country = country
 				program.transportation = transportation
 			}
 		}

@@ -10,6 +10,7 @@ export interface IProgramInterface {
 	is_Recurring?: boolean
 	transportationId?: string
 	companyId?: string
+	countryId?:string
 	hotels?: string | string[]
 	destinations?: string | string[]
 
