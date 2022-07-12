@@ -23,9 +23,18 @@ export const addUserGroup = async (req: Request, res: Response) => {
     }) 
     if(group && user)
     {
-      group.followers.push(user)
+      group.followers=[user]
       group.followers_count+=1
 
+    }
+    else
+    {
+      const error:any=['not found']
+      sendErrorResponse(
+        formatValidationErrors(error),
+        res,
+        StatusCodes.NOT_ACCEPTABLE
+      )
     }
     
     }

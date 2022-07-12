@@ -30,11 +30,11 @@ export class CycleBooking extends BaseEntity {
 
 	@ManyToOne(() => Cycle, (cycle) => cycle.bookings)
 	@JoinColumn()
-	cycle: Cycle[]
+	cycle: Cycle
 
 	@ManyToOne(() => Traveler, (traveler) => traveler.bookings)
 	@JoinColumn()
-	travelers: Traveler[]
+	travelers: Traveler
 
 	@OneToMany(() => Transaction, (transaction) => transaction.booking)
 	transaction: Transaction

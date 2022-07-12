@@ -79,8 +79,17 @@ export const register = async (req: Request, res: Response, next: any) => {
 			if (userType == 'traveler') {
 				const traveler = await AppDataSource.manager.insert<Traveler>(
 					Traveler,
-					roleValidatedBody as ITravelerRequestBodyInterface
+					//roleValidatedBody as ITravelerRequestBodyInterface
+					{
+						gender: requestBody.gender,
+						date_of_birth: requestBody.date_of_birth,
+						is_guide: req.body.is_guide,
+						national_id: requestBody.national_id,
+						userId: userEntity?.id
+					}
+
 				)
+				
 				const travelerId = traveler.generatedMaps[0].id
 				const travelerEntity = await AppDataSource.manager.findOneBy<Traveler>(
 					Traveler,
