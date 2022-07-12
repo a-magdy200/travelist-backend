@@ -3,6 +3,7 @@ import { showCycle } from './show-cycle'
 import { updateCycle } from './update-cycle'
 import { deleteCycle } from './delete-cycle'
 import { createCycle } from './create-cycle'
+import { bookCycle } from './book-cycle'
 
 export {
 	showAllCycles,
@@ -10,4 +11,5 @@ export {
 	createCycle,
 	updateCycle,
 	deleteCycle,
+	bookCycle,
 }
