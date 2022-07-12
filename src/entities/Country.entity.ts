@@ -46,7 +46,6 @@ export class Country extends BaseEntity {
 	ratings_count: number
 
 	@OneToMany(() => Program, (program) => program.country)
-	@JoinColumn()
 	programs: Program[]
 
 	@ManyToOne(() => CountryReview, (countryReview) => countryReview.country)
