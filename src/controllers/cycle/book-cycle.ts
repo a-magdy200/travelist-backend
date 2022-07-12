@@ -24,22 +24,37 @@ export const bookCycle = async (req: Request, res: Response) => {
             where: {
                 id:bodyObject.cycleId
             },
+            relations:["bookings"]
+
         })
 
         const traveler = await AppDataSource.getRepository(Traveler).findOne({
             where: {
                 userId:userId
             },
+            relations:["bookings"]
         })
-        if(traveler&&cycle)
+
+        const previousCycle = await AppDataSource.getRepository(CycleBooking).findOne({
+            where: {
+              travelers:{id:traveler?.id},
+              cycle:{id:cycle?.id}
+            },
+        })
+
+        console.log(!previousCycle)
+
+        if(traveler && cycle && !previousCycle )
       { 
-        const booking = await AppDataSource.manager.create<CycleBooking>(CycleBooking,bodyObject)
-        console.log(traveler)
+        console.log(cycle)
+
+       //if(cycle?.current_seats < cycle?.max_seats){}
+       const booking = await AppDataSource.manager.create<CycleBooking>(CycleBooking,bodyObject)
        //  booking.travelers.push(traveler)
        booking.travelers=traveler
        booking.cycle=cycle
        await AppDataSource.manager.save(booking)
-		sendSuccessResponse<CycleBooking>(res, booking)
+	   sendSuccessResponse<CycleBooking>(res, booking)
 
       }  
       else

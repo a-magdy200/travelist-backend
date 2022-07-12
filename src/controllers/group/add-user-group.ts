@@ -13,8 +13,6 @@ export const addUserGroup = async (req: Request, res: Response) => {
   try {
     const groupId: number | undefined = +req.body.groupId
     const userId: number = getUserIdFromToken(req)
-    console.log("user")
-    console.log(userId)
     const group = await AppDataSource.getRepository(Group).findOne({
       where: {
         id: groupId,
@@ -32,6 +30,7 @@ export const addUserGroup = async (req: Request, res: Response) => {
       user.groups.forEach(function (item) {
         if (item.id == groupId) {
           flag = false;
+          return
         }
       });
     }

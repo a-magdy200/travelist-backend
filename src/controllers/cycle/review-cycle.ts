@@ -30,15 +30,11 @@ export const reviewCycle = async (req: Request, res: Response) => {
             where: {
                 userId:userId
             },
+			relations:["cycles"]
         })
-		
-		const previousReview = await AppDataSource.getRepository(CycleReview).findOne({
-			where: {
-				//travelerId:traveler.id,
-				//cycleId:bodyObject.cycleId
+		 
 
-			},
-		})
+		
 
 		if(cycle&& traveler)
 		{
