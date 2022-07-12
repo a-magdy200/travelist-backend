@@ -10,44 +10,53 @@ import { sendSuccessResponse } from "../../helpers/responses/sendSuccessResponse
 
 export const addUserGroup = async (req: Request, res: Response) => {
 
-    try
-    {
+  try {
     const groupId: number | undefined = +req.body.groupId
-    const userId :number=getUserIdFromToken(req)
+    const userId: number = getUserIdFromToken(req)
     console.log("user")
     console.log(userId)
-    const group: Group | null = await AppDataSource.getRepository(
-        Group
-    ).findOneBy( {
-        id:groupId,
+    const group = await AppDataSource.getRepository(Group).findOne({
+      where: {
+        id: groupId,
+      },
+      relations: ["followers"],
     })
-    const user = await AppDataSource.getRepository(User).findOneBy({
-      id: userId,
-    }) 
-    if(group && user)
-    {
-      console.log(user)
-      group.followers=[user]
-     group.followers_count+=1
-      await AppDataSource.manager.save(group)
-		  sendSuccessResponse<Group>(res, group)
+    const user = await AppDataSource.getRepository(User).findOne({
+      where: {
+        id: userId,
+      },
+      relations: ["groups"]
+    })
+    let flag: boolean = true
+    if (user) {
+      user.groups.forEach(function (item) {
+        if (item.id == groupId) {
+          flag = false;
+        }
+      });
     }
-    else
+    if (group && user && flag) 
     {
-      const error:any=['not found']
+      group.followers.push(user)
+      group.followers_count += 1
+      await AppDataSource.manager.save(group)
+      sendSuccessResponse<Group>(res, group)
+    }
+    else {
+      const error: any = ['not found']
       sendErrorResponse(
         formatValidationErrors(error),
         res,
         StatusCodes.NOT_ACCEPTABLE
       )
     }
-    
-    }
-    catch (error: any) {
-		sendErrorResponse(
-			formatValidationErrors(error),
-			res,
-			StatusCodes.NOT_ACCEPTABLE
-		)
-	}
+
+  }
+  catch (error: any) {
+    sendErrorResponse(
+      formatValidationErrors(error),
+      res,
+      StatusCodes.NOT_ACCEPTABLE
+    )
+  }
 }

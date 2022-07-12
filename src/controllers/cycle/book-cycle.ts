@@ -26,20 +26,14 @@ export const bookCycle = async (req: Request, res: Response) => {
             },
         })
 
-     /*   const user = await AppDataSource.getRepository(User).findOne({
-            where: {
-                id:userId
-            },
-        })*/
-
         const traveler = await AppDataSource.getRepository(Traveler).findOne({
             where: {
                 userId:userId
             },
         })
-        const booking = await AppDataSource.manager.create<CycleBooking>(CycleBooking,bodyObject)
         if(traveler&&cycle)
       { 
+        const booking = await AppDataSource.manager.create<CycleBooking>(CycleBooking,bodyObject)
         console.log(traveler)
        //  booking.travelers.push(traveler)
        booking.travelers=traveler
