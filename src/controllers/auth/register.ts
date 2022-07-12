@@ -4,12 +4,10 @@ import { Traveler } from '../../entities/Traveler.entity'
 import { Company } from '../../entities/Company.entity'
 import { Request, Response } from 'express'
 import { userValidation } from '../../helpers/validations/user.validation'
-import jwt from 'jsonwebtoken'
 import { sendErrorResponse } from '../../helpers/responses/sendErrorResponse'
 import { IRegisterRequestBody } from '../../helpers/interfaces/IRegisterRequestBody.interface'
 import { travelerValidation } from '../../helpers/validations/traveler.validation'
 import { companyValidation } from '../../helpers/validations/company.validation'
-import configurations from '../../config/configurations'
 import { sendAuthenticationResponse } from '../../helpers/responses/sendAuthenticationResponse'
 import { StatusCodes } from '../../helpers/constants/statusCodes'
 import { formatValidationErrors } from '../../helpers/functions/formatValidationErrors'
@@ -17,6 +15,7 @@ import bcrypt from 'bcrypt'
 import { ITravelerRequestBodyInterface } from '../../helpers/interfaces/ITravelerRequestBody.interface'
 import { ICompanyRequestBodyInterface } from '../../helpers/interfaces/ICompanyRequestBody.interface'
 import { IUserRequestBodyInterface } from '../../helpers/interfaces/IUserRequestBody.interface'
+
 export const register = async (req: Request, res: Response, next: any) => {
 	try {
 		const existedUser = await AppDataSource.manager.findOneBy<User>(User, {
@@ -24,6 +23,7 @@ export const register = async (req: Request, res: Response, next: any) => {
 		})
 		const requestBody: IRegisterRequestBody = { ...req.body }
 		const userType = requestBody.type
+
 		if (!existedUser) {
 			const userRequestBody: IUserRequestBodyInterface = {
 				name: requestBody.name,
@@ -35,7 +35,7 @@ export const register = async (req: Request, res: Response, next: any) => {
 			const travelerRequestBody: ITravelerRequestBodyInterface = {
 				gender: requestBody.gender,
 				date_of_birth: requestBody.date_of_birth,
-				is_guide: req.body.is_guide === 1,
+				is_guide: req.body.is_guide,
 				national_id: requestBody.national_id,
 			}
 			const companyRequestBody: ICompanyRequestBodyInterface = {
@@ -47,6 +47,7 @@ export const register = async (req: Request, res: Response, next: any) => {
 					abortEarly: false,
 				}
 			)
+
 			let roleValidatedBody:
 				| ITravelerRequestBodyInterface
 				| ICompanyRequestBodyInterface
@@ -79,13 +80,13 @@ export const register = async (req: Request, res: Response, next: any) => {
 			if (userType == 'traveler') {
 				const traveler = await AppDataSource.manager.insert<Traveler>(
 					Traveler,
-					// roleValidatedBody as ITravelerRequestBodyInterface,
+					// todo:: roleValidatedBody as ITravelerRequestBodyInterface,
 					{
 						gender: requestBody.gender,
 						date_of_birth: requestBody.date_of_birth,
 						is_guide: req.body.is_guide,
 						national_id: requestBody.national_id,
-						userId: userEntity?.id
+						userId: userEntity?.id,
 					}
 				)
 				const travelerId = traveler.generatedMaps[0].id
@@ -102,10 +103,10 @@ export const register = async (req: Request, res: Response, next: any) => {
 			} else {
 				const company = await AppDataSource.manager.insert<Company>(
 					Company,
-					// roleValidatedBody as ICompanyRequestBodyInterface
+					// todo:: roleValidatedBody as ICompanyRequestBodyInterface
 					{
 						description: requestBody.description,
-						userId: userEntity?.id
+						userId: userEntity?.id,
 					}
 				)
 				const companyId = company.generatedMaps[0].id
