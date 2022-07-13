@@ -12,6 +12,7 @@ export interface IConfigInterface {
 	port: string | number
 	database: IDataSourceOptions
 	secret: string
+	reset_password_key: string
 	websiteUrl: string
 	email: SmtpOptions
 }
