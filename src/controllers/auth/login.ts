@@ -18,7 +18,7 @@ export const login = async (req: Request, res: Response) => {
 			where: {
 				email: requestBody.email,
 			},
-			select: ['password', 'email']
+			select: ['password', 'email'],
 		})
 		if (existingUser) {
 			const validPassword = await bcrypt.compare(
@@ -26,7 +26,9 @@ export const login = async (req: Request, res: Response) => {
 				existingUser.password
 			)
 			if (validPassword) {
-				const user = await AppDataSource.manager.findOneByOrFail(User, {email: requestBody.email});
+				const user = await AppDataSource.manager.findOneByOrFail(User, {
+					email: requestBody.email,
+				})
 				sendAuthenticationResponse(user, res)
 			} else {
 				sendErrorResponse(

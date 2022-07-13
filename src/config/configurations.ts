@@ -13,6 +13,7 @@ export default (): IConfigInterface => ({
 		name: process.env.DATABASE_NAME,
 	},
 	secret: process.env.SECRET_KEY ?? 'travelist',
+	reset_password_key: process.env.RESET_PASSWORD_KEY ?? 'travel',
 	websiteUrl: process.env.WEBSITE_URL ?? 'http://localhost:3000',
 	email: {
 		host: process.env.EMAIL_HOST,

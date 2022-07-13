@@ -89,7 +89,7 @@ export const register = async (req: Request, res: Response, next: any) => {
 						userId: userEntity?.id,
 					}
 				)
-				
+
 				const travelerId = traveler.generatedMaps[0].id
 				const travelerEntity = await AppDataSource.manager.findOneBy<Traveler>(
 					Traveler,
