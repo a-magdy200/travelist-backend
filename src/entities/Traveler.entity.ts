@@ -79,10 +79,11 @@ export class Traveler extends BaseEntity {
 	average_rate?: number
 
 	@Column({
-		type: "int"
+		type: "int",
+		nullable: true,
 	})
 	@IsInt()
-	userId: number;
+	userId?: number;
 
 	@OneToMany(() => FriendRequest, (friend_request) => friend_request.sender)
 	sent_requests: FriendRequest[]
