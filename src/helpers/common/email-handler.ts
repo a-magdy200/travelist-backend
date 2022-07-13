@@ -1,4 +1,4 @@
-import { EMAIL_FROM, VERIFY_CODE_SUBJECT } from '../constants/emailParams'
+import { EMAIL_FROM, RESET_PASSWORD_SUBJECT } from '../constants/emailParams'
 import transporter from '../../config/transporter'
 import { IEmailParamsInterface } from '../interfaces/IEmailParams.interface'
 
@@ -10,7 +10,7 @@ export const emailHandler = async ({
 	await transporter.sendMail({
 		from: EMAIL_FROM,
 		to: email,
-		subject: VERIFY_CODE_SUBJECT,
+		subject: RESET_PASSWORD_SUBJECT,
 		html,
 	})
 }

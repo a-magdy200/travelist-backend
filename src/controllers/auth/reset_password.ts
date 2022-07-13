@@ -5,26 +5,54 @@ import { Request, Response } from 'express'
 import { sendErrorResponse } from '../../helpers/responses/sendErrorResponse'
 import { StatusCodes } from '../../helpers/constants/statusCodes'
 import { formatValidationErrors } from '../../helpers/functions/formatValidationErrors'
-import { loginValidation } from '../../helpers/validations/login.validation'
-import { ILoginRequestBody } from '../../helpers/interfaces/ILoginRequestBody.interface'
 import { sendSuccessResponse } from '../../helpers/responses/sendSuccessResponse'
+import jwt from 'jsonwebtoken'
+import configurations from '../../config/configurations'
 
 export const resetPassword = async (req: Request, res: Response, next: any) => {
 	try {
-		const validated: ILoginRequestBody = await loginValidation.validateAsync(
-			req.body
-		)
+		// const validated: ILoginRequestBody = await loginValidation.validateAsync(
+		// 	req.body
+		// )
+
+		// todo:: validate
+		const token = req.body.token
+		const password = req.body.password
+
+		try {
+			jwt.verify(token, configurations().reset_password_key)
+		} catch (e: any) {
+			sendErrorResponse(formatValidationErrors(e), res, StatusCodes.BAD_REQUEST)
+		}
+
 		const user = await AppDataSource.manager.findOneBy(User, {
-			email: validated.email,
+			forgot_password_token: token,
 		})
 
 		if (user) {
 			const salt = await bcrypt.genSalt(10)
 
-			user.password = await bcrypt.hash(validated.password, salt)
-			await AppDataSource.manager.save(user)
+			const update_password = await bcrypt.hash(password, salt)
 
-			sendSuccessResponse(res, user)
+			const updated_pass_success = await AppDataSource.manager.update(
+				User,
+				user.id,
+				{
+					password: update_password,
+				}
+			)
+			if (updated_pass_success) {
+				await AppDataSource.manager.update(User, user.id, {
+					forgot_password_token: '',
+				})
+				sendSuccessResponse(res, user)
+			} else {
+				sendErrorResponse(
+					['failed to update password'],
+					res,
+					StatusCodes.NOT_ACCEPTABLE
+				)
+			}
 		} else {
 			sendErrorResponse(
 				['Missing password or user not found'],
