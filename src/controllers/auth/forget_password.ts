@@ -1,52 +1,52 @@
 import { AppDataSource } from '../../config/database/data-source'
 import { User } from '../../entities/User.entity'
-import { ForgetPasswordCode } from '../../entities/ForgetPasswordCode.entity'
 import { Request, Response } from 'express'
 import { sendErrorResponse } from '../../helpers/responses/sendErrorResponse'
 import { StatusCodes } from '../../helpers/constants/statusCodes'
-import { VERIFY_CODE_SUBJECT } from '../../helpers/constants/emailParams'
+import { RESET_PASSWORD_SUBJECT } from '../../helpers/constants/emailParams'
 import { sendSuccessResponse } from '../../helpers/responses/sendSuccessResponse'
 import { forgetPasswordEmail } from '../../helpers/emails/forget-password.email'
 import { emailHandler } from '../../helpers/common/email-handler'
+import configurations from '../../config/configurations'
+import jwt from 'jsonwebtoken'
+import { formatValidationErrors } from '../../helpers/functions/formatValidationErrors'
 
 export const forgetPassword = async (req: Request, res: Response) => {
 	if (req.body.email !== undefined) {
+		// todo::interface and validate email only
 		const user = await AppDataSource.manager.findOneBy(User, {
 			email: req.body.email,
 		})
 
 		if (user) {
 			const email = user.email
-			const code = Math.random().toString(20).substring(2, 12)
 
-			const user_password_forget = await AppDataSource.manager.findOneBy(
-				ForgetPasswordCode,
-				{
-					email,
-				}
+			const token = jwt.sign(
+				{ user: user.id },
+				configurations().reset_password_key,
+				{ expiresIn: '15m' }
 			)
-
-			if (user_password_forget) {
-				user_password_forget.code = code
-				user_password_forget.save()
-			} else {
-				await AppDataSource.manager.insert<ForgetPasswordCode>(
-					ForgetPasswordCode,
-					{
-						email,
-						code,
-					}
+			try {
+				await AppDataSource.manager.update(User, user.id, {
+					forgot_password_token: token,
+				})
+			} catch (e: any) {
+				sendErrorResponse(
+					formatValidationErrors(e),
+					res,
+					StatusCodes.BAD_REQUEST
 				)
 			}
+
 			await emailHandler({
 				email,
-				subject: VERIFY_CODE_SUBJECT,
-				html: forgetPasswordEmail(code),
+				subject: RESET_PASSWORD_SUBJECT,
+				html: forgetPasswordEmail(token),
 			})
 			sendSuccessResponse(res)
 		} else {
 			sendErrorResponse(
-				['Invalid email, user not exist'],
+				['Invalid email, user does not exist'],
 				res,
 				StatusCodes.NOT_FOUND
 			)

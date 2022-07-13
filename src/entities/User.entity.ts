@@ -78,6 +78,10 @@ export class User extends BaseEntity {
 	@IsEnum(AccountStatusEnum)
 	status: AccountStatusEnum
 
+	@Column({ default: '', nullable:true })
+	@IsString()
+	forgot_password_token?: string
+
 	@OneToMany(() => PostReport, (postReport) => postReport.user)
 	post_reports: PostReport[]
 

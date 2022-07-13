@@ -43,10 +43,11 @@ export class Company extends BaseEntity {
 
 
 	@Column({
-		type: "int"
+		type: "int",
+		nullable: true
 	})
 	@IsInt()
-	userId: number;
+	userId?: number;
 
 	@Column({ default: '' })
 	@IsString()
