@@ -1,1 +1,1 @@
-export const VERIFY_CODE = '/verify-code'
+export const RESET_PASSWORD = 'reset_password'

@@ -52,18 +52,13 @@ export class Country extends BaseEntity {
 	@JoinColumn()
 	reviews: CountryReview[]
 
-	//@ManyToMany(() => Program, (program) => program.destinations)
-	//@JoinTable({
-	//	name: 'program_destination',
-	//})
-	//program_destination: Program[]
-
+	
 	@OneToMany(() => Hotel, (hotel) => hotel.country)
 	hotels: Hotel[]
 
-	@OneToOne(() => Group, (group) => group.country)
-	@JoinColumn()
-	group: Group
+	//@OneToOne(() => Group, (group) => group.country)
+	//@JoinColumn()
+	//group: Group
 
 	@CreateDateColumn()
 	created_at?: Date

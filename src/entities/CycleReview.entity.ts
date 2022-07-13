@@ -20,7 +20,7 @@ export class CycleReview extends BaseEntity {
 
 	@Column({
 		type: 'int',
-		default: 1,
+		default: 0,
 	})
 	@IsInt()
 	@Min(1)
