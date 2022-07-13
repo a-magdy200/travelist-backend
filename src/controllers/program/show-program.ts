@@ -5,14 +5,7 @@ import { sendSuccessResponse } from "../../helpers/responses/sendSuccessResponse
 import { sendNotFoundResponse } from "../../helpers/responses/404.response";
 
 export const show = async (req: Request, res: Response) => {
-	/* const program = await AppDataSource.getRepository(Program).findOneBy({
-        id: Number(req.params.id)
-    })
-   if(program)
-    return res.send(program)
-   else
-   return res.status(404).send('Not found');
-   */
+	
 	const id: number | undefined = +req.params.id
 	const program = await AppDataSource.getRepository(Program).findOne({
 		where: {
