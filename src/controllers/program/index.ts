@@ -3,6 +3,7 @@ import { show } from './show-program'
 import { create } from './create-program'
 import { update } from './update-program'
 import { deleteProgram } from './delete-program'
+import { showProgramCycles } from './show-program-cycles'
 
 export const Program = {
 	showAll,
@@ -10,4 +11,5 @@ export const Program = {
 	create,
 	update,
 	deleteProgram,
+	showProgramCycles
 }

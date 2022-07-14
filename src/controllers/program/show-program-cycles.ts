@@ -4,7 +4,7 @@ import { Request, Response } from 'express'
 import { sendSuccessResponse } from "../../helpers/responses/sendSuccessResponse";
 import { sendNotFoundResponse } from "../../helpers/responses/404.response";
 
-export const showProgramCycle = async (req: Request, res: Response) => {
+export const showProgramCycles = async (req: Request, res: Response) => {
 	const id: number | undefined = +req.params.id
 	const cycles:Cycle[]  = await AppDataSource.getRepository(Cycle).find({
 		where: {
