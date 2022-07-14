@@ -36,8 +36,8 @@ AppDataSource.initialize()
 		app.use('/api/users', userRouter)
 		app.use('/api/travelers', travelerRouter)
 		app.use('/', appRoutes)
-		app.use('/api/cycles', cycleRoutes)
-		app.use('/api/programs', programsRoutes)
+		app.use('/cycles', cycleRoutes)
+		app.use('/programs', programsRoutes)
 		app.use('/api/groups', groupRoutes)
 
 		app.listen(config.port, () => {
