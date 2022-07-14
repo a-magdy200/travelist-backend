@@ -11,7 +11,9 @@ import { StatusCodes } from '../../helpers/constants/statusCodes'
 const listCompanies = async (req: Request, res: Response) => {
 	const companies: Company[] = await AppDataSource.manager.find<Company>(
 		Company,
-		{relations:["user","programs","reviews"]}
+		{
+			relations:["user","programs","programs.cycles"]
+		}
 	)
 	if(companies)
 	{
@@ -31,7 +33,7 @@ const listCompanies = async (req: Request, res: Response) => {
 		where: {
 			id: parseInt(req.params.id),
 		},
-		relations: ["user","programs","reviews"],
+		relations: ["user","programs","programs.cycles"],
 	})
 	if (company) {
 		sendSuccessResponse<Company>(res, company)
