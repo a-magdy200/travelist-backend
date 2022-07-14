@@ -1,20 +1,19 @@
-import { Program } from '../../entities/Program.entity'
+import { Cycle } from '../../entities/Cycle.entity'
 import { AppDataSource } from '../../config/database/data-source'
 import { Request, Response } from 'express'
 import { sendSuccessResponse } from "../../helpers/responses/sendSuccessResponse";
 import { sendNotFoundResponse } from "../../helpers/responses/404.response";
 
-export const show = async (req: Request, res: Response) => {
-	
+export const showProgramCycles = async (req: Request, res: Response) => {
 	const id: number | undefined = +req.params.id
-	const program = await AppDataSource.getRepository(Program).findOne({
+	const cycles:Cycle[]  = await AppDataSource.getRepository(Cycle).find({
 		where: {
-			id: parseInt(req.params.id),
+			program:{id:id}
 		},
-		relations: ["company", "company.user", "cycles",  "hotels", "transportation", "country"],
+		relations: ["program", "program.company", "bookings", "reviews"],
 	})
-	if (program) {
-		sendSuccessResponse<Program>(res, program)
+	if (cycles) {
+        sendSuccessResponse<Cycle[]>(res, cycles)
 	} else {
 		sendNotFoundResponse(res)
 	}
