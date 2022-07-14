@@ -29,21 +29,21 @@ export class Country extends BaseEntity {
 	@IsString()
 	name?: string
 
-	// @Column({ type: 'int', default: 0 })
-	// @IsInt()
-	// @Min(0)
-	// total_rate: number
-	//
-	// @Column({ type: 'float', default: 0 })
-	// @IsInt()
-	// @Min(0)
-	// @Max(5)
-	// average_rate: number
-	//
-	// @Column({ type: 'int', default: 0 })
-	// @IsInt()
-	// @Min(0)
-	// ratings_count: number
+	@Column({ type: 'int', default: 0 })
+	@IsInt()
+	@Min(0)
+	total_rate: number
+
+	@Column({ type: 'float', default: 0 })
+	@IsInt()
+	@Min(0)
+	@Max(5)
+	average_rate: number
+
+	@Column({ type: 'int', default: 0 })
+	@IsInt()
+	@Min(0)
+	ratings_count: number
 
 	@OneToMany(() => Program, (program) => program.country)
 	programs: Program[]
