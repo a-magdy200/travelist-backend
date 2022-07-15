@@ -15,6 +15,7 @@ import companyRoutes from "./src/routes/company.routes";
 import appRoutes from "./src/routes/app.routes";
 import programsRoutes from "./src/routes/programs.routes";
 import groupRoutes from "./src/routes/group.routes";
+import transportationsRoutes from "./src/routes/transportations.routes";
 
 const app = express()
 app.use(cors({ origin: true, credentials: true }))
@@ -33,6 +34,7 @@ AppDataSource.initialize()
 		app.use('/auth', authRouter)
 		app.use('/api/companies', companyRoutes)
 		app.use('/api/hotels', hotelsRoutes)
+		app.use('/api/transportations', transportationsRoutes)
 		app.use('/api/users', userRouter)
 		app.use('/api/travelers', travelerRouter)
 		app.use('/', appRoutes)
