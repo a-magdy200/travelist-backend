@@ -27,9 +27,10 @@ export class Post extends BaseEntity {
 	@IsString()
 	content: string
 
-	@Column({ type: 'enum', enum: PostStatusEnum })
+	@Column({ type: 'enum', enum: PostStatusEnum ,default: PostStatusEnum.ACTIVE})
 	@IsEnum(PostStatusEnum)
 	status: PostStatusType
+	
 
 	@OneToMany(() => PostReport, (postReport) => postReport.post)
 	reports: PostReport[]

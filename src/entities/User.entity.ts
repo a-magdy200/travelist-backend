@@ -23,7 +23,6 @@ import { SupportTicketResponse } from './SupportTicketResponse.entity'
 import { AccountStatusEnum } from '../helpers/enums/accountStatus.enum'
 import { UserReport } from './UserReport.entity'
 import { PostReport } from './PostReport.entity'
-import { Traveler } from './Traveler.entity'
 import { Company } from './Company.entity'
 import { Transaction } from './Transaction.entity'
 

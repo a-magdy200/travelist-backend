@@ -7,6 +7,6 @@ import {
 const router = Router()
 
 router.get('/', listTravelers)
-router.get('/:id', viewTravelerProfile)
+router.get('/profile', viewTravelerProfile)
 router.put('/:id', editTravelerProfile)
 export default router
