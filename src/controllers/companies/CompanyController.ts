@@ -15,6 +15,21 @@ const listCompanies = async (req: Request, res: Response) => {
 	)
 	sendSuccessResponse<Company[]>(res, companies)
 }
+const showCompany = async (req: Request, res: Response) => {
+	
+	const id: number | undefined = +req.params.id
+	const company = await AppDataSource.getRepository(Company).findOne({
+		where: {
+			id: parseInt(req.params.id),
+		},
+		relations: ["user","programs","programs.cycles"],
+	})
+	if (company) {
+		sendSuccessResponse<Company>(res, company)
+	} else {
+		sendNotFoundResponse(res)
+	}
+}
 
 const viewCompanyProfile: RequestHandler = async (req, res) => {
 	let criteria;
@@ -70,4 +85,5 @@ export {
 	listCompanies,
 	viewCompanyProfile,
 	editCompanyProfile,
+	showCompany
 }
