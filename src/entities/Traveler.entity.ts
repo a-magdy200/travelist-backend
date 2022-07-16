@@ -82,8 +82,7 @@ export class Traveler extends BaseEntity {
 		type: "int",
 		nullable: true,
 	})
-	@IsInt()	.where("friends")
-
+	@IsInt()	
 	userId?: number;
 
 	@OneToMany(() => FriendRequest, (friend_request) => friend_request.sender)
