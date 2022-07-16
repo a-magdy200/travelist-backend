@@ -8,11 +8,13 @@ import { UPLOAD_DIRECTORY } from '../../helpers/constants/directories'
 import { unlinkSync } from 'fs'
 import { sendErrorResponse } from '../../helpers/responses/sendErrorResponse'
 import { StatusCodes } from '../../helpers/constants/statusCodes'
-import { sendSuccessResponse } from "../../helpers/responses/sendSuccessResponse";
+import { sendSuccessResponse } from '../../helpers/responses/sendSuccessResponse'
 
 const listHotels = async (req: Request, res: Response) => {
-	const hotels: Hotel[] = await AppDataSource.manager.find<Hotel>(Hotel)
-	sendSuccessResponse<Hotel[]>(res, hotels);
+	const hotels: Hotel[] = await AppDataSource.manager.find<Hotel>(Hotel, {
+		relations: ['reviews','country'],
+	})
+	sendSuccessResponse<Hotel[]>(res, hotels)
 }
 
 const showHotel = async (req: Request, res: Response) => {
@@ -20,12 +22,13 @@ const showHotel = async (req: Request, res: Response) => {
 	const hotel: Hotel | null = await AppDataSource.manager.findOne<Hotel>(
 		Hotel,
 		{
-			where: {id,},
-			relations: ["reviews", "country", "programs", "programs.company"]
+			where: { id },
+			relations: ['reviews', 'country'],
+			// relations: ['reviews', 'country', 'programs', 'programs.company'],
 		}
 	)
 	if (hotel) {
-		sendSuccessResponse<Hotel>(res, hotel);
+		sendSuccessResponse<Hotel>(res, hotel)
 	} else {
 		sendNotFoundResponse(res)
 	}
@@ -45,7 +48,7 @@ const updateHotel = async (req: Request, res: Response) => {
 			validation
 		)
 
-		sendSuccessResponse(res);
+		sendSuccessResponse(res)
 	} catch (error: any) {
 		sendErrorResponse(
 			formatValidationErrors(error),
@@ -60,7 +63,7 @@ const deleteHotel = async (req: Request, res: Response) => {
 		await AppDataSource.manager.softDelete<Hotel>(Hotel, {
 			id,
 		})
-		sendSuccessResponse(res);
+		sendSuccessResponse(res)
 	} catch (error: any) {
 		sendErrorResponse(
 			formatValidationErrors(error),
@@ -76,7 +79,7 @@ const createHotel = async (req: Request, res: Response) => {
 		})
 		const hotel = await AppDataSource.manager.create<Hotel>(Hotel, validation)
 		await hotel.save()
-		sendSuccessResponse<Hotel>(res, hotel);
+		sendSuccessResponse<Hotel>(res, hotel)
 	} catch (error: any) {
 		sendErrorResponse(
 			formatValidationErrors(error),
