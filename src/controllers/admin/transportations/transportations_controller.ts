@@ -1,12 +1,12 @@
 import { Request, Response } from 'express'
-import { AppDataSource } from '../../config/database/data-source'
-import { Transportation } from '../../entities/Transportation.entity'
-import { sendNotFoundResponse } from '../../helpers/responses/404.response'
-import { transportationValidation } from '../../helpers/validations/transportation.validation'
-import { formatValidationErrors } from '../../helpers/functions/formatValidationErrors'
-import { sendErrorResponse } from '../../helpers/responses/sendErrorResponse'
-import { StatusCodes } from '../../helpers/constants/statusCodes'
-import { sendSuccessResponse } from "../../helpers/responses/sendSuccessResponse";
+import { AppDataSource } from '../../../config/database/data-source'
+import { Transportation } from '../../../entities/Transportation.entity'
+import { sendNotFoundResponse } from '../../../helpers/responses/404.response'
+import { transportationValidation } from '../../../helpers/validations/transportation.validation'
+import { formatValidationErrors } from '../../../helpers/functions/formatValidationErrors'
+import { sendErrorResponse } from '../../../helpers/responses/sendErrorResponse'
+import { StatusCodes } from '../../../helpers/constants/statusCodes'
+import { sendSuccessResponse } from "../../../helpers/responses/sendSuccessResponse";
 
 const listTransportations = async (req: Request, res: Response) => {
 	const transportations: Transportation[] = await AppDataSource.manager.find<Transportation>(Transportation)

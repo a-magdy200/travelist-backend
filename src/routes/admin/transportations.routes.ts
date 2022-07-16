@@ -5,7 +5,7 @@ import {
 	listTransportations,
 	showTransportation,
 	updateTransportation,
-} from '../controllers/transportations/transportations_controller'
+} from '../../controllers/admin/transportations/transportations_controller'
 const router = Router()
 
 router.get('/', listTransportations)
