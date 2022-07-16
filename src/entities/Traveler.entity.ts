@@ -39,7 +39,7 @@ import { CycleBooking } from './CycleBooking'
 @Entity('travelers')
 export class Traveler extends BaseEntity {
 	@PrimaryGeneratedColumn()
-	id?: number
+	id: number
 
 	@Column({ unique: true, nullable: true })
 	@Length(14, 14)
@@ -82,7 +82,8 @@ export class Traveler extends BaseEntity {
 		type: "int",
 		nullable: true,
 	})
-	@IsInt()
+	@IsInt()	.where("friends")
+
 	userId?: number;
 
 	@OneToMany(() => FriendRequest, (friend_request) => friend_request.sender)
@@ -115,6 +116,14 @@ export class Traveler extends BaseEntity {
 	@ManyToMany(() => Traveler)
 	@JoinTable({
 		name: 'traveler_friends',
+		joinColumn: {
+			name: "traveler_1",
+			referencedColumnName: "id"
+		},
+		inverseJoinColumn: {
+			name: "traveler_2",
+			referencedColumnName: "id"
+		}
 	})
 	friends: Traveler[]
 
