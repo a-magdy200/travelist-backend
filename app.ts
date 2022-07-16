@@ -10,6 +10,7 @@ import hotelsRoutes from './src/routes/hotels.routes'
 import userRouter from './src/routes/user.routes'
 import travelerRouter from './src/routes/traveler.routes'
 import authRouter from './src/routes/auth.routes'
+import countryRouter from './src/routes/countries.routes';
 import cycleRoutes from "./src/routes/cycle.routes";
 import companyRoutes from "./src/routes/company.routes";
 import appRoutes from "./src/routes/app.routes";
@@ -35,6 +36,7 @@ AppDataSource.initialize()
 		app.use('/api/hotels', hotelsRoutes)
 		app.use('/api/users', userRouter)
 		app.use('/api/travelers', travelerRouter)
+		app.use('/api/countries', countryRouter)
 		app.use('/', appRoutes)
 		app.use('/cycles', cycleRoutes)
 		app.use('/programs', programsRoutes)

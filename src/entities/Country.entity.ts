@@ -48,7 +48,7 @@ export class Country extends BaseEntity {
 	@OneToMany(() => Program, (program) => program.country)
 	programs: Program[]
 
-	@ManyToOne(() => CountryReview, (countryReview) => countryReview.country)
+	@OneToMany(() => CountryReview, (countryReview) => countryReview.country)
 	@JoinColumn()
 	reviews: CountryReview[]
 
@@ -56,9 +56,9 @@ export class Country extends BaseEntity {
 	@OneToMany(() => Hotel, (hotel) => hotel.country)
 	hotels: Hotel[]
 
-	//@OneToOne(() => Group, (group) => group.country)
-	//@JoinColumn()
-	//group: Group
+	@OneToOne(() => Group, (group) => group.country)
+	@JoinColumn()
+	group?: Group
 
 	@CreateDateColumn()
 	created_at?: Date
