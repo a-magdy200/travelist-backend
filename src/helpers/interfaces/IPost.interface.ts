@@ -4,6 +4,6 @@ export interface IPostInterface {
 	id?: number
 	content?: string
 	status:PostStatusType
-	travelerId:string
-	groupId:string
+	travelerId:number
+	groupId:number
 }

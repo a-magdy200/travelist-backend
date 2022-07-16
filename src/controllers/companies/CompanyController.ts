@@ -60,6 +60,7 @@ const editCompanyProfile = async (req: Request, res: Response) => {
 		const validation: Company = await companyValidation.validateAsync(
 			req.body,
 			{ abortEarly: false }
+			
 		)
 		const updateResult = await AppDataSource.manager.update<Company>(
 			Company,

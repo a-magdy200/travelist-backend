@@ -1,14 +1,19 @@
 import { Router } from 'express'
 import {
-createPost
+createPost,
+deletePost,
+editPost,
+listPosts,
+showPost
 } from '../controllers/posts/PostController'
 import { isAuthenticated } from '../middlewares/isAuthenticated'
 
 const router = Router()
 
-// router.get('/', listCompanies)
-// router.put('/', isAuthenticated, editCompanyProfile)
-// router.get('/profile', viewCompanyProfile)
-router.post('/create', createPost)
+router.get('/', listPosts)
+router.post('/', isAuthenticated,createPost)
+router.get('/:id', isAuthenticated,showPost)
+router.put('/:id', isAuthenticated,editPost)
+router.delete('/:id', isAuthenticated,deletePost)
 
 export default router
