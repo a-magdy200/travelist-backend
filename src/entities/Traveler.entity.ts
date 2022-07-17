@@ -35,11 +35,12 @@ import { CountryReview } from './CountryReview.entity'
 import { CompanyReview } from './CompanyReview.entity'
 import { CycleReview } from './CycleReview.entity'
 import { CycleBooking } from './CycleBooking'
+import { TravelerFriends } from './TravelerFriend.entity';
 
 @Entity('travelers')
 export class Traveler extends BaseEntity {
 	@PrimaryGeneratedColumn()
-	id?: number
+	id: number
 
 	@Column({ unique: true, nullable: true })
 	@Length(14, 14)
@@ -82,7 +83,7 @@ export class Traveler extends BaseEntity {
 		type: "int",
 		nullable: true,
 	})
-	@IsInt()
+	@IsInt()	
 	userId?: number;
 
 	@OneToMany(() => FriendRequest, (friend_request) => friend_request.sender)
@@ -112,11 +113,13 @@ export class Traveler extends BaseEntity {
 	@OneToMany(() => Post, (post) => post.traveler)
 	posts: Post[]
 
-	@ManyToMany(() => Traveler)
-	@JoinTable({
-		name: 'traveler_friends',
-	})
-	friends: Traveler[]
+	@OneToMany(() => TravelerFriends, (friend) => friend.traveler_sender,{onUpdate: 'CASCADE',
+	onDelete: 'CASCADE' })
+	traveler1_friends: Traveler[]
+
+	@OneToMany(() => TravelerFriends, (friend) => friend.traveler_receiver,{onUpdate: 'CASCADE',
+	onDelete: 'CASCADE' })
+	traveler2_friends: Traveler[]
 
 	//@OneToOne(() => User, (user) => user.traveler)
 	@OneToOne(() => User )
