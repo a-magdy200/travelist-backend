@@ -8,7 +8,8 @@ import { sendErrorResponse } from '../../helpers/responses/sendErrorResponse'
 import { StatusCodes } from '../../helpers/constants/statusCodes'
 import { sendSuccessResponse } from "../../helpers/responses/sendSuccessResponse";
 import { getUserIdFromToken } from "../../helpers/functions/getUserIdFromToken";
-import { SelectQueryBuilder } from 'typeorm/query-builder/SelectQueryBuilder'
+import { TravelerFriends } from '../../entities/TravelerFriend.entity'
+import { sendNotFoundResponse } from '../../helpers/responses/404.response'
 
 const listTravelers = async (req: Request, res: Response) => {
 	const travelers: Traveler[] = await AppDataSource.manager.find<Traveler>(
@@ -65,73 +66,67 @@ const editTravelerProfile = async (req: Request, res: Response) => {
 }
 const listTravelerFriends = async (req: Request, res: Response) => {
 	const userId: number = getUserIdFromToken(req)
-	const traveler = await AppDataSource.getRepository(Traveler).findOneOrFail({
+	const traveler = await AppDataSource.getRepository(Traveler).findOne({
 		where: {
 			userId: userId
-		}
+		},
 	})
-	/*const friends:Traveler[] = await AppDataSource
-	.getRepository(Traveler)
-	.createQueryBuilder("traveler")
-	.leftJoin("traveler.friends", "friends")
-	.where('friends.travelersId_1 = :id', { id: traveler.id })
-	.orWhere('friends .travelersId_2 = :id', { id: traveler.id })
-	// .where({travelersId_1:userId})
-	// .orWhere({travelersId_2:userId})
-	.getRawMany()*/
 	
-	// 	const friends:Traveler[]=await AppDataSource.getRepository(Traveler)
-	// 	.createQueryBuilder('traveler')
-	//     .innerJoin(
-	//        'traveler.friends', 
-	//        'friends', 
-	// 	).where(
-	//        'friends.id = :travelersId_1', 
-	//        { travelersId_2:userId }
-	// 	)
-	//   .getMany();
-	/*const friends: Traveler[] = await AppDataSource
-		.getRepository(Traveler)
-		.createQueryBuilder("traveler")
-		.leftJoin("traveler.friends", "friends")
-		.where("friends")
-		.loadMany();*/
-		
-	//  const friends: Traveler[] = await AppDataSource
-	//  	.createQueryBuilder()
-	//  	.relation(
-	//  		Traveler,
-	//  		'friends',
-	//  	)
-	//      .of({id: traveler.id})
-	//  	.loadMany();
-	// 	const friends: Traveler[] = await AppDataSource.getRepository(Traveler)
-	// 	.find({
-	// 		relations: ["friends"],
-	// 		where: "traveler_1 = :id OR traveler_2 = :id"
-	// 	})
-		//const friends: Traveler[] = await AppDataSource
-		//.createQueryBuilder()
-		//.leftJoin
-	/*const friends:Traveler[] = await AppDataSource
-    .getRepository(Traveler)
-    .createQueryBuilder("traveler")
-    .leftJoin("traveler.friends", "friend")
-    .getMany()
-	sendSuccessResponse<Traveler[]>(res, friends)
-*/
+if(traveler){	
+	console.log(traveler.id)
+
+const friends:TravelerFriends[]  = await AppDataSource.getRepository(TravelerFriends).find({
+	
+	where:[
+		{receiver_id:traveler.id},
+		{sender_id:traveler.id}
+	],
+	relations: ['traveler_sender','traveler_receiver','traveler_sender.user','traveler_receiver.user'],
+
+   })
+   sendSuccessResponse<TravelerFriends[]>(res, friends)
+
+}
+
+
 }
 const deleteTravelerFriend = async (req: Request, res: Response) => {
+	try {
 	const userId: number = getUserIdFromToken(req)
-	const traveler = await AppDataSource.getRepository(Traveler).findOneOrFail({
+	const traveler = await AppDataSource.getRepository(Traveler).findOne({
 		where: {
 			userId: userId
 		}
 	})
+	const friendId: number | undefined = +req.params.id
+	
+	if(traveler && friendId)
+	{
+		
+	await AppDataSource
+    .createQueryBuilder()
+    .delete()
+    .from(TravelerFriends)
+    .where({sender_id: traveler.id,receiver_id:friendId} )
+	.orWhere({sender_id: friendId,receiver_id:traveler.id})
+    .execute()
+	sendSuccessResponse(res)
+	
+	}
 }
+catch (error: any) {
+	sendErrorResponse(error, res, StatusCodes.NOT_FOUND)
+}
+	
+	}
+
+
+
+
 export {
 	listTravelers,
 	viewTravelerProfile,
 	editTravelerProfile,
 	listTravelerFriends,
+	deleteTravelerFriend
 }

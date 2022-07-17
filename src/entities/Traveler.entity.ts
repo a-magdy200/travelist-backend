@@ -35,6 +35,7 @@ import { CountryReview } from './CountryReview.entity'
 import { CompanyReview } from './CompanyReview.entity'
 import { CycleReview } from './CycleReview.entity'
 import { CycleBooking } from './CycleBooking'
+import { TravelerFriends } from './TravelerFriend.entity';
 
 @Entity('travelers')
 export class Traveler extends BaseEntity {
@@ -112,19 +113,13 @@ export class Traveler extends BaseEntity {
 	@OneToMany(() => Post, (post) => post.traveler)
 	posts: Post[]
 
-	@ManyToMany(() => Traveler)
-	@JoinTable({
-		name: 'traveler_friends',
-		joinColumn: {
-			name: "traveler_1",
-			referencedColumnName: "id"
-		},
-		inverseJoinColumn: {
-			name: "traveler_2",
-			referencedColumnName: "id"
-		}
-	})
-	friends: Traveler[]
+	@OneToMany(() => TravelerFriends, (friend) => friend.traveler_sender,{onUpdate: 'CASCADE',
+	onDelete: 'CASCADE' })
+	traveler1_friends: Traveler[]
+
+	@OneToMany(() => TravelerFriends, (friend) => friend.traveler_receiver,{onUpdate: 'CASCADE',
+	onDelete: 'CASCADE' })
+	traveler2_friends: Traveler[]
 
 	//@OneToOne(() => User, (user) => user.traveler)
 	@OneToOne(() => User )
