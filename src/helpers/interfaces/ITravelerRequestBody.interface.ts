@@ -4,5 +4,5 @@ export interface ITravelerRequestBodyInterface {
 	national_id: string
 	gender: GenderType
 	date_of_birth: Date
-	is_guide: boolean
+	is_guide: string
 }

@@ -15,7 +15,7 @@ import companyRoutes from "./src/routes/company.routes";
 import appRoutes from "./src/routes/app.routes";
 import programsRoutes from "./src/routes/programs.routes";
 import groupRoutes from "./src/routes/group.routes";
-
+import friendRequestRoutes from './src/routes/friend_request.routes'
 const app = express()
 app.use(cors({ origin: true, credentials: true }))
 
@@ -39,6 +39,7 @@ AppDataSource.initialize()
 		app.use('/cycles', cycleRoutes)
 		app.use('/programs', programsRoutes)
 		app.use('/api/groups', groupRoutes)
+		app.use('/api/friendrequests', friendRequestRoutes)
 
 		app.listen(config.port, () => {
 			console.log(`Server running on PORT: ${config.port}`)
