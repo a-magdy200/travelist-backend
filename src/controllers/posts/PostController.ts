@@ -93,7 +93,7 @@ const deletePost = async (req: Request, res: Response) => {
 		const id: number | undefined = +req.params.id
 		const post: Post | null = await AppDataSource.manager.findOne<Post>(Post, {
 			where: { id },
-			relations: ['group', 'traveler'],
+			relations: ['group', 'traveler','traveler.user'],
 		})
 
 		if (userId == post?.traveler.userId) {
