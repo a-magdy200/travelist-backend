@@ -24,6 +24,7 @@ import { AccountStatusEnum } from '../helpers/enums/accountStatus.enum'
 import { UserReport } from './UserReport.entity'
 import { PostReport } from './PostReport.entity'
 import { Company } from './Company.entity'
+import { Traveler } from './Traveler.entity'
 import { Transaction } from './Transaction.entity'
 
 @Entity('users')
@@ -84,8 +85,8 @@ export class User extends BaseEntity {
 	@OneToMany(() => PostReport, (postReport) => postReport.user)
 	post_reports: PostReport[]
 
-	//@OneToOne(() => Traveler, (traveler) => traveler.user)
-	//traveler: Traveler
+	@OneToOne(() => Traveler, (traveler) => traveler.user)
+	traveler: Traveler
 
 	@OneToOne(() => Company, (company) => company.user)
 	company: Company
@@ -109,9 +110,9 @@ export class User extends BaseEntity {
 	chats: ChatUser[]
 
 	@ManyToMany(() => Group, (group) => group.followers)
-	//@JoinTable({
-	//	name: 'group_follower',
-	//})
+	@JoinTable({
+		name: 'group_follower',
+	})
 	groups: Group[]
 
 	@OneToMany(() => UserReport, (user) => user.reporter_user)

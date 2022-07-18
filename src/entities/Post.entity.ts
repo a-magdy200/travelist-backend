@@ -10,7 +10,7 @@ import {
 	PrimaryGeneratedColumn,
 	UpdateDateColumn,
 } from 'typeorm'
-import { IsEnum, IsString, Length } from 'class-validator'
+import { IsEnum, IsInt, IsPositive, IsString, Length } from 'class-validator'
 import { Group } from './Group.entity'
 import { Traveler } from './Traveler.entity'
 import { PostStatusType } from '../helpers/types/postStatus.type'
@@ -31,6 +31,10 @@ export class Post extends BaseEntity {
 	@IsEnum(PostStatusEnum)
 	status: PostStatusType
 	
+	@Column({type: 'int'})
+	@IsInt()
+	@IsPositive()
+	travelerId: number;
 
 	@OneToMany(() => PostReport, (postReport) => postReport.post)
 	reports: PostReport[]

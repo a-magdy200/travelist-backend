@@ -12,7 +12,7 @@ import { sendSuccessResponse } from '../../helpers/responses/sendSuccessResponse
 
 const listHotels = async (req: Request, res: Response) => {
 	const hotels: Hotel[] = await AppDataSource.manager.find<Hotel>(Hotel, {
-		relations: ['reviews','country'],
+		relations: ['reviews', 'country'],
 	})
 	sendSuccessResponse<Hotel[]>(res, hotels)
 }

@@ -1,4 +1,5 @@
 import { Post } from '../../entities/Post.entity'
+import { User } from '../../entities/User.entity'
 import { Traveler } from '../../entities/Traveler.entity'
 import { Group } from '../../entities/Group.entity'
 import { AppDataSource } from '../../config/database/data-source'
@@ -14,32 +15,39 @@ import { getUserIdFromToken } from '../../helpers/functions/getUserIdFromToken'
 const createPost = async (req: Request, res: Response) => {
 	try {
 		const userId: number = getUserIdFromToken(req)
+		const groupId: number | undefined = +req.body.groupId
 		const bodyObj: IPostInterface = await postValidation.validateAsync(
 			req.body,
 			{
 				abortEarly: false,
 			}
 		)
+		const traveler = await AppDataSource.getRepository(Traveler).findOne({
+			where: {
+				userId: userId,
+			},
+			relations: ['user'],
+		})
+
+		const group = await AppDataSource.getRepository(Group).findOne({
+			where: {
+				id: groupId,
+			},
+			relations: ['followers'],
+		})
 		const post = await AppDataSource.manager.create<Post>(Post, {
 			content: bodyObj.content,
-			// status: bodyObj.status,
+			travelerId: traveler?.id,
 		})
-		const traveler = await AppDataSource.getRepository(Traveler).findOneBy({
-			userId: userId,
-		})
-		if (traveler) {
+		console.log('post', post)
+
+		if (traveler?.user) {
 			post.traveler = traveler
-            
+		}
+		if (group) {
+			post.group = group
 		}
 
-		//   const group = await AppDataSource.getRepository(Group).find({
-		//     where: {
-		//         followers:true
-		//     },
-		//   })
-		//   if (group ) {
-		// 	post.group = group
-		// }
 		await AppDataSource.manager.save(post)
 		sendSuccessResponse<Post>(res, post)
 	} catch (error: any) {
@@ -51,14 +59,26 @@ const createPost = async (req: Request, res: Response) => {
 	}
 }
 const listPosts = async (req: Request, res: Response) => {
-	const hotels: Post[] = await AppDataSource.manager.find<Post>(Post)
-	sendSuccessResponse<Post[]>(res, hotels)
+	const userId: number = getUserIdFromToken(req)
+	const posts: Post[] = await AppDataSource.manager.find<Post>(Post, {
+		relations: ['traveler', 'traveler.user'],
+		where: {
+			traveler: {
+				userId: userId,
+			},
+		},
+		order: {
+		 id: "DESC"
+		  },
+	})
+
+	sendSuccessResponse<Post[]>(res, posts)
 }
 const showPost = async (req: Request, res: Response) => {
 	const id: number | undefined = +req.params.id
 	const post: Post | null = await AppDataSource.manager.findOne<Post>(Post, {
 		where: { id },
-		relations: ['group', 'traveler'],
+		relations: ['group', 'traveler', 'traveler.user'],
 	})
 
 	if (post) {
@@ -99,27 +119,24 @@ const deletePost = async (req: Request, res: Response) => {
 const editPost = async (req: Request, res: Response) => {
 	try {
 		const userId: number = getUserIdFromToken(req)
-        const id: number | undefined = +req.params.id
-        const validation: Post = await postValidation.validateAsync(
-			req.body,
-			{ abortEarly: false }
-		)
+		const id: number | undefined = +req.params.id
+		const validation: Post = await postValidation.validateAsync(req.body, {
+			abortEarly: false,
+		})
 		const post: Post | null = await AppDataSource.manager.findOne<Post>(Post, {
 			where: { id },
-			relations: ['group', 'traveler'],
+			relations: ['traveler'],
 		})
-        console.log('//////////////////// from edit')
-        console.log('userId ',userId)
-        console.log('traveler ID',post)
-        if (userId == post?.traveler.userId) {
-		await AppDataSource.manager.update<Post>(Post,{
-				id
-			},
-			validation
-		)
-		sendSuccessResponse(res)
-        }
-        else {
+		if (userId == post?.traveler.userId) {
+			await AppDataSource.manager.update<Post>(
+				Post,
+				{
+					id,
+				},
+				validation
+			)
+			sendSuccessResponse(res)
+		} else {
 			sendErrorResponse(
 				['You can not delete this post'],
 				res,
@@ -134,4 +151,4 @@ const editPost = async (req: Request, res: Response) => {
 		)
 	}
 }
-export { createPost, listPosts, showPost, deletePost ,editPost}
+export { createPost, listPosts, showPost, deletePost, editPost }
