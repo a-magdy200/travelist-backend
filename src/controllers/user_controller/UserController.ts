@@ -87,5 +87,16 @@ const updateUserPassword = async (req: Request, res: Response) => {
 		)
 	}
 }
-
-export { uploadProfilePicture, viewUserProfile, editUserProfile, updateUserPassword }
+const getUserId = async (req: Request, res: Response) =>  {
+	try {
+	const id = getUserIdFromToken(req);
+	const user = await AppDataSource.getRepository(User).findOneByOrFail({
+		id
+	})
+	sendSuccessResponse<User>(res, user);
+}
+catch (error: any) {
+	sendNotFoundResponse(res)
+}
+}
+export { uploadProfilePicture, viewUserProfile, editUserProfile, updateUserPassword,getUserId }
