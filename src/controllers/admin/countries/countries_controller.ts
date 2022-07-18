@@ -7,6 +7,8 @@ import { formatValidationErrors } from '../../../helpers/functions/formatValidat
 import { sendErrorResponse } from '../../../helpers/responses/sendErrorResponse'
 import { StatusCodes } from '../../../helpers/constants/statusCodes'
 import { sendSuccessResponse } from "../../../helpers/responses/sendSuccessResponse";
+import { Group } from "../../../entities/Group.entity";
+import { InsertResult } from "typeorm";
 
 const listCountries = async (req: Request, res: Response) => {
 	const countries: Country[] = await AppDataSource.manager.find<Country>(Country)
@@ -19,7 +21,7 @@ const showCountry = async (req: Request, res: Response) => {
 		Country,
 		{
 			where: {id,},
-			relations: ["reviews", "country", "programs", "programs.company"]
+			relations: ["reviews", "programs", "programs.company"]
 		}
 	)
 	if (country) {
@@ -72,8 +74,10 @@ const createCountry = async (req: Request, res: Response) => {
 		const validation: Country = await countryValidation.validateAsync(req.body, {
 			abortEarly: false,
 		})
-		const country = await AppDataSource.manager.create<Country>(Country, validation)
-		await country.save()
+		const countryInsertResult: InsertResult = await AppDataSource.manager.insert<Country>(Country, validation)
+		const country: Country = countryInsertResult.generatedMaps[0] as Country;
+		const groupInsertResult = await AppDataSource.manager.insert<Group>(Group, {countryId: country.id});
+		country.groupId = groupInsertResult.identifiers[0].id;
 		sendSuccessResponse<Country>(res, country);
 	} catch (error: any) {
 		sendErrorResponse(

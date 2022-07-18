@@ -14,7 +14,7 @@ import {
 	UpdateDateColumn,
 } from 'typeorm'
 import { Group } from './Group.entity'
-import { IsInt, IsString, Length, Max, Min } from 'class-validator'
+import { IsInt, IsPositive, IsString, Length, Max, Min } from "class-validator";
 import { Hotel } from './Hotel.entity'
 import { Program } from './Program.entity'
 import { CountryReview } from './CountryReview.entity'
@@ -45,6 +45,12 @@ export class Country extends BaseEntity {
 	@Min(0)
 	ratings_count: number
 
+	@Column({ type: 'int', default: null, nullable: true })
+	@IsInt()
+	@IsPositive()
+	groupId: number
+
+
 	@OneToMany(() => Program, (program) => program.country)
 	programs: Program[]
 
@@ -56,9 +62,9 @@ export class Country extends BaseEntity {
 	@OneToMany(() => Hotel, (hotel) => hotel.country)
 	hotels: Hotel[]
 
-	//@OneToOne(() => Group, (group) => group.country)
-	//@JoinColumn()
-	//group: Group
+	@OneToOne(() => Group, (group) => group.country)
+	@JoinColumn()
+	group: Group
 
 	@CreateDateColumn()
 	created_at?: Date

@@ -15,13 +15,13 @@ const listHotels = async (req: Request, res: Response) => {
 	const hotels: IHotelInterface[] = await AppDataSource.getRepository<Hotel>(Hotel)
 		.createQueryBuilder("hotel")
 		.innerJoin("hotel.country", "country")
-		.leftJoin("hotel.programs", "program")
+		// .innerJoin("hotel.programs", "program")
 		.select([
-			"hotel.name as name",
 			"hotel.id as id",
+			"hotel.name as name",
 			"hotel.stars as stars",
 			"country.name as countryName",
-			"COUNT(program.id) as programsCount"
+			// "COUNT(program.id) as programsCount"
 		])
 		.getRawMany();
 	sendSuccessResponse<IHotelInterface[]>(res, hotels);
