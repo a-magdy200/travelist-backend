@@ -16,6 +16,8 @@ import appRoutes from "./src/routes/app.routes";
 import programsRoutes from "./src/routes/programs.routes";
 import groupRoutes from "./src/routes/group.routes";
 import friendRequestRoutes from './src/routes/friend_request.routes'
+import adminRoutes from "./src/routes/admin/admin.routes";
+
 const app = express()
 app.use(cors({ origin: true, credentials: true }))
 
@@ -33,6 +35,7 @@ AppDataSource.initialize()
 		app.use('/auth', authRouter)
 		app.use('/api/companies', companyRoutes)
 		app.use('/api/hotels', hotelsRoutes)
+		app.use('/api/admin', adminRoutes)
 		app.use('/api/users', userRouter)
 		app.use('/api/travelers', travelerRouter)
 		app.use('/', appRoutes)

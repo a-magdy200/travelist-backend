@@ -101,6 +101,14 @@ export class Program extends BaseEntity {
 	@ManyToMany(() => Hotel, { onDelete: 'CASCADE' })
 	@JoinTable({
 		name: 'program_hotel',
+		joinColumn: {
+			name: "program_id",
+			referencedColumnName: "id"
+		},
+		inverseJoinColumn: {
+			name: "hotel_id",
+			referencedColumnName: "id"
+		},
 	})
 	hotels?: Hotel[]
 

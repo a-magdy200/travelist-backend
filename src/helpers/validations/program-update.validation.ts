@@ -4,7 +4,7 @@ export const programUpdateValidation = Joi.object().keys({
 	name: Joi.string().min(3).required(),
 	description: Joi.string().min(5).required(),
 	price: Joi.string().required(),
-	hotels: Joi.array().required(),	
+	hotels: Joi.required(),	
 	companyId: Joi.string().required(),
 	countryId: Joi.string().required(),
 	transportationId: Joi.number().required(),
