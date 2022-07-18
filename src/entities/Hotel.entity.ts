@@ -70,9 +70,7 @@ export class Hotel extends BaseEntity {
 	@JoinColumn()
 	country: Country
 
-	@ManyToMany(() => Program, (program) => program.hotels, {
-		onDelete: 'CASCADE',
-	})
+	@ManyToMany(() => Program, (program) => program.hotels)
 	@JoinTable({
 		name: 'program_hotel',
 		inverseJoinColumn: {

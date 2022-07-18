@@ -98,18 +98,7 @@ export class Program extends BaseEntity {
 	})
 	destinations: Country[]
 
-	@ManyToMany(() => Hotel, { onDelete: 'CASCADE' })
-	@JoinTable({
-		name: 'program_hotel',
-		joinColumn: {
-			name: "program_id",
-			referencedColumnName: "id"
-		},
-		inverseJoinColumn: {
-			name: "hotel_id",
-			referencedColumnName: "id"
-		},
-	})
+	@ManyToMany(() => Hotel, hotel => hotel.programs)
 	hotels?: Hotel[]
 
 	@CreateDateColumn()
