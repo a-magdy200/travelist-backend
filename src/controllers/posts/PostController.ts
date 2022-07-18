@@ -38,16 +38,12 @@ const createPost = async (req: Request, res: Response) => {
 		const post = await AppDataSource.manager.create<Post>(Post, {
 			content: bodyObj.content,
 			travelerId: traveler?.id,
+			groupId: group?.id,
 		})
-		console.log('post', post)
 
 		if (traveler?.user) {
 			post.traveler = traveler
 		}
-		if (group) {
-			post.group = group
-		}
-
 		await AppDataSource.manager.save(post)
 		sendSuccessResponse<Post>(res, post)
 	} catch (error: any) {
@@ -78,7 +74,7 @@ const showPost = async (req: Request, res: Response) => {
 	const id: number | undefined = +req.params.id
 	const post: Post | null = await AppDataSource.manager.findOne<Post>(Post, {
 		where: { id },
-		relations: ['group', 'traveler', 'traveler.user'],
+		relations: ['group', 'traveler.user'],
 	})
 
 	if (post) {
@@ -93,7 +89,8 @@ const deletePost = async (req: Request, res: Response) => {
 		const id: number | undefined = +req.params.id
 		const post: Post | null = await AppDataSource.manager.findOne<Post>(Post, {
 			where: { id },
-			relations: ['group', 'traveler','traveler.user'],
+			// relations: ['group', 'traveler','traveler.user'],
+			relations: ['group','traveler.user'],
 		})
 
 		if (userId == post?.traveler.userId) {
@@ -125,7 +122,7 @@ const editPost = async (req: Request, res: Response) => {
 		})
 		const post: Post | null = await AppDataSource.manager.findOne<Post>(Post, {
 			where: { id },
-			relations: ['traveler'],
+			relations: ['group','traveler.user'],
 		})
 		if (userId == post?.traveler.userId) {
 			await AppDataSource.manager.update<Post>(

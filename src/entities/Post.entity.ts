@@ -35,6 +35,10 @@ export class Post extends BaseEntity {
 	@IsInt()
 	@IsPositive()
 	travelerId: number;
+	@Column({type: 'int'})
+	@IsInt()
+	@IsPositive()
+	groupId: number;
 
 	@OneToMany(() => PostReport, (postReport) => postReport.post)
 	reports: PostReport[]
