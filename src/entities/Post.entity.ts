@@ -27,19 +27,22 @@ export class Post extends BaseEntity {
 	@IsString()
 	content: string
 
-	@Column({ type: 'enum', enum: PostStatusEnum ,default: PostStatusEnum.ACTIVE})
+	@Column({
+		type: 'enum',
+		enum: PostStatusEnum,
+		default: PostStatusEnum.ACTIVE,
+	})
 	@IsEnum(PostStatusEnum)
 	status: PostStatusType
-	
-	@Column({type: 'int'})
-	@IsInt()
-	@IsPositive()
-	travelerId: number;
-	@Column({type: 'int'})
-	@IsInt()
-	@IsPositive()
-	groupId: number;
 
+	@Column({ type: 'int' })
+	@IsInt()
+	@IsPositive()
+	travelerId: number
+	@Column({ type: 'int' })
+	@IsInt()
+	@IsPositive()
+	groupId: number
 	@OneToMany(() => PostReport, (postReport) => postReport.post)
 	reports: PostReport[]
 

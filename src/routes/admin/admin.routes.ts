@@ -1,0 +1,11 @@
+import { Router } from "express";
+import transportationsRoutes from "./transportations.routes";
+import hotelsRoutes from "./hotels.routes";
+import countriesRoutes from "./countries.routes";
+import groupsRoutes from "./groups.routes";
+const router = Router();
+router.use("/transportations", transportationsRoutes);
+router.use("/hotels", hotelsRoutes);
+router.use("/countries", countriesRoutes);
+router.use("/groups", groupsRoutes);
+export default router;

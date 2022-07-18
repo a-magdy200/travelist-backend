@@ -12,7 +12,7 @@ import {
 	PrimaryGeneratedColumn,
 	UpdateDateColumn,
 } from 'typeorm'
-import { IsInt, IsNumber, IsString, Length, Max, Min } from 'class-validator'
+import { IsInt, IsNumber, IsPositive, IsString, Length, Max, Min } from "class-validator";
 import { Country } from './Country.entity'
 import { HotelReview } from './HotelReview.entity'
 import { Program } from './Program.entity'
@@ -58,6 +58,11 @@ export class Hotel extends BaseEntity {
 	@IsString()
 	cover_picture?: string
 
+	@Column({type: "int"})
+	@IsInt()
+	@IsPositive()
+	countryId: number;
+
 	@OneToMany(() => HotelReview, (hotelReview) => hotelReview.hotel)
 	reviews: HotelReview[]
 
@@ -65,13 +70,21 @@ export class Hotel extends BaseEntity {
 	@JoinColumn()
 	country: Country
 
-	//@ManyToMany(() => Program, (program) => program.hotels, {
-	//	onDelete: 'CASCADE',
-	//})
-	//@JoinTable({
-	//	name: 'program_hotel',
-	//})
-	//programs: Program[]
+	@ManyToMany(() => Program, (program) => program.hotels, {
+		onDelete: 'CASCADE',
+	})
+	@JoinTable({
+		name: 'program_hotel',
+		inverseJoinColumn: {
+			name: "program_id",
+			referencedColumnName: "id"
+		},
+		joinColumn: {
+			name: "hotel_id",
+			referencedColumnName: "id"
+		},
+	})
+	programs: Program[]
 
 	@CreateDateColumn()
 	created_at?: Date
