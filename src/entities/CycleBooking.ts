@@ -28,11 +28,19 @@ export class CycleBooking extends BaseEntity {
 	@IsBoolean()
 	is_paid: boolean
 
-	@ManyToOne(() => Cycle, (cycle) => cycle.bookings)
+	@ManyToOne(() => Cycle, (cycle) => cycle.bookings,
+{
+	onUpdate: 'CASCADE',
+	onDelete: 'CASCADE' }
+	)
 	@JoinColumn()
 	cycle: Cycle
 
-	@ManyToOne(() => Traveler, (traveler) => traveler.bookings)
+	@ManyToOne(() => Traveler, (traveler) => traveler.bookings
+	,
+	{
+		onUpdate: 'CASCADE',
+		onDelete: 'CASCADE' })
 	@JoinColumn()
 	travelers: Traveler
 

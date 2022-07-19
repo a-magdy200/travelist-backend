@@ -18,21 +18,18 @@ export const bookCycle = async (req: Request, res: Response) => {
         const bodyObject: IBookInterface = await bookingValidation.validateAsync(req.body, {
 			abortEarly: false,
 		})
-        const userId :number=getUserIdFromToken(req)
-
         const cycle = await AppDataSource.getRepository(Cycle).findOne({
             where: {
                 id:bodyObject.cycleId
             },
-            relations:["bookings"]
 
         })
 
+        const userId :number=getUserIdFromToken(req)
         const traveler = await AppDataSource.getRepository(Traveler).findOne({
             where: {
                 userId:userId
             },
-            relations:["bookings"]
         })
 
         const previousCycle = await AppDataSource.getRepository(CycleBooking).findOne({
@@ -50,6 +47,7 @@ export const bookCycle = async (req: Request, res: Response) => {
        const booking = await AppDataSource.manager.create<CycleBooking>(CycleBooking,bodyObject)
        // booking.travelers.push(traveler)
      //  booking.travelers=traveler
+       cycle.current_seats+=1
        booking.cycle=cycle
        await AppDataSource.manager.save(booking)
 	   sendSuccessResponse<CycleBooking>(res, booking)
