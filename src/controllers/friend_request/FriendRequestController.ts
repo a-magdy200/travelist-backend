@@ -10,6 +10,8 @@ import { sendNotFoundResponse } from '../../helpers/responses/404.response'
 import { StatusCodes } from '../../helpers/constants/statusCodes'
 import { formatValidationErrors } from '../../helpers/functions/formatValidationErrors'
 import { friendRequestValidation } from '../../helpers/validations/friend_request.validation'
+import { FriendRequestStatusType } from '../helpers/types/friendRequestStatus.type'
+import { FriendRequestStatusEnum } from '../helpers/enums/friendRequestStatus.enum'
 
 const sendFriendRequest = async (req: Request, res: Response) => {
 	const oppsiteTravelerId:number | undefined = +req.params.id
@@ -67,6 +69,7 @@ const sendFriendRequest = async (req: Request, res: Response) => {
 	}
 }
 const cancelFriendRequest=async (req: Request, res: Response) => {
+	
 	const oppsiteTravelerId:number | undefined = +req.params.id
 	const currentUserId: number = getUserIdFromToken(req)
 	const alreadySentRequest: FriendRequest | null = await AppDataSource.manager.findOne<FriendRequest>(
@@ -88,12 +91,38 @@ const cancelFriendRequest=async (req: Request, res: Response) => {
 			StatusCodes.FORBIDDEN
 		)
 	}
+
+}
+
+const rejectFriendRequest=async (req: Request, res: Response) => {
+	const oppsiteTravelerId:number | undefined = +req.params.id
+	const currentUserId: number = getUserIdFromToken(req)
+	const alreadySentRequest: FriendRequest | null = await AppDataSource.manager.findOne<FriendRequest>(
+		FriendRequest,
+		{
+			where:{ sender: { id: oppsiteTravelerId  }, receiver: { id: 2 }}
+				
+		}
+	) 
+//	console.log("hi from already sent request")
+	if(alreadySentRequest){
+		   alreadySentRequest.status=FriendRequestStatusEnum.DECLINED
+		    await alreadySentRequest.save()
+			sendSuccessResponse<FriendRequest>(res, alreadySentRequest)
+	}else{
+		sendErrorResponse(
+			['there is not a request '],
+			res,
+			StatusCodes.FORBIDDEN
+		)
+	}
 	
 }
+
 
 export {
 	sendFriendRequest,
 	//acceptFriendRequest,
-	//rejectFriendRequest,
+	rejectFriendRequest,
 	cancelFriendRequest,
 }

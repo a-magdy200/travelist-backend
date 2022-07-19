@@ -10,6 +10,6 @@ const router = Router()
 
 router.post('/send/:id', sendFriendRequest)
 //router.post('/accept', acceptFriendRequest)
-//router.post('/reject/:id', rejectFriendRequest)
+router.post('/reject/:id', rejectFriendRequest)
 router.post('/cancel/:id', 	cancelFriendRequest)
 export default router
