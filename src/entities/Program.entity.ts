@@ -98,7 +98,7 @@ export class Program extends BaseEntity {
 	})
 	destinations: Country[]
 
-	@ManyToMany(() => Hotel, hotel => hotel.programs)
+	@ManyToMany(() => Hotel, hotel => hotel.programs,{ onDelete: 'CASCADE' })
 	hotels?: Hotel[]
 
 	@CreateDateColumn()
