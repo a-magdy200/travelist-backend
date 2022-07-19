@@ -5,7 +5,7 @@ import {
 	showAllCycles,
 	showCycle,
 	updateCycle,
-	bookCycle,
+	bookCycle
 } from '../controllers/cycle'
 
 const router = Router()
