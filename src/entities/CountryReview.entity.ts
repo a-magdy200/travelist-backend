@@ -33,23 +33,19 @@ export class CountryReview extends BaseEntity {
 	@IsString()
 	review: string
 
-	@Column({
-		type: 'int'
-	})
+	@Column({ type: 'int', default: null, nullable: true })
 	@IsInt()
 	@IsPositive()
-	travelerId: number;
+	travelerId: number
+
+	@Column({ type: 'int', default: null, nullable: true })
+	@IsInt()
+	@IsPositive()
+	countryId: number
 
 	@ManyToOne(() => Traveler, (traveler) => traveler.country_reviews)
 	@JoinColumn()
 	traveler: Traveler
-
-	@Column({
-		type: 'int'
-	})
-	@IsInt()
-	@IsPositive()
-	countryId: number;
 
 	@ManyToOne(() => Country, (country) => country.reviews)
 	@JoinColumn()

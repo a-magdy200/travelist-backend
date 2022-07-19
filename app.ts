@@ -20,7 +20,8 @@ import countryReviewsRoutes from "./src/routes/country_reviews.routes";
 import cycleReviewsRoutes from "./src/routes/cycle_reviews.routes";
 import guideReviewsRoutes from "./src/routes/guide_reviews.routes";
 import companyReviewsRoutes from "./src/routes/company_reviews.routes";
-
+import postRoutes from './src/routes/post.routes'
+import adminRoutes from './src/routes/admin/admin.routes'
 
 const app = express()
 app.use(cors({ origin: true, credentials: true }))
@@ -39,11 +40,12 @@ AppDataSource.initialize()
 		app.use('/auth', authRouter)
 		app.use('/api/companies', companyRoutes)
 		app.use('/api/hotels', hotelsRoutes)
+		app.use('/api/admin', adminRoutes)
 		app.use('/api/users', userRouter)
 		app.use('/api/travelers', travelerRouter)
 		app.use('/', appRoutes)
-		app.use('/cycles', cycleRoutes)
-		app.use('/programs', programsRoutes)
+		app.use('/api/cycles', cycleRoutes)
+		app.use('/api/programs', programsRoutes)
 		app.use('/api/groups', groupRoutes)
 		app.use('/api/hotel_reviews', hotelReviewsRoutes)
 		app.use('/api/country_reviews', countryReviewsRoutes)
@@ -51,6 +53,7 @@ AppDataSource.initialize()
 		app.use('/api/guide_reviews', guideReviewsRoutes)
 		app.use('/api/company_reviews', companyReviewsRoutes)
 
+		app.use('/api/posts', postRoutes)
 
 		app.listen(config.port, () => {
 			console.log(`Server running on PORT: ${config.port}`)
