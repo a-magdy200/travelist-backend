@@ -1,5 +1,6 @@
 import { RequestHandler } from 'express'
 import { FriendRequest } from '../../entities/FriendRequest.entity'
+import { Traveler } from '../../entities/Traveler.entity'
 import { Request, Response } from 'express'
 import { AppDataSource } from '../../config/database/data-source'
 import { sendErrorResponse } from '../../helpers/responses/sendErrorResponse'
@@ -11,35 +12,49 @@ import { formatValidationErrors } from '../../helpers/functions/formatValidation
 import { friendRequestValidation } from '../../helpers/validations/friend_request.validation'
 
 const sendFriendRequest = async (req: Request, res: Response) => {
-	const oppsiteUserId: number | undefined = +req.params.id
+	const oppsiteTravelerId:number | undefined = +req.params.id
 	const currentUserId: number = getUserIdFromToken(req)
-
+	console.log(currentUserId)
+	console.log("hello")
+/*
+    	if (currentUserId) {
+			const currentTravelerId: Traveler| null =
+				await AppDataSource.manager.findOne<Traveler>(Traveler, {
+					where: {
+						user: { id: currentUserId},
+					},
+				})
+				//console.log( currentTravelerId)
+			
+		}*/
 	const existedFriendRequest: FriendRequest | null =
 		await AppDataSource.manager.findOne<FriendRequest>(FriendRequest, {
 			where: [
-				{ sender: { id: currentUserId }, receiver: { id: oppsiteUserId } },
-				{ sender: { id: oppsiteUserId }, receiver: { id: currentUserId } },
+				{ sender: { id: currentUserId }, receiver: { id: oppsiteTravelerId }, },
+				{ sender: { id: oppsiteTravelerId }, receiver: { id: currentUserId }},
 			],
 		})
 
 	if (existedFriendRequest) {
-		//sendSuccessResponse<FriendRequest>(res, existedFriendRequest)
+	
 		sendErrorResponse(
 			['there is a request already'],
 			res,
 			StatusCodes.FORBIDDEN
 		)
 	} else {
-		//sendNotFoundResponse(res)
+	
 		try {
-			const validation: FriendRequest =
-				await friendRequestValidation.validateAsync(req.body, {
-					abortEarly: false,
-				})
+			
+				
 			const friendRequest = await AppDataSource.manager.create<FriendRequest>(
 				FriendRequest,
-				validation
+				{
+					 sender: { id: 3 },
+					receiver: { id: oppsiteTravelerId }
+				}
 			)
+		
 			await friendRequest.save()
 			sendSuccessResponse<FriendRequest>(res, friendRequest)
 		} catch (error: any) {
@@ -51,10 +66,34 @@ const sendFriendRequest = async (req: Request, res: Response) => {
 		}
 	}
 }
+const cancelFriendRequest=async (req: Request, res: Response) => {
+	const oppsiteTravelerId:number | undefined = +req.params.id
+	const currentUserId: number = getUserIdFromToken(req)
+	const alreadySentRequest: FriendRequest | null = await AppDataSource.manager.findOne<FriendRequest>(
+		FriendRequest,
+		{
+			where:{ sender: { id: 3 }, receiver: { id: oppsiteTravelerId }}
+				
+		}
+	) 
+//	console.log("hi from already sent request")
+	if(alreadySentRequest){
+		const cancelledRequest=await AppDataSource.getRepository(FriendRequest).softRemove(alreadySentRequest)
+		sendSuccessResponse<FriendRequest>(res, cancelledRequest)
+
+	}else{
+		sendErrorResponse(
+			['there is not a request '],
+			res,
+			StatusCodes.FORBIDDEN
+		)
+	}
+	
+}
 
 export {
 	sendFriendRequest,
 	//acceptFriendRequest,
 	//rejectFriendRequest,
-	//cancelFriendReuest,
+	cancelFriendRequest,
 }

@@ -3,13 +3,13 @@ import {
 	sendFriendRequest,
 	//acceptFriendRequest,
 	//rejectFriendRequest,
-    //cancelFriendReuest,
+    cancelFriendRequest,
 
 } from '../controllers/friend_request/FriendRequestController'
 const router = Router()
 
-router.get('/send/:id', sendFriendRequest)
+router.post('/send/:id', sendFriendRequest)
 //router.post('/accept', acceptFriendRequest)
-//router.post('/reject', rejectFriendRequest)
-//router.post('/cancel', cancelFriendReues)
+//router.post('/reject/:id', rejectFriendRequest)
+router.post('/cancel/:id', 	cancelFriendRequest)
 export default router
