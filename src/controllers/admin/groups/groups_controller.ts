@@ -8,7 +8,6 @@ import { StatusCodes } from '../../../helpers/constants/statusCodes'
 import { sendSuccessResponse } from "../../../helpers/responses/sendSuccessResponse";
 import { Group } from "../../../entities/Group.entity";
 import { IGroupInterface } from "../../../helpers/interfaces/IGroup.interface";
-import logger from "../../../config/logger";
 
 const listGroups = async (req: Request, res: Response) => {
 	const count: number = await AppDataSource.getRepository<Group>(Group).count();
