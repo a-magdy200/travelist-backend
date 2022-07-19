@@ -4,16 +4,16 @@ import {
 	editTravelerProfile,
 	listTravelers,
 	listTravelerFriends,
-	deleteTravelerFriend
-
-
+	deleteTravelerFriend,
 } from '../controllers/travelers/TravelerController'
+import { isAuthenticated } from '../middlewares/isAuthenticated'
+
 const router = Router()
 
 router.get('/', listTravelers)
-router.get('/friends',listTravelerFriends)
-router.get('/:id', viewTravelerProfile)
-router.put('/:id', editTravelerProfile)
-router.delete('/delete/:id',deleteTravelerFriend)
+router.get('/profile', viewTravelerProfile)
+router.get('/friends', listTravelerFriends)
+router.put('/', editTravelerProfile)
+router.delete('/delete/:id', deleteTravelerFriend)
 
 export default router

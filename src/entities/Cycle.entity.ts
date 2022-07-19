@@ -42,12 +42,12 @@ export class Cycle extends BaseEntity {
 	})
 	@IsInt()
 	@Min(0)
-	max_seats: number
+	max_seats?: number
 
 	@Column({ type: 'int', default: 0 })
 	@IsInt()
 	@Min(0)
-	current_seats: number
+	current_seats?: number
 
 	@Column()
 	@IsDate()

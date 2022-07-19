@@ -12,5 +12,4 @@ export {
 	updateCycle,
 	deleteCycle,
 	bookCycle,
-
 }

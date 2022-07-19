@@ -80,11 +80,10 @@ export class Traveler extends BaseEntity {
 	average_rate?: number
 
 	@Column({
-		type: "int",
-		nullable: true,
+		type: "int"
 	})
-	@IsInt()	
-	userId?: number;
+	@IsInt()
+	userId: number;
 
 	@OneToMany(() => FriendRequest, (friend_request) => friend_request.sender)
 	sent_requests: FriendRequest[]
@@ -121,7 +120,7 @@ export class Traveler extends BaseEntity {
 	onDelete: 'CASCADE' })
 	traveler2_friends: Traveler[]
 
-	//@OneToOne(() => User, (user) => user.traveler)
+	@OneToOne(() => User, (user) => user.traveler)
 	@OneToOne(() => User )
 	@JoinColumn()
 	user: User
@@ -138,3 +137,4 @@ export class Traveler extends BaseEntity {
 	@DeleteDateColumn()
 	deleted_at?: Date
 }
+
