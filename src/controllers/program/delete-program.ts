@@ -14,7 +14,6 @@ export const deleteProgram = async (req: Request, res: Response) => {
 
 			id,
 		})
-
 		sendSuccessResponse(res)
 	} catch (error: any) {
 		sendErrorResponse(error, res, StatusCodes.NOT_FOUND)
