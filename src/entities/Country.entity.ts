@@ -50,7 +50,6 @@ export class Country extends BaseEntity {
 	@IsPositive()
 	groupId: number
 
-
 	@OneToMany(() => Program, (program) => program.country)
 	programs: Program[]
 
