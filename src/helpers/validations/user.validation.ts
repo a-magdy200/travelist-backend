@@ -5,5 +5,5 @@ export const userValidation = Joi.object().keys({
 	email: Joi.string().email().required(),
 	password: Joi.string().min(6).required(),
 	address: Joi.string().min(3).required(),
-	type: Joi.string().valid('traveler', 'company', 'admin').required(),
+	type: Joi.string().valid('traveler', 'company').required(),
 })

@@ -11,7 +11,6 @@ import { IGroupInterface } from "../../../helpers/interfaces/IGroup.interface";
 
 const listGroups = async (req: Request, res: Response) => {
 	const count: number = await AppDataSource.getRepository<Group>(Group).count();
-	console.log(count);
 	if (count === 0) {
 		sendSuccessResponse<IGroupInterface[]>(res, []);
 	} else {

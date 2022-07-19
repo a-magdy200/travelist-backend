@@ -18,7 +18,7 @@ const login_handler = async (req: Request, res: Response) => {
     const validated = await loginValidation.validateAsync(req.body, { abortEarly: false });
     const existedUser = await AppDataSource.manager.findOne(User, {
       where: { email: validated.email },
-      select: ['email', 'password', 'id']
+      select: ['email', 'name', 'password', 'id']
   });
     if (existedUser) {
       const passwordCheck = await bcrypt.compare(validated.password, existedUser.password);
@@ -30,7 +30,10 @@ const login_handler = async (req: Request, res: Response) => {
       if (passwordCheck) {
         sendSuccessResponse<IUserAuthenticationResponse>(res, {
           access_token,
-          user: _.omit(existedUser, "password")
+          user: {
+            name: existedUser.name,
+            id: existedUser.id,
+          }
         })
       } else {
         sendErrorResponse(["Not Authorized"], res, StatusCodes.NOT_AUTHORIZED);
@@ -51,11 +54,12 @@ const register_handler = async (req: Request, res: Response) => {
     } else {
       const userData = {...validated}
       const salt = await bcrypt.genSalt(10)
-      userData.password = bcrypt.hash(validated.password, salt);
+      userData.password = await bcrypt.hash(validated.password, salt);
       const insertResult = await AppDataSource.manager.insert(User, userData)
       const access_token = jwt.sign({
         user: {
-          id: insertResult.generatedMaps[0].id
+          id: insertResult.generatedMaps[0].id,
+          name: validated.name,
         }
       }, configurations().secret);
       validated.id = insertResult.generatedMaps[0].id;
