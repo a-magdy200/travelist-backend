@@ -40,10 +40,7 @@ export class Group extends BaseEntity {
 	@IsPositive()
 	countryId: number;
 
-	//@OneToOne(() => Country, (country) => country.group)
-	@OneToOne(() => Country)
-	@JoinColumn()
-	country: Country
+	@OneToOne(() => Country, (country) => country.group)
 
 	@OneToMany(() => Post, (post) => post.group)
 	posts: Post[]
