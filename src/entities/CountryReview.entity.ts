@@ -10,7 +10,7 @@ import {
 	UpdateDateColumn,
 } from 'typeorm'
 import { Traveler } from './Traveler.entity'
-import { IsInt, IsString, Max, Min } from 'class-validator'
+import { IsInt, IsString, Max, Min,IsPositive } from 'class-validator'
 import { Country } from './Country.entity'
 
 @Entity('country_reviews')
@@ -33,9 +33,23 @@ export class CountryReview extends BaseEntity {
 	@IsString()
 	review: string
 
+	@Column({
+		type: 'int'
+	})
+	@IsInt()
+	@IsPositive()
+	travelerId: number;
+
 	@ManyToOne(() => Traveler, (traveler) => traveler.country_reviews)
 	@JoinColumn()
 	traveler: Traveler
+
+	@Column({
+		type: 'int'
+	})
+	@IsInt()
+	@IsPositive()
+	countryId: number;
 
 	@ManyToOne(() => Country, (country) => country.reviews)
 	@JoinColumn()
