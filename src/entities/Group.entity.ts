@@ -15,7 +15,7 @@ import {
 import { Country } from './Country.entity'
 import { User } from './User.entity'
 import { Post } from './Post.entity'
-import { IsInt, IsString, Min } from 'class-validator'
+import { IsInt, IsPositive, IsString, Min } from "class-validator";
 
 @Entity('groups')
 export class Group extends BaseEntity {
@@ -33,10 +33,14 @@ export class Group extends BaseEntity {
 	@IsString()
 	cover_picture: string
 
+	@Column({
+		type: "int"
+	})
+	@IsInt()
+	@IsPositive()
+	countryId: number;
+
 	@OneToOne(() => Country, (country) => country.group)
-	// @OneToOne(() => Country)
-	// @JoinColumn()
-	country: Country
 
 	@OneToMany(() => Post, (post) => post.group)
 	posts: Post[]

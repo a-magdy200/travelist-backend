@@ -1,34 +1,46 @@
 import { Request, Response } from 'express'
-import { AppDataSource } from '../../config/database/data-source'
-import { Hotel } from '../../entities/Hotel.entity'
-import { sendNotFoundResponse } from '../../helpers/responses/404.response'
-import { hotelValidation } from '../../helpers/validations/hotel.validation'
-import { formatValidationErrors } from '../../helpers/functions/formatValidationErrors'
-import { UPLOAD_DIRECTORY } from '../../helpers/constants/directories'
+import { AppDataSource } from '../../../config/database/data-source'
+import { Hotel } from '../../../entities/Hotel.entity'
+import { sendNotFoundResponse } from '../../../helpers/responses/404.response'
+import { hotelValidation } from '../../../helpers/validations/hotel.validation'
+import { formatValidationErrors } from '../../../helpers/functions/formatValidationErrors'
+import { UPLOAD_DIRECTORY } from '../../../helpers/constants/directories'
 import { unlinkSync } from 'fs'
-import { sendErrorResponse } from '../../helpers/responses/sendErrorResponse'
-import { StatusCodes } from '../../helpers/constants/statusCodes'
-import { sendSuccessResponse } from '../../helpers/responses/sendSuccessResponse'
+import { sendErrorResponse } from '../../../helpers/responses/sendErrorResponse'
+import { StatusCodes } from '../../../helpers/constants/statusCodes'
+import { sendSuccessResponse } from "../../../helpers/responses/sendSuccessResponse";
+import { IHotelInterface } from "../../../helpers/interfaces/IHotel.interface";
 
 const listHotels = async (req: Request, res: Response) => {
-	const hotels: Hotel[] = await AppDataSource.manager.find<Hotel>(Hotel, {
-		relations: ['reviews', 'country'],
-	})
-	sendSuccessResponse<Hotel[]>(res, hotels)
+	const hotels: IHotelInterface[] = await AppDataSource.getRepository<Hotel>(Hotel)
+		.createQueryBuilder("hotel")
+		.innerJoin("hotel.country", "country")
+		// .innerJoin("hotel.programs", "program")
+		.select([
+			"hotel.id as id",
+			"hotel.name as name",
+			"hotel.stars as stars",
+			"country.name as countryName",
+			"country.id as countryId"
+			// "COUNT(program.id) as programsCount"
+		])
+		.getRawMany();
+	sendSuccessResponse<IHotelInterface[]>(res, hotels);
 }
+
+
 
 const showHotel = async (req: Request, res: Response) => {
 	const id: number | undefined = +req.params.id
 	const hotel: Hotel | null = await AppDataSource.manager.findOne<Hotel>(
 		Hotel,
 		{
-			where: { id },
-			relations: ['reviews', 'country'],
-			// relations: ['reviews', 'country', 'programs', 'programs.company'],
+			where: {id,},
+			relations: ["reviews", "country"]
 		}
 	)
 	if (hotel) {
-		sendSuccessResponse<Hotel>(res, hotel)
+		sendSuccessResponse<Hotel>(res, hotel);
 	} else {
 		sendNotFoundResponse(res)
 	}
@@ -48,7 +60,7 @@ const updateHotel = async (req: Request, res: Response) => {
 			validation
 		)
 
-		sendSuccessResponse(res)
+		sendSuccessResponse(res);
 	} catch (error: any) {
 		sendErrorResponse(
 			formatValidationErrors(error),
@@ -63,7 +75,7 @@ const deleteHotel = async (req: Request, res: Response) => {
 		await AppDataSource.manager.softDelete<Hotel>(Hotel, {
 			id,
 		})
-		sendSuccessResponse(res)
+		sendSuccessResponse(res);
 	} catch (error: any) {
 		sendErrorResponse(
 			formatValidationErrors(error),
@@ -79,7 +91,7 @@ const createHotel = async (req: Request, res: Response) => {
 		})
 		const hotel = await AppDataSource.manager.create<Hotel>(Hotel, validation)
 		await hotel.save()
-		sendSuccessResponse<Hotel>(res, hotel)
+		sendSuccessResponse<Hotel>(res, hotel);
 	} catch (error: any) {
 		sendErrorResponse(
 			formatValidationErrors(error),

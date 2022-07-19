@@ -13,6 +13,7 @@ import { sendErrorResponse } from '../../helpers/responses/sendErrorResponse'
 import { StatusCodes } from '../../helpers/constants/statusCodes'
 import { sendSuccessResponse } from "../../helpers/responses/sendSuccessResponse";
 import { Country } from '../../entities/Country.entity'
+import { getUserIdFromToken } from '../../helpers/functions/getUserIdFromToken'
 
 export const create = async (req: Request, res: Response) => {
 	console.log(req.body)
@@ -35,6 +36,7 @@ export const create = async (req: Request, res: Response) => {
 			price: parseInt(bodyObject.price),
 			is_Recurring: bodyObject.is_Recurring,
 		})
+		await program.save()
 
 		const hotelsIds =
 			typeof bodyObject.hotels === 'string'
@@ -46,7 +48,7 @@ export const create = async (req: Request, res: Response) => {
 				? [parseInt(bodyObject.destinations, 10)]
 				: bodyObject.destinations?.map((destinationId: string) => parseInt(destinationId, 10))
 			
-		if (hotelsIds && destinationIds&& bodyObject.companyId&&bodyObject.countryId &&bodyObject.transportationId) {
+		if (hotelsIds && destinationIds&&bodyObject.countryId &&bodyObject.transportationId) {
 			const loadedHotels = await AppDataSource.manager.findBy(Hotel, {
 				id: In(hotelsIds),
 			})
@@ -58,10 +60,12 @@ export const create = async (req: Request, res: Response) => {
 			program.hotels = loadedHotels
 			program.destinations = loadedDestinations
 
-			const company = await AppDataSource.getRepository(Company).findOneBy({
-				id: parseInt(bodyObject.companyId),
-			})
 
+			const userId: number = getUserIdFromToken(req)
+			const company = await AppDataSource.getRepository(Company).findOneBy({
+                  user:{id:userId}
+			})
+            console.log("company",company)
 			const country = await AppDataSource.getRepository(Country).findOneBy({
 				id: parseInt(bodyObject.countryId),
 			})

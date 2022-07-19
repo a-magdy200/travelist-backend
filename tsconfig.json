@@ -22,6 +22,5 @@
 		"useUnknownInCatchVariables": true,
 		"strictFunctionTypes": true,
 		"strictPropertyInitialization": false,
-		"noEmit": true
 	}
 }
