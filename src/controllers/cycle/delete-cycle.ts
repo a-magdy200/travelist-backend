@@ -4,14 +4,18 @@ import { Cycle } from '../../entities/Cycle.entity'
 import { sendSuccessResponse } from "../../helpers/responses/sendSuccessResponse";
 import { sendErrorResponse } from "../../helpers/responses/sendErrorResponse";
 import { StatusCodes } from "../../helpers/constants/statusCodes";
+import { getUserIdFromToken } from '../../helpers/functions/getUserIdFromToken';
+import { Company } from '../../entities/Company.entity';
 
 export const deleteCycle = async (req: Request, res: Response) => {
 	try {
 		const id: number | undefined = +req.params.id
-		await AppDataSource.manager.delete<Cycle>(Cycle, {
+		
+			await AppDataSource.manager.delete<Cycle>(Cycle, {
 			id,
 		})
 		sendSuccessResponse(res)
+     	
 	} catch (error: any) {
 		sendErrorResponse(error, res, StatusCodes.NOT_ACCEPTABLE);
 	}

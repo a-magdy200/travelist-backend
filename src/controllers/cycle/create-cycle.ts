@@ -19,6 +19,7 @@ export const createCycle = async (req: Request, res: Response) => {
 		const program = await AppDataSource.getRepository(Program).findOneBy({
 			id: validation.programId,
 		})
+		
 		if(program?.is_Recurring)
      	{
 		const cycle = await AppDataSource.manager.create<Cycle>(Cycle, validation)

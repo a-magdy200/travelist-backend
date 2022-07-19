@@ -30,6 +30,8 @@ export const bookCycle = async (req: Request, res: Response) => {
             where: {
                 userId:userId
             },
+            relations: ["user"],
+
         })
 
         const previousCycle = await AppDataSource.getRepository(CycleBooking).findOne({
@@ -41,15 +43,17 @@ export const bookCycle = async (req: Request, res: Response) => {
 
         console.log(!previousCycle)
 
-        if(traveler && cycle && !previousCycle&&cycle.current_seats<cycle.max_seats )
+        if(traveler&& cycle && !previousCycle&&cycle.current_seats<cycle.max_seats )
       { 
         console.log(cycle)
        const booking = await AppDataSource.manager.create<CycleBooking>(CycleBooking,bodyObject)
        // booking.travelers.push(traveler)
+       cycle.current_seats++
        booking.travelers=traveler
-       cycle.current_seats+=1
        booking.cycle=cycle
        await AppDataSource.manager.save(booking)
+       await AppDataSource.manager.save(cycle)
+
 	   sendSuccessResponse<CycleBooking>(res, booking)
 
       }  
