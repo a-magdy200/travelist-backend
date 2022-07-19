@@ -28,44 +28,38 @@ const createPost = async (req: Request, res: Response) => {
 			},
 			relations: ['user'],
 		})
-// if userId in group.followers =>can create 
+		// if userId in group.followers =>can create
 		const group = await AppDataSource.getRepository(Group).findOne({
 			where: {
 				id: groupId,
 			},
 			relations: ['followers'],
 		})
-const followers = group?.followers;
-console.log('followers',followers)
-	const existedUser = followers?.find((obj) => {
-		return obj.id === userId;
-	  });
-	  if(existedUser){
-		console.log('existedUser',existedUser)
-    
-		const post = await AppDataSource.manager.create<Post>(Post, {
-			content: bodyObj.content,
-			travelerId: traveler?.id,
-			groupId: group?.id,
+		const followers = group?.followers
+		const existedUser = followers?.find((obj) => {
+			return obj.id === userId
 		})
-		if (traveler?.user) {
-			post.traveler = traveler
+		if (existedUser) {
+			console.log('existedUser', existedUser)
+
+			const post = await AppDataSource.manager.create<Post>(Post, {
+				content: bodyObj.content,
+				travelerId: traveler?.id,
+				groupId: group?.id,
+			})
+			if (traveler?.user) {
+				post.traveler = traveler
+			}
+			await AppDataSource.manager.save(post)
+			sendSuccessResponse<Post>(res, post)
+		} else {
+			sendErrorResponse(
+				['You can not create post here'],
+				res,
+				StatusCodes.NOT_AUTHORIZED
+			)
 		}
-		await AppDataSource.manager.save(post)
-		sendSuccessResponse<Post>(res, post)
-	}
-	else {
-		sendErrorResponse(
-			['You can not create post here'],
-			res,
-			StatusCodes.NOT_AUTHORIZED
-		)
-	}
-	}
-		// if (group) {
-		// 	post.group = group
-		// }
- catch (error: any) {
+	} catch (error: any) {
 		sendErrorResponse(
 			formatValidationErrors(error),
 			res,
@@ -83,8 +77,8 @@ const listPosts = async (req: Request, res: Response) => {
 			},
 		},
 		order: {
-		 id: "DESC"
-		  },
+			id: 'DESC',
+		},
 	})
 
 	sendSuccessResponse<Post[]>(res, posts)
@@ -109,7 +103,7 @@ const deletePost = async (req: Request, res: Response) => {
 		const post: Post | null = await AppDataSource.manager.findOne<Post>(Post, {
 			where: { id },
 			// relations: ['group', 'traveler','traveler.user'],
-			relations: ['group','traveler.user'],
+			relations: ['group', 'traveler.user'],
 		})
 
 		if (userId == post?.traveler.userId) {
@@ -141,7 +135,7 @@ const editPost = async (req: Request, res: Response) => {
 		})
 		const post: Post | null = await AppDataSource.manager.findOne<Post>(Post, {
 			where: { id },
-			relations: ['group','traveler.user'],
+			relations: ['group', 'traveler.user'],
 		})
 		if (userId == post?.traveler.userId) {
 			await AppDataSource.manager.update<Post>(
