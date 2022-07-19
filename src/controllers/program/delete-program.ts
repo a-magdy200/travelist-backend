@@ -8,8 +8,10 @@ import { StatusCodes } from "../../helpers/constants/statusCodes";
 export const deleteProgram = async (req: Request, res: Response) => {
 	try {
 		const id: number | undefined = +req.params.id
+
 		console.log(id)
 		await AppDataSource.manager.delete<Program>(Program, {
+
 			id,
 		})
 		sendSuccessResponse(res)

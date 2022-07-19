@@ -11,22 +11,11 @@ import { StatusCodes } from '../../helpers/constants/statusCodes'
 const listCompanies = async (req: Request, res: Response) => {
 	const companies: Company[] = await AppDataSource.manager.find<Company>(
 		Company,
-		{
-			relations:["user","programs","programs.cycles"]
-		}
+		{}
 	)
-	if(companies)
-	{
-		sendSuccessResponse<Company[]>(res, companies)
-	}
-	else
-	{
-		sendNotFoundResponse(res)
-
-	}
+	sendSuccessResponse<Company[]>(res, companies)
 }
-
- const showCompany = async (req: Request, res: Response) => {
+const showCompany = async (req: Request, res: Response) => {
 	
 	const id: number | undefined = +req.params.id
 	const company = await AppDataSource.getRepository(Company).findOne({
@@ -71,6 +60,7 @@ const editCompanyProfile = async (req: Request, res: Response) => {
 		const validation: Company = await companyValidation.validateAsync(
 			req.body,
 			{ abortEarly: false }
+			
 		)
 		const updateResult = await AppDataSource.manager.update<Company>(
 			Company,

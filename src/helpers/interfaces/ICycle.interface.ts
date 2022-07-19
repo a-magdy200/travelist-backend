@@ -1,8 +1,8 @@
 export interface ICycleInterface {
 	id?: number
 	name?: string
-	max_seats: number
-	current_seats: number
+	max_seats?: number
+	current_seats?: number
 	departure_date?: Date
 	arrival_date?: Date
 	return_date?: Date

@@ -2,60 +2,42 @@ import { RequestHandler } from 'express'
 import { User } from '../../entities/User.entity'
 import { Request, Response } from 'express'
 import { AppDataSource } from '../../config/database/data-source'
-import { userValidation } from '../../helpers/validations/user.validation'
+import { userEditValidation } from '../../helpers/validations/userEdit.validation'
 import { passwordValidation } from '../../helpers/validations/password.validation'
 import { formatValidationErrors } from '../../helpers/functions/formatValidationErrors'
 import { sendErrorResponse } from '../../helpers/responses/sendErrorResponse'
 import { StatusCodes } from '../../helpers/constants/statusCodes'
-import { sendSuccessResponse } from "../../helpers/responses/sendSuccessResponse";
-import { getUserIdFromToken } from "../../helpers/functions/getUserIdFromToken";
-import { Traveler } from "../../entities/Traveler.entity";
-import { unlinkSync } from "fs";
-import { UPLOAD_DIRECTORY } from "../../helpers/constants/directories";
-import { sendNotFoundResponse } from "../../helpers/responses/404.response";
+import { sendSuccessResponse } from '../../helpers/responses/sendSuccessResponse'
+import { getUserIdFromToken } from '../../helpers/functions/getUserIdFromToken'
+import { unlinkSync } from 'fs'
+import { UPLOAD_DIRECTORY } from '../../helpers/constants/directories'
+import { sendNotFoundResponse } from '../../helpers/responses/404.response'
 const viewUserProfile: RequestHandler = async (req, res) => {
-	const id = getUserIdFromToken(req);
+	const id = getUserIdFromToken(req)
 	const user = await AppDataSource.getRepository(User).findOneByOrFail({
-		id
+		id,
 	})
-	sendSuccessResponse<User>(res, user);
-}
-const uploadProfilePicture = async (req: Request, res: Response) => {
-	if (req.file) {
-		const id = getUserIdFromToken(req);
-		const user = await AppDataSource.manager.findOneByOrFail(User, { id });
-		const oldCoverPicture = user.profile_picture
-		if (oldCoverPicture && oldCoverPicture !== '') {
-			await unlinkSync(`${UPLOAD_DIRECTORY}${oldCoverPicture}`)
-		}
-		const path = `${req.file.destination}${req.file.filename}`.replace(
-			UPLOAD_DIRECTORY,
-			''
-		)
-		user.profile_picture = path
-		await user.save()
-		sendSuccessResponse<string>(res, path)
-	} else {
-		sendErrorResponse(["Invalid file upload"], res, StatusCodes.NOT_ACCEPTABLE)
-	}
-
+	sendSuccessResponse<User>(res, user)
 }
 
 const editUserProfile = async (req: Request, res: Response) => {
 	try {
-		const id = getUserIdFromToken(req);
-		const validation: User = await userValidation.validateAsync(req.body, {
+		const id = getUserIdFromToken(req)
+		const validation: User = await userEditValidation.validateAsync(req.body, {
 			abortEarly: false,
 		})
-		await AppDataSource.manager.update<User>(
+		const updateResult = await AppDataSource.manager.update<User>(
 			User,
 			{
 				id,
 			},
 			validation
 		)
-
-		sendSuccessResponse(res);
+		if (updateResult.affected === 1) {
+			sendSuccessResponse(res)
+		} else {
+			sendErrorResponse(['Failed to update'], res, StatusCodes.NO_CHANGE)
+		}
 	} catch (error: any) {
 		sendErrorResponse(
 			formatValidationErrors(error),
@@ -66,17 +48,15 @@ const editUserProfile = async (req: Request, res: Response) => {
 }
 const updateUserPassword = async (req: Request, res: Response) => {
 	try {
-		const id = getUserIdFromToken(req);
+		const id = getUserIdFromToken(req)
 
 		const password_validation: User = await passwordValidation.validateAsync(
 			req.body,
 			{ abortEarly: false }
 		)
-		await AppDataSource.manager.update<User>(
-			User,
-			id,
-			{ password: password_validation.password }
-		)
+		await AppDataSource.manager.update<User>(User, id, {
+			password: password_validation.password,
+		})
 
 		sendSuccessResponse(res)
 	} catch (error: any) {
@@ -87,6 +67,33 @@ const updateUserPassword = async (req: Request, res: Response) => {
 		)
 	}
 }
+const uploadProfilePicture = async (req: Request, res: Response) => {
+	const id: number | undefined = +req.params.id
+	const user: User | null = await AppDataSource.manager.findOneBy<User>(User, {
+		id,
+	})
+	if (user && req.file?.filename) {
+		// Remove `uploads/` from path string
+		const oldCoverPicture = user.profile_picture
+		if (oldCoverPicture && oldCoverPicture !== '') {
+			await unlinkSync(`${UPLOAD_DIRECTORY}${oldCoverPicture}`)
+		}
+		const path = `${req.file.destination}${req.file.filename}`.replace(
+			UPLOAD_DIRECTORY,
+			''
+		)
+		user.profile_picture = path
+		await user.save()
+		res.json({
+			success: true,
+			path,
+		})
+	} else {
+		res.json(sendNotFoundResponse)
+	}
+	
+}
+
 const getUserId = async (req: Request, res: Response) =>  {
 	try {
 	const id = getUserIdFromToken(req);
@@ -99,4 +106,10 @@ catch (error: any) {
 	sendNotFoundResponse(res)
 }
 }
-export { uploadProfilePicture, viewUserProfile, editUserProfile, updateUserPassword,getUserId }
+export {
+	uploadProfilePicture,
+	viewUserProfile,
+	editUserProfile,
+	updateUserPassword,
+	getUserId
+}
