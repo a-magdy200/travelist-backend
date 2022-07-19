@@ -28,25 +28,44 @@ const createPost = async (req: Request, res: Response) => {
 			},
 			relations: ['user'],
 		})
-
+// if userId in group.followers =>can create 
 		const group = await AppDataSource.getRepository(Group).findOne({
 			where: {
 				id: groupId,
 			},
 			relations: ['followers'],
 		})
+const followers = group?.followers;
+console.log('followers',followers)
+	const existedUser = followers?.find((obj) => {
+		return obj.id === userId;
+	  });
+	  if(existedUser){
+		console.log('existedUser',existedUser)
+    
 		const post = await AppDataSource.manager.create<Post>(Post, {
 			content: bodyObj.content,
 			travelerId: traveler?.id,
 			groupId: group?.id,
 		})
-
 		if (traveler?.user) {
 			post.traveler = traveler
 		}
 		await AppDataSource.manager.save(post)
 		sendSuccessResponse<Post>(res, post)
-	} catch (error: any) {
+	}
+	else {
+		sendErrorResponse(
+			['You can not create post here'],
+			res,
+			StatusCodes.NOT_AUTHORIZED
+		)
+	}
+	}
+		// if (group) {
+		// 	post.group = group
+		// }
+ catch (error: any) {
 		sendErrorResponse(
 			formatValidationErrors(error),
 			res,
