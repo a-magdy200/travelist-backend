@@ -44,13 +44,12 @@ export const bookCycle = async (req: Request, res: Response) => {
 
         console.log(!previousCycle)
 
-        if(traveler && cycle && !previousCycle )
+        if(traveler && cycle && !previousCycle&&cycle.current_seats<cycle.max_seats )
       { 
         console.log(cycle)
-      // if(cycle.current_seats<cycle.max_seats){}
        const booking = await AppDataSource.manager.create<CycleBooking>(CycleBooking,bodyObject)
-       //  booking.travelers.push(traveler)
-       booking.travelers=traveler
+       // booking.travelers.push(traveler)
+     //  booking.travelers=traveler
        booking.cycle=cycle
        await AppDataSource.manager.save(booking)
 	   sendSuccessResponse<CycleBooking>(res, booking)

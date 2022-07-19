@@ -21,11 +21,14 @@ const listHotels = async (req: Request, res: Response) => {
 			"hotel.name as name",
 			"hotel.stars as stars",
 			"country.name as countryName",
+			"country.id as countryId"
 			// "COUNT(program.id) as programsCount"
 		])
 		.getRawMany();
 	sendSuccessResponse<IHotelInterface[]>(res, hotels);
 }
+
+
 
 const showHotel = async (req: Request, res: Response) => {
 	const id: number | undefined = +req.params.id
