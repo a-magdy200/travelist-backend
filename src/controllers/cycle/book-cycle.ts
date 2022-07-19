@@ -46,7 +46,7 @@ export const bookCycle = async (req: Request, res: Response) => {
         console.log(cycle)
        const booking = await AppDataSource.manager.create<CycleBooking>(CycleBooking,bodyObject)
        // booking.travelers.push(traveler)
-     //  booking.travelers=traveler
+       booking.travelers=traveler
        cycle.current_seats+=1
        booking.cycle=cycle
        await AppDataSource.manager.save(booking)
