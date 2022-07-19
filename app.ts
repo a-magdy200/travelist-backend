@@ -11,11 +11,6 @@ import userRouter from './src/routes/user.routes'
 import travelerRouter from './src/routes/traveler.routes'
 import authRouter from './src/routes/auth.routes'
 import countryRouter from './src/routes/countries.routes';
-import cycleRoutes from "./src/routes/cycle.routes";
-import companyRoutes from "./src/routes/company.routes";
-import appRoutes from "./src/routes/app.routes";
-import programsRoutes from "./src/routes/programs.routes";
-import groupRoutes from "./src/routes/group.routes";
 import cycleRoutes from './src/routes/cycle.routes'
 import companyRoutes from './src/routes/company.routes'
 import appRoutes from './src/routes/app.routes'
