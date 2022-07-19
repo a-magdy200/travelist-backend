@@ -19,3 +19,5 @@ export const deleteProgram = async (req: Request, res: Response) => {
 		sendErrorResponse(error, res, StatusCodes.NOT_FOUND)
 	}
 }
+
+
