@@ -41,6 +41,7 @@ export class Group extends BaseEntity {
 	countryId: number;
 
 	@OneToOne(() => Country, (country) => country.group)
+	country: Country;
 
 	@OneToMany(() => Post, (post) => post.group)
 	posts: Post[]
