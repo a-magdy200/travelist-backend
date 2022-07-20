@@ -7,6 +7,7 @@ const router = Router()
 const upload = multer({ storage: storage(PROGRAMS_DIRECTORY) })
 
 router.get('/all', Program.showAll)
+router.get('/company/programs', Program.showCompanyPrograms)
 router.get('/show/:id', Program.show)
 router.get('/show/cycles/:id', Program.showProgramCycles)
 router.post('/create', upload.single('cover_picture'), Program.create)

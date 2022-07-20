@@ -4,6 +4,7 @@ import { create } from './create-program'
 import { update } from './update-program'
 import { deleteProgram } from './delete-program'
 import { showProgramCycles } from './show-program-cycles'
+import { showCompanyPrograms } from './show-company-programs'
 
 export const Program = {
 	showAll,
@@ -11,5 +12,6 @@ export const Program = {
 	create,
 	update,
 	deleteProgram,
-	showProgramCycles
+	showProgramCycles,
+	showCompanyPrograms
 }
