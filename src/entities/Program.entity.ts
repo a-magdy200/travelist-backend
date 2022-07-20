@@ -73,6 +73,7 @@ export class Program extends BaseEntity {
 
 	@ManyToOne(() => Company, (company) => company.programs, {
 		onDelete: 'CASCADE',
+		onUpdate: 'CASCADE',
 	})
 	@JoinColumn()
 	company?: Company
