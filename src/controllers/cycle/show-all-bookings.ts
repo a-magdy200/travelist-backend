@@ -7,7 +7,7 @@ import { sendNotFoundResponse } from "../../helpers/responses/404.response"
 export const showBookings = async (req: Request, res: Response) => {
 
     const bookings: CycleBooking[] = await AppDataSource.manager.find<CycleBooking>(CycleBooking, {
-        relations: ["cycle", "cycle.program"]
+        relations: ["cycle", "cycle.program","travelers","travelers.user"]
     })
     if (bookings) {
         sendSuccessResponse<CycleBooking[]>(res, bookings)
