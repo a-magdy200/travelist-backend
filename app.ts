@@ -18,13 +18,8 @@ import programsRoutes from "./src/routes/programs.routes";
 import groupRoutes from "./src/routes/group.routes";
 import friendRequestRoutes from './src/routes/friend_request.routes'
 import adminRoutes from "./src/routes/admin/admin.routes";
-import cycleRoutes from './src/routes/cycle.routes'
-import companyRoutes from './src/routes/company.routes'
-import appRoutes from './src/routes/app.routes'
-import programsRoutes from './src/routes/programs.routes'
-import groupRoutes from './src/routes/group.routes'
 import postRoutes from './src/routes/post.routes'
-import adminRoutes from './src/routes/admin/admin.routes'
+
 
 const app = express()
 app.use(cors({ origin: true, credentials: true }))
