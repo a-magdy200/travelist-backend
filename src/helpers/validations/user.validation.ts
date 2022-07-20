@@ -7,3 +7,8 @@ export const userValidation = Joi.object().keys({
 	address: Joi.string().min(3).required(),
 	type: Joi.string().valid('traveler', 'company').required(),
 })
+
+export const userProfileValidation = Joi.object().keys({
+	name: Joi.string().min(3).required(),
+	address: Joi.string().min(3).required(),
+})
