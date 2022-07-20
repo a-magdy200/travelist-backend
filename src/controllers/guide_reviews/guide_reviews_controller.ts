@@ -56,8 +56,8 @@ const createGuideReview = async (req: Request, res: Response) => {
 				const guide_review: GuideReview | null =
 					await AppDataSource.manager.findOne<GuideReview>(GuideReview, {
 						where: {
-							traveler: { id: currentTravelerId }, 
-							guide: { id: requestedGuideId }, 
+							traveler: { id: currentTravelerId },
+							guide: { id: requestedGuideId },
 						},
 					})
 
@@ -72,7 +72,7 @@ const createGuideReview = async (req: Request, res: Response) => {
 						{
 							rating: validation.rating,
 							review: validation.review,
-							guideId: requestedGuideId,	
+							guideId: requestedGuideId,
 							travelerId: currentTravelerId,
 						}
 					)
@@ -107,8 +107,13 @@ const deleteGuideReview = async (req: Request, res: Response) => {
 		})
 		sendSuccessResponse(res)
 	} catch (error: any) {
-		sendErrorResponse(error, res, StatusCodes.NOT_ACCEPTABLE);
+		sendErrorResponse(error, res, StatusCodes.NOT_ACCEPTABLE)
 	}
 }
 
-export { listGuidesReviews, showGuideReviews, deleteGuideReview , createGuideReview }
+export {
+	listGuidesReviews,
+	showGuideReviews,
+	deleteGuideReview,
+	createGuideReview,
+}

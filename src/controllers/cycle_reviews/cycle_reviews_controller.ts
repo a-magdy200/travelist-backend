@@ -54,13 +54,13 @@ const createCycleReview = async (req: Request, res: Response) => {
 				// console.log(currentTravelerId) //2
 
 				const requestedCycleId = req.body?.cycleId
-				console.log(requestedCycleId) 
+				console.log(requestedCycleId)
 
 				const cycle_review: CycleReview | null =
 					await AppDataSource.manager.findOne<CycleReview>(CycleReview, {
 						where: {
-							traveler: { id: currentTravelerId }, 
-							cycle: { id: requestedCycleId }, 
+							traveler: { id: currentTravelerId },
+							cycle: { id: requestedCycleId },
 						},
 					})
 				// console.log(cycle_review) //null
@@ -76,7 +76,7 @@ const createCycleReview = async (req: Request, res: Response) => {
 						{
 							rating: validation.rating,
 							review: validation.review,
-							cycleId: requestedCycleId,	
+							cycleId: requestedCycleId,
 							travelerId: currentTravelerId,
 						}
 					)
@@ -111,8 +111,13 @@ const deleteCycleReview = async (req: Request, res: Response) => {
 		})
 		sendSuccessResponse(res)
 	} catch (error: any) {
-		sendErrorResponse(error, res, StatusCodes.NOT_ACCEPTABLE);
+		sendErrorResponse(error, res, StatusCodes.NOT_ACCEPTABLE)
 	}
 }
 
-export { createCycleReview, listCyclesReviews, showCycleReviews, deleteCycleReview }
+export {
+	createCycleReview,
+	listCyclesReviews,
+	showCycleReviews,
+	deleteCycleReview,
+}

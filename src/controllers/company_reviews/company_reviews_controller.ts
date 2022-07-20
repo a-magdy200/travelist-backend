@@ -7,7 +7,6 @@ import { StatusCodes } from '../../helpers/constants/statusCodes'
 import { sendSuccessResponse } from '../../helpers/responses/sendSuccessResponse'
 import { getUserIdFromToken } from '../../helpers/functions/getUserIdFromToken'
 import { Traveler } from '../../entities/Traveler.entity'
-import { CycleReview } from '../../entities/CycleReview.entity'
 import { CompanyReview } from '../../entities/CompanyReview.entity'
 import { companyReviewValidation } from '../../helpers/validations/company-review.validation'
 
@@ -55,13 +54,13 @@ const createCompanyReview = async (req: Request, res: Response) => {
 				// console.log(currentTravelerId) //2
 
 				const requestedCompanyId = req.body?.companyId
-				// console.log(requestedCycleId) 
+				// console.log(requestedCycleId)
 
 				const company_review: CompanyReview | null =
 					await AppDataSource.manager.findOne<CompanyReview>(CompanyReview, {
 						where: {
-							traveler: { id: currentTravelerId }, 
-							company: { id: requestedCompanyId }, 
+							traveler: { id: currentTravelerId },
+							company: { id: requestedCompanyId },
 						},
 					})
 				// console.log(cycle_review) //null
@@ -72,15 +71,13 @@ const createCompanyReview = async (req: Request, res: Response) => {
 							abortEarly: false,
 						})
 
-					const companyReview = await AppDataSource.manager.create<CompanyReview>(
-						CompanyReview,
-						{
+					const companyReview =
+						await AppDataSource.manager.create<CompanyReview>(CompanyReview, {
 							rating: validation.rating,
 							review: validation.review,
-							companyId: requestedCompanyId,	
+							companyId: requestedCompanyId,
 							travelerId: currentTravelerId,
-						}
-					)
+						})
 					await AppDataSource.manager.save(companyReview)
 
 					sendSuccessResponse<CompanyReview>(res, companyReview)
@@ -107,16 +104,18 @@ const createCompanyReview = async (req: Request, res: Response) => {
 const deleteCompanyReview = async (req: Request, res: Response) => {
 	try {
 		const id: number | undefined = +req.params.id
-		await AppDataSource.manager.delete<CycleReview>(CycleReview, {
+		await AppDataSource.manager.delete<CompanyReview>(CompanyReview, {
 			id,
 		})
 		sendSuccessResponse(res)
 	} catch (error: any) {
-		sendErrorResponse(error, res, StatusCodes.NOT_ACCEPTABLE);
+		sendErrorResponse(error, res, StatusCodes.NOT_ACCEPTABLE)
 	}
 }
 
-export { createCompanyReview,
+export {
+	createCompanyReview,
 	listCompaniesReviews,
 	showCompanyReviews,
-	deleteCompanyReview,}
+	deleteCompanyReview,
+}

@@ -73,7 +73,7 @@ const createHotelReview = async (req: Request, res: Response) => {
 						{
 							rating: validation.rating,
 							review: validation.review,
-							hotelId: requestedHotelId,	
+							hotelId: requestedHotelId,
 							travelerId: currentTravelerId,
 						}
 					)
@@ -108,8 +108,13 @@ const deleteHotelReview = async (req: Request, res: Response) => {
 		})
 		sendSuccessResponse(res)
 	} catch (error: any) {
-		sendErrorResponse(error, res, StatusCodes.NOT_ACCEPTABLE);
+		sendErrorResponse(error, res, StatusCodes.NOT_ACCEPTABLE)
 	}
 }
 
-export { listHotelsReviews, showHotelReviews, createHotelReview, deleteHotelReview }
+export {
+	listHotelsReviews,
+	showHotelReviews,
+	createHotelReview,
+	deleteHotelReview,
+}

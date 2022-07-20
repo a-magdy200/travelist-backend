@@ -56,8 +56,8 @@ const createCountryReview = async (req: Request, res: Response) => {
 				const country_review: CountryReview | null =
 					await AppDataSource.manager.findOne<CountryReview>(CountryReview, {
 						where: {
-							traveler: { id: currentTravelerId }, 
-							country: { id: requestedCountryId }, 
+							traveler: { id: currentTravelerId },
+							country: { id: requestedCountryId },
 						},
 					})
 
@@ -67,15 +67,13 @@ const createCountryReview = async (req: Request, res: Response) => {
 							abortEarly: false,
 						})
 
-					const countryReview = await AppDataSource.manager.create<CountryReview>(
-						CountryReview,
-						{
+					const countryReview =
+						await AppDataSource.manager.create<CountryReview>(CountryReview, {
 							rating: validation.rating,
 							review: validation.review,
-							countryId: requestedCountryId,	
+							countryId: requestedCountryId,
 							travelerId: currentTravelerId,
-						}
-					)
+						})
 					await AppDataSource.manager.save(countryReview)
 
 					sendSuccessResponse<CountryReview>(res, countryReview)
@@ -107,8 +105,13 @@ const deleteCountryReview = async (req: Request, res: Response) => {
 		})
 		sendSuccessResponse(res)
 	} catch (error: any) {
-		sendErrorResponse(error, res, StatusCodes.NOT_ACCEPTABLE);
+		sendErrorResponse(error, res, StatusCodes.NOT_ACCEPTABLE)
 	}
 }
 
-export { createCountryReview, listCountriesReviews, showCountryReviews, deleteCountryReview }
+export {
+	createCountryReview,
+	listCountriesReviews,
+	showCountryReviews,
+	deleteCountryReview,
+}
