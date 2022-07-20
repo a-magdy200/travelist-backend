@@ -98,9 +98,9 @@ export const bookCycle = async (req: Request, res: Response) => {
 
 
       })
-      .then(result=>{
+      .then(data=>{
         
-        res.status(200).json(result)
+        res.status(200).json(data)
 
       })
       .catch(e=>console.log(e))
