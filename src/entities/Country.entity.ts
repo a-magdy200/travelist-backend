@@ -50,11 +50,10 @@ export class Country extends BaseEntity {
 	@IsPositive()
 	groupId: number
 
-
 	@OneToMany(() => Program, (program) => program.country)
 	programs: Program[]
 
-	@ManyToOne(() => CountryReview, (countryReview) => countryReview.country)
+	@OneToMany(() => CountryReview, (countryReview) => countryReview.country)
 	@JoinColumn()
 	reviews: CountryReview[]
 
@@ -64,7 +63,7 @@ export class Country extends BaseEntity {
 
 	@OneToOne(() => Group, (group) => group.country)
 	@JoinColumn()
-	group: Group
+	group?: Group
 
 	@CreateDateColumn()
 	created_at?: Date
