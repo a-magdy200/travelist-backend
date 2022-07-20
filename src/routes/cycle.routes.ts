@@ -6,7 +6,8 @@ import {
 	showCycle,
 	updateCycle,
 	bookCycle,
-	showTravelerBookings
+	showTravelerBookings,
+	showBookings
 } from '../controllers/cycle'
 
 const router = Router()
@@ -14,6 +15,7 @@ const router = Router()
 router.get('/all', showAllCycles)
 router.get('/show/:id', showCycle)
 router.get('/traveler/bookings',showTravelerBookings)
+router.get('/bookings',showBookings)
 router.post('/create', createCycle)
 router.post('/book', bookCycle)
 router.put('/update/:id', updateCycle)

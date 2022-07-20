@@ -5,6 +5,7 @@ import { deleteCycle } from './delete-cycle'
 import { createCycle } from './create-cycle'
 import { bookCycle } from './book-cycle'
 import { showTravelerBookings } from './user-booking'
+import { showBookings } from './cycle-booking'
 
 export {
 	showAllCycles,
@@ -14,4 +15,5 @@ export {
 	deleteCycle,
 	bookCycle,
 	showTravelerBookings,
+	showBookings,
 }
