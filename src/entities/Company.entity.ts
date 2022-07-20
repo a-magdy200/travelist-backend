@@ -52,7 +52,10 @@ export class Company extends BaseEntity {
 	@IsString()
 	cover_picture?: string
 
-	@OneToOne(() => User, (user) => user.company)
+	@OneToOne(() => User, (user) => user.company,{
+		onUpdate: 'CASCADE',
+		onDelete: 'CASCADE' 
+		})
 	@JoinColumn()
 	user: User
 

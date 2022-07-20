@@ -33,7 +33,8 @@ const viewTravelerProfile: RequestHandler = async (req, res) => {
 	const traveler = await AppDataSource.getRepository(Traveler).findOneOrFail({
 		where: criteria,
 		relations: {
-			user: true
+			user: true,
+			reviews: true,
 		}
 	})
 	sendSuccessResponse<Traveler>(res, traveler);

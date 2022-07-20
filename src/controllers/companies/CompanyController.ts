@@ -16,13 +16,12 @@ const listCompanies = async (req: Request, res: Response) => {
 	sendSuccessResponse<Company[]>(res, companies)
 }
 const showCompany = async (req: Request, res: Response) => {
-	
 	const id: number | undefined = +req.params.id
 	const company = await AppDataSource.getRepository(Company).findOne({
 		where: {
 			id: parseInt(req.params.id),
 		},
-		relations: ["user","programs","programs.cycles"],
+		relations: ['user', 'programs', 'programs.cycles','reviews'],
 	})
 	if (company) {
 		sendSuccessResponse<Company>(res, company)
@@ -32,20 +31,21 @@ const showCompany = async (req: Request, res: Response) => {
 }
 
 const viewCompanyProfile: RequestHandler = async (req, res) => {
-	let criteria;
+	let criteria
 	if (req.params.id) {
 		criteria = {
 			id: +req.params.id,
 		}
 	} else {
 		criteria = {
-			userId: getUserIdFromToken(req)
+			userId: getUserIdFromToken(req),
 		}
 	}
 	const company = await AppDataSource.getRepository(Company).findOne({
 		where: criteria,
 		relations: {
 			user: true,
+			reviews: true,
 		},
 	})
 	if (company) {
@@ -60,7 +60,6 @@ const editCompanyProfile = async (req: Request, res: Response) => {
 		const validation: Company = await companyValidation.validateAsync(
 			req.body,
 			{ abortEarly: false }
-			
 		)
 		const updateResult = await AppDataSource.manager.update<Company>(
 			Company,
@@ -82,9 +81,4 @@ const editCompanyProfile = async (req: Request, res: Response) => {
 		)
 	}
 }
-export {
-	listCompanies,
-	viewCompanyProfile,
-	editCompanyProfile,
-	showCompany
-}
+export { listCompanies, viewCompanyProfile, editCompanyProfile, showCompany }

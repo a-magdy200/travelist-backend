@@ -24,7 +24,6 @@ const showHotel = async (req: Request, res: Response) => {
 		{
 			where: { id },
 			relations: ['reviews', 'country'],
-			// relations: ['reviews', 'country', 'programs', 'programs.company'],
 		}
 	)
 	if (hotel) {
