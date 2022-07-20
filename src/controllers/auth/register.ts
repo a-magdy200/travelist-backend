@@ -84,7 +84,7 @@ export const register = async (req: Request, res: Response, next: any) => {
 					{
 						gender: requestBody.gender,
 						date_of_birth: requestBody.date_of_birth,
-						is_guide: req.body.is_guide,
+						is_guide: req.body.is_guide === "1",
 						national_id: requestBody.national_id,
 						userId: userEntity?.id,
 					}

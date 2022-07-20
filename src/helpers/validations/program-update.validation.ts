@@ -9,5 +9,4 @@ export const programUpdateValidation = Joi.object().keys({
 	transportationId: Joi.number().required(),
 	destinations:Joi.required(),
 	is_Recurring: Joi.string().valid('0', '1').required(),
-
 })

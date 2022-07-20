@@ -10,7 +10,7 @@ import {
 	UpdateDateColumn,
 } from 'typeorm'
 import { Traveler } from './Traveler.entity'
-import { IsInt, IsPositive, IsString, Max, Min } from "class-validator";
+import { IsInt, IsString, Max, Min,IsPositive } from 'class-validator'
 import { Country } from './Country.entity'
 
 @Entity('country_reviews')
