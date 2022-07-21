@@ -11,7 +11,7 @@ import { FriendRequestStatusEnum } from '../../helpers/enums/friendRequestStatus
 import { TravelerFriends } from '../../entities/TravelerFriend.entity'
 import { getUserIdFromToken } from '../../helpers/functions/getUserIdFromToken'
 
-export const cancelFriendRequest = async (req: Request, res: Response) => {
+const cancelFriendRequest = async (req: Request, res: Response) => {
 	const oppsiteTravelerId: number | undefined = +req.params.id
 	const currentUserId: number = getUserIdFromToken(req)
     console.log(currentUserId)
@@ -21,6 +21,7 @@ export const cancelFriendRequest = async (req: Request, res: Response) => {
 			userId: currentUserId,
 		},
 	})
+	
 	if (currentTraveler) {
 		console.log(currentTraveler.id)
 		console.log(oppsiteTravelerId)
@@ -58,3 +59,8 @@ export const cancelFriendRequest = async (req: Request, res: Response) => {
 	}
 }
 
+export {
+	
+	cancelFriendRequest,
+	
+}
