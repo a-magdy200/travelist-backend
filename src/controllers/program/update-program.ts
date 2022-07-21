@@ -27,7 +27,7 @@ export const update = async (req: Request, res: Response) => {
 		const bodyObject: IProgramInterface = { ...req.body }
 		const program: Program | null = await AppDataSource.getRepository(
 			Program
-		).findOneBy( {
+		).findOneByOrFail( {
 			id,
 		})
 		

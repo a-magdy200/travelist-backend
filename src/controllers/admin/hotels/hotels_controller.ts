@@ -12,37 +12,52 @@ import { sendSuccessResponse } from "../../../helpers/responses/sendSuccessRespo
 import { IHotelInterface } from "../../../helpers/interfaces/IHotel.interface";
 
 const listHotels = async (req: Request, res: Response) => {
-	const hotels: IHotelInterface[] = await AppDataSource.getRepository<Hotel>(Hotel)
-		.createQueryBuilder("hotel")
-		.innerJoin("hotel.country", "country")
-		// .innerJoin("hotel.programs", "program")
-		.select([
-			"hotel.id as id",
-			"hotel.name as name",
-			"hotel.stars as stars",
-			"country.name as countryName",
-			"country.id as countryId"
-			// "COUNT(program.id) as programsCount"
-		])
-		.getRawMany();
-	sendSuccessResponse<IHotelInterface[]>(res, hotels);
+	try {
+		const hotels: IHotelInterface[] = await AppDataSource.getRepository<Hotel>(Hotel)
+			.createQueryBuilder("hotel")
+			.innerJoin("hotel.country", "country")
+			// .innerJoin("hotel.programs", "program")
+			.select([
+				"hotel.id as id",
+				"hotel.name as name",
+				"hotel.stars as stars",
+				"country.name as countryName",
+				"country.id as countryId"
+				// "COUNT(program.id) as programsCount"
+			])
+			.getRawMany();
+		sendSuccessResponse<IHotelInterface[]>(res, hotels);
+	}
+	catch (error: any) {
+		sendErrorResponse(
+			formatValidationErrors(error),
+			res,
+			StatusCodes.NOT_ACCEPTABLE
+		)
+	}
 }
 
 
 
 const showHotel = async (req: Request, res: Response) => {
 	const id: number | undefined = +req.params.id
-	const hotel: Hotel | null = await AppDataSource.manager.findOne<Hotel>(
-		Hotel,
-		{
-			where: {id,},
-			relations: ["reviews", "country"]
-		}
-	)
-	if (hotel) {
-		sendSuccessResponse<Hotel>(res, hotel);
-	} else {
-		sendNotFoundResponse(res)
+	try {
+		const hotel: IHotelInterface = await AppDataSource.manager.findOneOrFail<IHotelInterface>(
+			Hotel,
+			{
+				where: { id, },
+				relations: ["reviews", "country"]
+			}
+		)
+		sendSuccessResponse<IHotelInterface>(res, hotel);
+
+	}
+	catch (error: any) {
+		sendErrorResponse(
+			formatValidationErrors(error),
+			res,
+			StatusCodes.NOT_ACCEPTABLE
+		)
 	}
 }
 
@@ -102,28 +117,36 @@ const createHotel = async (req: Request, res: Response) => {
 }
 const updateHotelCover = async (req: Request, res: Response) => {
 	const id: number | undefined = +req.params.id
-	const hotel: Hotel | null = await AppDataSource.manager.findOneBy<Hotel>(
-		Hotel,
-		{
-			id,
-		}
-	)
-	if (hotel && req.file?.filename) {
-		// Remove `uploads/` from path string
-		const oldCoverPicture = hotel.cover_picture
-		if (oldCoverPicture && oldCoverPicture !== '') {
-			await unlinkSync(`${UPLOAD_DIRECTORY}${oldCoverPicture}`)
-		}
-		const path = `${req.file.destination}${req.file.filename}`.replace(
-			UPLOAD_DIRECTORY,
-			''
+	try {
+		const hotel: Hotel | null = await AppDataSource.manager.findOneByOrFail<Hotel>(
+			Hotel,
+			{
+				id,
+			}
 		)
-		hotel.cover_picture = path
-		await hotel.save()
-		sendSuccessResponse(res)
-	} else {
-		sendNotFoundResponse(res)
+		if (req.file?.filename) {
+			// Remove `uploads/` from path string
+			const oldCoverPicture = hotel.cover_picture
+			if (oldCoverPicture && oldCoverPicture !== '') {
+				await unlinkSync(`${UPLOAD_DIRECTORY}${oldCoverPicture}`)
+			}
+			const path = `${req.file.destination}${req.file.filename}`.replace(
+				UPLOAD_DIRECTORY,
+				''
+			)
+			hotel.cover_picture = path
+			await hotel.save()
+			sendSuccessResponse(res)
+		}
 	}
+	catch (error: any) {
+		sendErrorResponse(
+			formatValidationErrors(error),
+			res,
+			StatusCodes.NOT_ACCEPTABLE
+		)
+	}
+
 }
 export {
 	createHotel,

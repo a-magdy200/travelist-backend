@@ -9,22 +9,37 @@ import { StatusCodes } from '../../../helpers/constants/statusCodes'
 import { sendSuccessResponse } from "../../../helpers/responses/sendSuccessResponse";
 
 const listTransportations = async (req: Request, res: Response) => {
-	const transportations: Transportation[] = await AppDataSource.manager.find<Transportation>(Transportation)
-	sendSuccessResponse<Transportation[]>(res, transportations);
+	try {
+		const transportations: Transportation[] = await AppDataSource.manager.find<Transportation>(Transportation)
+		sendSuccessResponse<Transportation[]>(res, transportations);
+	}
+	catch (error: any) {
+		sendErrorResponse(
+			formatValidationErrors(error),
+			res,
+			StatusCodes.NOT_ACCEPTABLE
+		)
+	}
 }
 
 const showTransportation = async (req: Request, res: Response) => {
 	const id: number | undefined = +req.params.id
-	const transportation: Transportation | null = await AppDataSource.manager.findOne<Transportation>(
-		Transportation,
-		{
-			where: {id,},
-		}
-	)
-	if (transportation) {
+	try {
+		const transportation: Transportation | null = await AppDataSource.manager.findOneOrFail<Transportation>(
+			Transportation,
+			{
+				where: { id, },
+			}
+		)
 		sendSuccessResponse<Transportation>(res, transportation);
-	} else {
-		sendNotFoundResponse(res)
+
+	}
+	catch (error: any) {
+		sendErrorResponse(
+			formatValidationErrors(error),
+			res,
+			StatusCodes.NOT_ACCEPTABLE
+		)
 	}
 }
 

@@ -12,46 +12,46 @@ import jwt from 'jsonwebtoken'
 import { formatValidationErrors } from '../../helpers/functions/formatValidationErrors'
 
 export const forgetPassword = async (req: Request, res: Response) => {
-	if (req.body.email !== undefined) {
+	try {
 		// todo::interface and validate email only
-		const user = await AppDataSource.manager.findOneBy(User, {
+
+		const user = await AppDataSource.manager.findOneByOrFail(User, {
 			email: req.body.email,
 		})
 
-		if (user) {
-			const email = user.email
+		const email = user.email
 
-			const token = jwt.sign(
-				{ user: user.id },
-				configurations().reset_password_key,
-				{ expiresIn: '15m' }
-			)
-			try {
-				await AppDataSource.manager.update(User, user.id, {
-					forgot_password_token: token,
-				})
-			} catch (e: any) {
-				sendErrorResponse(
-					formatValidationErrors(e),
-					res,
-					StatusCodes.BAD_REQUEST
-				)
-			}
-
-			await emailHandler({
-				email,
-				subject: RESET_PASSWORD_SUBJECT,
-				html: forgetPasswordEmail(token),
+		const token = jwt.sign(
+			{ user: user.id },
+			configurations().reset_password_key,
+			{ expiresIn: '15m' }
+		)
+		try {
+			await AppDataSource.manager.update(User, user.id, {
+				forgot_password_token: token,
 			})
-			sendSuccessResponse(res)
-		} else {
+		} catch (e: any) {
 			sendErrorResponse(
-				['Invalid email, user does not exist'],
+				formatValidationErrors(e),
 				res,
-				StatusCodes.NOT_FOUND
+				StatusCodes.BAD_REQUEST
 			)
 		}
-	} else {
-		sendErrorResponse(['Missing email'], res, StatusCodes.NOT_ACCEPTABLE)
+
+		await emailHandler({
+			email,
+			subject: RESET_PASSWORD_SUBJECT,
+			html: forgetPasswordEmail(token),
+		})
+		sendSuccessResponse(res)
+
+
+	}
+	catch (e: any) {
+		sendErrorResponse(
+			formatValidationErrors(e),
+			res,
+			StatusCodes.BAD_REQUEST
+		)
 	}
 }

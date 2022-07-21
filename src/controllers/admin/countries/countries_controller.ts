@@ -11,24 +11,43 @@ import { Group } from "../../../entities/Group.entity";
 import { InsertResult } from "typeorm";
 
 const listCountries = async (req: Request, res: Response) => {
-	const countries: Country[] = await AppDataSource.manager.find<Country>(Country)
-	sendSuccessResponse<Country[]>(res, countries);
+	try {
+		const countries: Country[] = await AppDataSource.manager.find<Country>(Country)
+		sendSuccessResponse<Country[]>(res, countries);
+	}
+	catch (error: any) {
+		sendErrorResponse(
+			formatValidationErrors(error),
+			res,
+			StatusCodes.NOT_ACCEPTABLE
+		)
+	}
 }
+
+
 
 const showCountry = async (req: Request, res: Response) => {
 	const id: number | undefined = +req.params.id
-	const country: Country | null = await AppDataSource.manager.findOne<Country>(
-		Country,
-		{
-			where: {id,},
-			relations: ["reviews", "programs", "programs.company"]
-		}
-	)
-	if (country) {
+	try {
+		const country: Country | null = await AppDataSource.manager.findOneOrFail<Country>(
+			Country,
+			{
+				where: { id, },
+				relations: ["reviews", "programs", "programs.company"]
+			}
+		)
 		sendSuccessResponse<Country>(res, country);
-	} else {
-		sendNotFoundResponse(res)
+
+
 	}
+	catch (error: any) {
+		sendErrorResponse(
+			formatValidationErrors(error),
+			res,
+			StatusCodes.NOT_ACCEPTABLE
+		)
+	}
+
 }
 
 const updateCountry = async (req: Request, res: Response) => {
@@ -76,7 +95,7 @@ const createCountry = async (req: Request, res: Response) => {
 		})
 		const countryInsertResult: InsertResult = await AppDataSource.manager.insert<Country>(Country, validation)
 		const country: Country = countryInsertResult.generatedMaps[0] as Country;
-		const groupInsertResult = await AppDataSource.manager.insert<Group>(Group, {countryId: country.id});
+		const groupInsertResult = await AppDataSource.manager.insert<Group>(Group, { countryId: country.id });
 		country.groupId = groupInsertResult.identifiers[0].id;
 		sendSuccessResponse<Country>(res, country);
 	} catch (error: any) {

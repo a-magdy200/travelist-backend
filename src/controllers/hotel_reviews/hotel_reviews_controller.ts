@@ -11,29 +11,46 @@ import { hotelReviewValidation } from '../../helpers/validations/hotel-review.va
 import { Traveler } from '../../entities/Traveler.entity'
 
 const listHotelsReviews = async (req: Request, res: Response) => {
-	const hotels_reviews: HotelReview[] =
-		await AppDataSource.manager.find<HotelReview>(HotelReview, {
-			relations: ['traveler', 'hotel'],
-		})
+	try {
+		const hotels_reviews: HotelReview[] =
+			await AppDataSource.manager.find<HotelReview>(HotelReview, {
+				relations: ['traveler', 'hotel'],
+			})
 
-	sendSuccessResponse<HotelReview[]>(res, hotels_reviews)
+		sendSuccessResponse<HotelReview[]>(res, hotels_reviews)
+	}
+	catch (e: any) {
+		sendErrorResponse(
+			formatValidationErrors(e),
+			res,
+			StatusCodes.BAD_REQUEST
+		)
+	}
 }
 
 const showHotelReviews = async (req: Request, res: Response) => {
 	const hotel_id: number | undefined = +req.params.id
+	try {
+		const hotel_reviews: HotelReview[] | null =
+			await AppDataSource.manager.find<HotelReview>(HotelReview, {
+				where: {
+					hotel: { id: hotel_id },
+				},
+				relations: ['traveler', 'hotel'],
+			})
 
-	const hotel_reviews: HotelReview[] | null =
-		await AppDataSource.manager.find<HotelReview>(HotelReview, {
-			where: {
-				hotel: { id: hotel_id },
-			},
-			relations: ['traveler', 'hotel'],
-		})
-
-	if (hotel_reviews) {
-		sendSuccessResponse<HotelReview[]>(res, hotel_reviews)
-	} else {
-		sendNotFoundResponse(res)
+		if (hotel_reviews) {
+			sendSuccessResponse<HotelReview[]>(res, hotel_reviews)
+		} else {
+			sendNotFoundResponse(res)
+		}
+	}
+	catch (e: any) {
+		sendErrorResponse(
+			formatValidationErrors(e),
+			res,
+			StatusCodes.BAD_REQUEST
+		)
 	}
 }
 

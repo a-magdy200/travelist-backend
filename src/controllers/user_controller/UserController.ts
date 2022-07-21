@@ -13,11 +13,20 @@ import { unlinkSync } from 'fs'
 import { UPLOAD_DIRECTORY } from '../../helpers/constants/directories'
 import { sendNotFoundResponse } from '../../helpers/responses/404.response'
 const viewUserProfile: RequestHandler = async (req, res) => {
-	const id = getUserIdFromToken(req)
-	const user = await AppDataSource.getRepository(User).findOneByOrFail({
-		id,
-	})
-	sendSuccessResponse<User>(res, user)
+	try {
+		const id = getUserIdFromToken(req)
+		const user = await AppDataSource.getRepository(User).findOneByOrFail({
+			id,
+		})
+		sendSuccessResponse<User>(res, user)
+	}
+	catch (e: any) {
+		sendErrorResponse(
+			formatValidationErrors(e),
+			res,
+			StatusCodes.BAD_REQUEST
+		)
+	}
 }
 
 const editUserProfile = async (req: Request, res: Response) => {
@@ -68,8 +77,9 @@ const updateUserPassword = async (req: Request, res: Response) => {
 	}
 }
 const uploadProfilePicture = async (req: Request, res: Response) => {
+	try{
 	const id: number | undefined = +req.params.id
-	const user: User | null = await AppDataSource.manager.findOneBy<User>(User, {
+	const user: User | null = await AppDataSource.manager.findOneByOrFail<User>(User, {
 		id,
 	})
 	if (user && req.file?.filename) {
@@ -91,20 +101,28 @@ const uploadProfilePicture = async (req: Request, res: Response) => {
 	} else {
 		res.json(sendNotFoundResponse)
 	}
-	
+}
+catch (e: any) {
+	sendErrorResponse(
+		formatValidationErrors(e),
+		res,
+		StatusCodes.BAD_REQUEST
+	)
 }
 
-const getUserId = async (req: Request, res: Response) =>  {
+}
+
+const getUserId = async (req: Request, res: Response) => {
 	try {
-	const id = getUserIdFromToken(req);
-	const user = await AppDataSource.getRepository(User).findOneByOrFail({
-		id
-	})
-	sendSuccessResponse<User>(res, user);
-}
-catch (error: any) {
-	sendNotFoundResponse(res)
-}
+		const id = getUserIdFromToken(req);
+		const user = await AppDataSource.getRepository(User).findOneByOrFail({
+			id
+		})
+		sendSuccessResponse<User>(res, user);
+	}
+	catch (error: any) {
+		sendNotFoundResponse(res)
+	}
 }
 export {
 	uploadProfilePicture,

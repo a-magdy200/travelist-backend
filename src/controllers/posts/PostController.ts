@@ -22,14 +22,14 @@ const createPost = async (req: Request, res: Response) => {
 				abortEarly: false,
 			}
 		)
-		const traveler = await AppDataSource.getRepository(Traveler).findOne({
+		const traveler = await AppDataSource.getRepository(Traveler).findOneOrFail({
 			where: {
 				userId: userId,
 			},
 			relations: ['user'],
 		})
 		// if userId in group.followers =>can create
-		const group = await AppDataSource.getRepository(Group).findOne({
+		const group = await AppDataSource.getRepository(Group).findOneOrFail({
 			where: {
 				id: groupId,
 			},
@@ -69,6 +69,7 @@ const createPost = async (req: Request, res: Response) => {
 }
 const listPosts = async (req: Request, res: Response) => {
 	const userId: number = getUserIdFromToken(req)
+	try{
 	const posts: Post[] = await AppDataSource.manager.find<Post>(Post, {
 		relations: ['traveler', 'traveler.user'],
 		where: {
@@ -83,9 +84,18 @@ const listPosts = async (req: Request, res: Response) => {
 
 	sendSuccessResponse<Post[]>(res, posts)
 }
+catch (e: any) {
+	sendErrorResponse(
+		formatValidationErrors(e),
+		res,
+		StatusCodes.BAD_REQUEST
+	)
+}
+}
 const showPost = async (req: Request, res: Response) => {
 	const id: number | undefined = +req.params.id
-	const post: Post | null = await AppDataSource.manager.findOne<Post>(Post, {
+	try{
+	const post: Post | null = await AppDataSource.manager.findOneOrFail<Post>(Post, {
 		where: { id },
 		relations: ['group', 'traveler.user'],
 	})
@@ -96,11 +106,19 @@ const showPost = async (req: Request, res: Response) => {
 		sendNotFoundResponse(res)
 	}
 }
+catch (e: any) {
+	sendErrorResponse(
+		formatValidationErrors(e),
+		res,
+		StatusCodes.BAD_REQUEST
+	)
+}
+}
 const deletePost = async (req: Request, res: Response) => {
 	try {
 		const userId: number = getUserIdFromToken(req)
 		const id: number | undefined = +req.params.id
-		const post: Post | null = await AppDataSource.manager.findOne<Post>(Post, {
+		const post: Post | null = await AppDataSource.manager.findOneOrFail<Post>(Post, {
 			where: { id },
 			// relations: ['group', 'traveler','traveler.user'],
 			relations: ['group', 'traveler.user'],
@@ -133,7 +151,7 @@ const editPost = async (req: Request, res: Response) => {
 		const validation: Post = await postValidation.validateAsync(req.body, {
 			abortEarly: false,
 		})
-		const post: Post | null = await AppDataSource.manager.findOne<Post>(Post, {
+		const post: Post | null = await AppDataSource.manager.findOneOrFail<Post>(Post, {
 			where: { id },
 			relations: ['group', 'traveler.user'],
 		})
