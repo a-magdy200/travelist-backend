@@ -18,13 +18,13 @@ import { IUserRequestBodyInterface } from '../../helpers/interfaces/IUserRequest
 
 export const register = async (req: Request, res: Response, next: any) => {
 	try {
-		const existedUser = await AppDataSource.manager.findOneBy<User>(User, {
+		const existedUser = await AppDataSource.manager.findOneByOrFail<User>(User, {
 			email: req.body.email,
 		})
 		const requestBody: IRegisterRequestBody = { ...req.body }
 		const userType = requestBody.type
 
-		if (!existedUser) {
+		
 			const userRequestBody: IUserRequestBodyInterface = {
 				name: requestBody.name,
 				email: requestBody.email,
@@ -125,9 +125,7 @@ export const register = async (req: Request, res: Response, next: any) => {
 			if (userEntity) {
 				sendAuthenticationResponse(userEntity, res)
 			}
-		} else {
-			sendErrorResponse(['User is exist'], res, StatusCodes.NOT_ACCEPTABLE)
-		}
+		 
 	} catch (error: any) {
 		sendErrorResponse(
 			formatValidationErrors(error),

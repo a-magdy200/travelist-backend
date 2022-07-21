@@ -5,11 +5,15 @@ import { sendSuccessResponse } from "../../helpers/responses/sendSuccessResponse
 import { getUserIdFromToken } from '../../helpers/functions/getUserIdFromToken';
 import { Company } from '../../entities/Company.entity';
 import { sendNotFoundResponse } from '../../helpers/responses/404.response';
+import { sendErrorResponse } from '../../helpers/responses/sendErrorResponse';
+import { formatValidationErrors } from '../../helpers/functions/formatValidationErrors';
+import { StatusCodes } from '../../helpers/constants/statusCodes';
 
 export const showCompanyPrograms = async (req: Request, res: Response) => {
 
     const userId: number = getUserIdFromToken(req)
-	const company = await AppDataSource.getRepository(Company).findOne({
+	try{
+    const company = await AppDataSource.getRepository(Company).findOneOrFail({
 		where: {
 			userId: userId
 		},
@@ -33,3 +37,11 @@ export const showCompanyPrograms = async (req: Request, res: Response) => {
     
         }
 	}
+    catch (e: any) {
+        sendErrorResponse(
+            formatValidationErrors(e),
+            res,
+            StatusCodes.BAD_REQUEST
+        )
+    }
+}
