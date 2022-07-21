@@ -24,6 +24,8 @@ import cycleReviewsRoutes from "./src/routes/cycle_reviews.routes";
 import guideReviewsRoutes from "./src/routes/guide_reviews.routes";
 import companyReviewsRoutes from "./src/routes/company_reviews.routes";
 import postRoutes from './src/routes/post.routes'
+import adminRoutes from './src/routes/admin/admin.routes'
+import searchRouter from './src/routes/search.routes';
 
 
 const app = express()
@@ -57,6 +59,8 @@ AppDataSource.initialize()
 		app.use('/api/cycle_reviews', cycleReviewsRoutes)
 		app.use('/api/guide_reviews', guideReviewsRoutes)
 		app.use('/api/company_reviews', companyReviewsRoutes)
+		app.use('/api/search', searchRouter)
+
 
 		app.use('/api/posts', postRoutes)
 
