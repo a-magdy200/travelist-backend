@@ -61,17 +61,17 @@ export const create = async (req: Request, res: Response) => {
 
 
 			const userId: number = getUserIdFromToken(req)
-			const company = await AppDataSource.getRepository(Company).findOneBy({
+			const company = await AppDataSource.getRepository(Company).findOneByOrFail({
                   user:{id:userId}
 			})
             console.log("company",company)
-			const country = await AppDataSource.getRepository(Country).findOneBy({
+			const country = await AppDataSource.getRepository(Country).findOneByOrFail({
 				id: parseInt(bodyObject.countryId),
 			})
 
 			const transportation = await AppDataSource.getRepository(
 				Transportation
-			).findOneBy({ id: parseInt(bodyObject.transportationId) })
+			).findOneByOrFail({ id: parseInt(bodyObject.transportationId) })
 
 			if (company && transportation && country) {
 				program.company = company

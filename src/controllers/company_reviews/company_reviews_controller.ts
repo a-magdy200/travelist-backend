@@ -11,17 +11,26 @@ import { CompanyReview } from '../../entities/CompanyReview.entity'
 import { companyReviewValidation } from '../../helpers/validations/company-review.validation'
 
 const listCompaniesReviews = async (req: Request, res: Response) => {
+	try{
 	const companies_reviews: CompanyReview[] =
 		await AppDataSource.manager.find<CompanyReview>(CompanyReview, {
 			relations: ['traveler', 'company'],
 		})
 
 	sendSuccessResponse<CompanyReview[]>(res, companies_reviews)
+	}
+	catch (e: any) {
+		sendErrorResponse(
+			formatValidationErrors(e),
+			res,
+			StatusCodes.BAD_REQUEST
+		)
+	}
 }
 
 const showCompanyReviews = async (req: Request, res: Response) => {
 	const company_id: number | undefined = +req.params.id
-
+try{
 	const company_reviews: CompanyReview[] | null =
 		await AppDataSource.manager.find<CompanyReview>(CompanyReview, {
 			where: {
@@ -36,6 +45,14 @@ const showCompanyReviews = async (req: Request, res: Response) => {
 		sendNotFoundResponse(res)
 	}
 }
+catch (e: any) {
+	sendErrorResponse(
+		formatValidationErrors(e),
+		res,
+		StatusCodes.BAD_REQUEST
+	)
+}
+}
 
 const createCompanyReview = async (req: Request, res: Response) => {
 	try {
@@ -43,13 +60,12 @@ const createCompanyReview = async (req: Request, res: Response) => {
 		// console.log(userId) //4
 		if (userId) {
 			const currentTravelerUser: Traveler | null =
-				await AppDataSource.manager.findOne<Traveler>(Traveler, {
+				await AppDataSource.manager.findOneOrFail<Traveler>(Traveler, {
 					where: {
 						user: { id: userId },
 					},
 				})
 
-			if (currentTravelerUser) {
 				const currentTravelerId = currentTravelerUser.id
 				// console.log(currentTravelerId) //2
 
@@ -86,9 +102,7 @@ const createCompanyReview = async (req: Request, res: Response) => {
 						'Traveler already has reviewed this country',
 					])
 				}
-			} else {
-				sendNotFoundResponse(res, ['current user type is not traveler'])
-			}
+			 
 		} else {
 			sendNotFoundResponse(res, ['invalid token or user is not authenticated'])
 		}
