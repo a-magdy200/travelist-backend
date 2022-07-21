@@ -16,6 +16,8 @@ import companyRoutes from "./src/routes/company.routes";
 import appRoutes from "./src/routes/app.routes";
 import programsRoutes from "./src/routes/programs.routes";
 import groupRoutes from "./src/routes/group.routes";
+import friendRequestRoutes from './src/routes/friend_request.routes'
+import adminRoutes from "./src/routes/admin/admin.routes";
 import hotelReviewsRoutes from "./src/routes/hotel_reviews.routes";
 import countryReviewsRoutes from "./src/routes/country_reviews.routes";
 import cycleReviewsRoutes from "./src/routes/cycle_reviews.routes";
@@ -51,6 +53,7 @@ AppDataSource.initialize()
 		app.use('/api/cycles', cycleRoutes)
 		app.use('/api/programs', programsRoutes)
 		app.use('/api/groups', groupRoutes)
+		app.use('/api/friendrequests', friendRequestRoutes)
 		app.use('/api/hotel_reviews', hotelReviewsRoutes)
 		app.use('/api/country_reviews', countryReviewsRoutes)
 		app.use('/api/cycle_reviews', cycleReviewsRoutes)
