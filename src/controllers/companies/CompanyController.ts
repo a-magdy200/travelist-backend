@@ -8,6 +8,7 @@ import { getUserIdFromToken } from '../../helpers/functions/getUserIdFromToken'
 import { sendSuccessResponse } from '../../helpers/responses/sendSuccessResponse'
 import { sendErrorResponse } from '../../helpers/responses/sendErrorResponse'
 import { StatusCodes } from '../../helpers/constants/statusCodes'
+
 const listCompanies = async (req: Request, res: Response) => {
 	try{
 	const companies: Company[] = await AppDataSource.manager.find<Company>(
