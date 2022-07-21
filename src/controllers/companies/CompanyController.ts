@@ -8,26 +8,43 @@ import { getUserIdFromToken } from '../../helpers/functions/getUserIdFromToken'
 import { sendSuccessResponse } from '../../helpers/responses/sendSuccessResponse'
 import { sendErrorResponse } from '../../helpers/responses/sendErrorResponse'
 import { StatusCodes } from '../../helpers/constants/statusCodes'
+
 const listCompanies = async (req: Request, res: Response) => {
+	try{
 	const companies: Company[] = await AppDataSource.manager.find<Company>(
 		Company,
 		{}
 	)
 	sendSuccessResponse<Company[]>(res, companies)
+	}
+	catch (e: any) {
+		sendErrorResponse(
+			formatValidationErrors(e),
+			res,
+			StatusCodes.BAD_REQUEST
+		)
+	}
 }
 const showCompany = async (req: Request, res: Response) => {
 	const id: number | undefined = +req.params.id
-	const company = await AppDataSource.getRepository(Company).findOne({
+	try{
+	const company = await AppDataSource.getRepository(Company).findOneOrFail({
 		where: {
 			id: parseInt(req.params.id),
 		},
 		relations: ['user', 'programs', 'programs.cycles','reviews'],
 	})
-	if (company) {
+	
 		sendSuccessResponse<Company>(res, company)
-	} else {
-		sendNotFoundResponse(res)
-	}
+
+}
+catch (e: any) {
+	sendErrorResponse(
+		formatValidationErrors(e),
+		res,
+		StatusCodes.BAD_REQUEST
+	)
+}
 }
 
 const viewCompanyProfile: RequestHandler = async (req, res) => {
@@ -41,18 +58,24 @@ const viewCompanyProfile: RequestHandler = async (req, res) => {
 			userId: getUserIdFromToken(req),
 		}
 	}
-	const company = await AppDataSource.getRepository(Company).findOne({
+	try{
+	const company = await AppDataSource.getRepository(Company).findOneOrFail({
 		where: criteria,
 		relations: {
 			user: true,
 			reviews: true,
 		},
 	})
-	if (company) {
 		sendSuccessResponse<Company>(res, company)
-	} else {
-		sendNotFoundResponse(res, ['There is no company with this id'])
-	}
+	
+}
+catch (e: any) {
+	sendErrorResponse(
+		formatValidationErrors(e),
+		res,
+		StatusCodes.BAD_REQUEST
+	)
+}
 }
 const editCompanyProfile = async (req: Request, res: Response) => {
 	try {

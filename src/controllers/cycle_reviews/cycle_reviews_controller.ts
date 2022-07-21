@@ -11,17 +11,28 @@ import { CycleReview } from '../../entities/CycleReview.entity'
 import { cycleReviewValidation } from '../../helpers/validations/review-cycle.validation'
 
 const listCyclesReviews = async (req: Request, res: Response) => {
+	try
+	{
 	const cycles_reviews: CycleReview[] =
 		await AppDataSource.manager.find<CycleReview>(CycleReview, {
 			relations: ['traveler', 'cycle'],
 		})
 
 	sendSuccessResponse<CycleReview[]>(res, cycles_reviews)
+	}
+	catch (e: any) {
+		sendErrorResponse(
+			formatValidationErrors(e),
+			res,
+			StatusCodes.BAD_REQUEST
+		)
+	}
 }
 
 const showCycleReviews = async (req: Request, res: Response) => {
 	const cycle_id: number | undefined = +req.params.id
-
+  try
+  {
 	const cycle_reviews: CycleReview[] | null =
 		await AppDataSource.manager.find<CycleReview>(CycleReview, {
 			where: {
@@ -36,6 +47,14 @@ const showCycleReviews = async (req: Request, res: Response) => {
 		sendNotFoundResponse(res)
 	}
 }
+catch (e: any) {
+	sendErrorResponse(
+		formatValidationErrors(e),
+		res,
+		StatusCodes.BAD_REQUEST
+	)
+}
+}
 
 const createCycleReview = async (req: Request, res: Response) => {
 	try {
@@ -43,7 +62,7 @@ const createCycleReview = async (req: Request, res: Response) => {
 		// console.log(userId) //4
 		if (userId) {
 			const currentTravelerUser: Traveler | null =
-				await AppDataSource.manager.findOne<Traveler>(Traveler, {
+				await AppDataSource.manager.findOneOrFail<Traveler>(Traveler, {
 					where: {
 						user: { id: userId },
 					},
@@ -57,7 +76,7 @@ const createCycleReview = async (req: Request, res: Response) => {
 				console.log(requestedCycleId)
 
 				const cycle_review: CycleReview | null =
-					await AppDataSource.manager.findOne<CycleReview>(CycleReview, {
+					await AppDataSource.manager.findOneOrFail<CycleReview>(CycleReview, {
 						where: {
 							traveler: { id: currentTravelerId },
 							cycle: { id: requestedCycleId },

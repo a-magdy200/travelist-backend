@@ -16,11 +16,20 @@ import { Post } from '../../entities/Post.entity'
 import { IFeedPost} from '../../helpers/interfaces/IFeedPost.interface'
 
 const listTravelers = async (req: Request, res: Response) => {
-	const travelers: Traveler[] = await AppDataSource.manager.find<Traveler>(
-		Traveler,
-		{}
-	)
-	sendSuccessResponse<Traveler[]>(res, travelers)
+	try {
+		const travelers: Traveler[] = await AppDataSource.manager.find<Traveler>(
+			Traveler,
+			{}
+		)
+		sendSuccessResponse<Traveler[]>(res, travelers)
+	}
+	catch (e: any) {
+		sendErrorResponse(
+			formatValidationErrors(e),
+			res,
+			StatusCodes.BAD_REQUEST
+		)
+	}
 }
 
 const viewTravelerProfile: RequestHandler = async (req, res) => {
@@ -34,15 +43,26 @@ const viewTravelerProfile: RequestHandler = async (req, res) => {
 			userId: getUserIdFromToken(req),
 		}
 	}
-	const traveler = await AppDataSource.getRepository(Traveler).findOneOrFail({
-		where: criteria,
-		relations: {
-			user: true,
-			reviews: true,
-		},
-	})
-	sendSuccessResponse<Traveler>(res, traveler)
+	try {
+		const traveler = await AppDataSource.getRepository(Traveler).findOneOrFail({
+			where: criteria,
+			relations: {
+				user: true,
+				reviews: true,
+			}
+		})
+		sendSuccessResponse<Traveler>(res, traveler);
+	}
+	catch (e: any) {
+		sendErrorResponse(
+			formatValidationErrors(e),
+			res,
+			StatusCodes.BAD_REQUEST
+		)
+	}
 }
+
+
 const editTravelerProfile = async (req: Request, res: Response) => {
 	try {
 		const userId = getUserIdFromToken(req)
@@ -72,43 +92,55 @@ const editTravelerProfile = async (req: Request, res: Response) => {
 		)
 	}
 }
+
 const listTravelerFriends = async (req: Request, res: Response) => {
 	const userId: number = getUserIdFromToken(req)
-	const traveler = await AppDataSource.getRepository(Traveler).findOne({
-		where: {
-			userId: userId,
-		},
-	})
-
-	if (traveler) {
-		console.log(traveler.id)
-
-		const friends: TravelerFriends[] = await AppDataSource.getRepository(
-			TravelerFriends
-		).find({
-			where: [{ receiver_id: traveler.id }, { sender_id: traveler.id }],
-			relations: [
-				'traveler_sender',
-				'traveler_receiver',
-				'traveler_sender.user',
-				'traveler_receiver.user',
-			],
+	try {
+		const traveler = await AppDataSource.getRepository(Traveler).findOneOrFail({
+			where: {
+				userId: userId
+			},
 		})
-		sendSuccessResponse<TravelerFriends[]>(res, friends)
+
+		if (traveler) {
+			console.log(traveler.id)
+
+			const friends: TravelerFriends[] = await AppDataSource.getRepository(TravelerFriends).find({
+
+				where: [
+					{ receiver_id: traveler.id },
+					{ sender_id: traveler.id }
+				],
+				relations: ['traveler_sender', 'traveler_receiver', 'traveler_sender.user', 'traveler_receiver.user'],
+
+			})
+			sendSuccessResponse<TravelerFriends[]>(res, friends)
+
+		}
+	}
+	catch (e: any) {
+		sendErrorResponse(
+			formatValidationErrors(e),
+			res,
+			StatusCodes.BAD_REQUEST
+		)
 	}
 }
+
 const deleteTravelerFriend = async (req: Request, res: Response) => {
 	try {
 		const userId: number = getUserIdFromToken(req)
-		const traveler = await AppDataSource.getRepository(Traveler).findOne({
+		const traveler = await AppDataSource.getRepository(Traveler).findOneOrFail({
 			where: {
-				userId: userId,
-			},
+				userId: userId
+			}
 		})
 		const friendId: number | undefined = +req.params.id
 
 		if (traveler && friendId) {
-			await AppDataSource.createQueryBuilder()
+
+			await AppDataSource
+				.createQueryBuilder()
 				.delete()
 				.from(TravelerFriends)
 				.where({ sender_id: traveler.id, receiver_id: friendId })

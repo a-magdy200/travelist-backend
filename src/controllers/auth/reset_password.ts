@@ -25,11 +25,10 @@ export const resetPassword = async (req: Request, res: Response, next: any) => {
 			sendErrorResponse(formatValidationErrors(e), res, StatusCodes.BAD_REQUEST)
 		}
 
-		const user = await AppDataSource.manager.findOneBy(User, {
+		const user = await AppDataSource.manager.findOneByOrFail(User, {
 			forgot_password_token: token,
 		})
 
-		if (user) {
 			const salt = await bcrypt.genSalt(10)
 
 			const update_password = await bcrypt.hash(password, salt)
@@ -53,13 +52,7 @@ export const resetPassword = async (req: Request, res: Response, next: any) => {
 					StatusCodes.NOT_ACCEPTABLE
 				)
 			}
-		} else {
-			sendErrorResponse(
-				['Missing password or user not found'],
-				res,
-				StatusCodes.NOT_ACCEPTABLE
-			)
-		}
+		
 	} catch (e: any) {
 		sendErrorResponse(
 			formatValidationErrors(e),

@@ -11,17 +11,26 @@ import { CountryReview } from '../../entities/CountryReview.entity'
 import { countryReviewValidation } from '../../helpers/validations/country-review.validation'
 
 const listCountriesReviews = async (req: Request, res: Response) => {
+	try{
 	const countries_reviews: CountryReview[] =
 		await AppDataSource.manager.find<CountryReview>(CountryReview, {
 			relations: ['traveler', 'country'],
 		})
 
 	sendSuccessResponse<CountryReview[]>(res, countries_reviews)
+	}
+	catch (e: any) {
+		sendErrorResponse(
+			formatValidationErrors(e),
+			res,
+			StatusCodes.BAD_REQUEST
+		)
+	}
 }
 
 const showCountryReviews = async (req: Request, res: Response) => {
 	const country_id: number | undefined = +req.params.id
-
+      try{
 	const country_reviews: CountryReview[] | null =
 		await AppDataSource.manager.find<CountryReview>(CountryReview, {
 			where: {
@@ -36,25 +45,32 @@ const showCountryReviews = async (req: Request, res: Response) => {
 		sendNotFoundResponse(res)
 	}
 }
+catch (e: any) {
+	sendErrorResponse(
+		formatValidationErrors(e),
+		res,
+		StatusCodes.BAD_REQUEST
+	)
+}
+}
 
 const createCountryReview = async (req: Request, res: Response) => {
 	try {
 		const userId = getUserIdFromToken(req)
 		if (userId) {
 			const currentTravelerUser: Traveler | null =
-				await AppDataSource.manager.findOne<Traveler>(Traveler, {
+				await AppDataSource.manager.findOneOrFail<Traveler>(Traveler, {
 					where: {
 						user: { id: userId },
 					},
 				})
 
-			if (currentTravelerUser) {
 				const currentTravelerId = currentTravelerUser.id
 
 				const requestedCountryId = req.body?.countryId
 
 				const country_review: CountryReview | null =
-					await AppDataSource.manager.findOne<CountryReview>(CountryReview, {
+					await AppDataSource.manager.findOneOrFail<CountryReview>(CountryReview, {
 						where: {
 							traveler: { id: currentTravelerId },
 							country: { id: requestedCountryId },
@@ -82,9 +98,7 @@ const createCountryReview = async (req: Request, res: Response) => {
 						'Traveler already has reviewed this country',
 					])
 				}
-			} else {
-				sendNotFoundResponse(res, ['current user type is not traveler'])
-			}
+			
 		} else {
 			sendNotFoundResponse(res, ['invalid token or user is not authenticated'])
 		}
