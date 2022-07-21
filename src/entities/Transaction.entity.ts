@@ -21,7 +21,7 @@ export class Transaction extends BaseEntity {
 	@Column({
 		nullable: true,
 	})
-	payment_id: number
+	payment_id: string
 
 	@Column({
 		type: 'float',
@@ -35,7 +35,9 @@ export class Transaction extends BaseEntity {
 	@JoinColumn()
 	user: User
 
-	@ManyToOne(() => CycleBooking, (cycleBooking) => cycleBooking.transaction)
+	@ManyToOne(() => CycleBooking, (cycleBooking) => cycleBooking.transaction,{
+		onDelete:"CASCADE"
+	})
 	@JoinColumn()
 	booking: CycleBooking
 

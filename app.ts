@@ -11,13 +11,20 @@ import userRouter from './src/routes/user.routes'
 import travelerRouter from './src/routes/traveler.routes'
 import authRouter from './src/routes/auth.routes'
 import countryRouter from './src/routes/countries.routes';
-import cycleRoutes from './src/routes/cycle.routes'
-import companyRoutes from './src/routes/company.routes'
-import appRoutes from './src/routes/app.routes'
-import programsRoutes from './src/routes/programs.routes'
-import groupRoutes from './src/routes/group.routes'
+import cycleRoutes from "./src/routes/cycle.routes";
+import companyRoutes from "./src/routes/company.routes";
+import appRoutes from "./src/routes/app.routes";
+import programsRoutes from "./src/routes/programs.routes";
+import groupRoutes from "./src/routes/group.routes";
+import hotelReviewsRoutes from "./src/routes/hotel_reviews.routes";
+import countryReviewsRoutes from "./src/routes/country_reviews.routes";
+import cycleReviewsRoutes from "./src/routes/cycle_reviews.routes";
+import guideReviewsRoutes from "./src/routes/guide_reviews.routes";
+import companyReviewsRoutes from "./src/routes/company_reviews.routes";
 import postRoutes from './src/routes/post.routes'
 import adminRoutes from './src/routes/admin/admin.routes'
+import searchRouter from './src/routes/search.routes';
+
 
 const app = express()
 app.use(cors({ origin: true, credentials: true }))
@@ -44,6 +51,14 @@ AppDataSource.initialize()
 		app.use('/api/cycles', cycleRoutes)
 		app.use('/api/programs', programsRoutes)
 		app.use('/api/groups', groupRoutes)
+		app.use('/api/hotel_reviews', hotelReviewsRoutes)
+		app.use('/api/country_reviews', countryReviewsRoutes)
+		app.use('/api/cycle_reviews', cycleReviewsRoutes)
+		app.use('/api/guide_reviews', guideReviewsRoutes)
+		app.use('/api/company_reviews', companyReviewsRoutes)
+		app.use('/api/search', searchRouter)
+
+
 		app.use('/api/posts', postRoutes)
 
 		app.listen(config.port, () => {

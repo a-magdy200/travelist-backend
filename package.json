@@ -22,7 +22,9 @@
 		"mysql2": "^2.3.3",
 		"nodemailer": "^6.7.6",
 		"reflect-metadata": "^0.1.13",
+		"stripe": "^9.14.0",
 		"typeorm": "^0.3.7",
+		"uuid": "^8.3.2",
 		"winston": "^3.8.0"
 	},
 	"devDependencies": {
@@ -36,6 +38,7 @@
 		"@types/node": "^18.0.0",
 		"@types/nodemailer": "^6.4.4",
 		"@types/nodemailer-smtp-transport": "^2.7.5",
+		"@types/uuid": "^8.3.4",
 		"nodemon": "^2.0.18",
 		"prettier": "^2.7.1",
 		"ts-node": "^10.8.1",

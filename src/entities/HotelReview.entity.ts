@@ -11,7 +11,7 @@ import {
 } from 'typeorm'
 import { Hotel } from './Hotel.entity'
 import { Traveler } from './Traveler.entity'
-import { IsInt, IsString, Max, Min } from 'class-validator'
+import { IsInt, IsPositive, IsString, Max, Min } from 'class-validator'
 
 @Entity('hotel_reviews')
 export class HotelReview extends BaseEntity {
@@ -32,6 +32,21 @@ export class HotelReview extends BaseEntity {
 	})
 	@IsString()
 	review: string
+
+	@Column({
+		type: 'int'
+	})
+	@IsInt()
+	@IsPositive()
+	travelerId: number;
+
+	@Column({
+		type: 'int'
+	})
+	@IsInt()
+	@IsPositive()
+	hotelId: number;
+	
 
 	@ManyToOne(() => Traveler, (traveler) => traveler.hotels_reviews)
 	@JoinColumn()

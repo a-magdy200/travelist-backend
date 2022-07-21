@@ -8,10 +8,12 @@ import { StatusCodes } from "../../helpers/constants/statusCodes";
 export const deleteCycle = async (req: Request, res: Response) => {
 	try {
 		const id: number | undefined = +req.params.id
-		await AppDataSource.manager.delete<Cycle>(Cycle, {
+		
+			await AppDataSource.manager.delete<Cycle>(Cycle, {
 			id,
 		})
 		sendSuccessResponse(res)
+     	
 	} catch (error: any) {
 		sendErrorResponse(error, res, StatusCodes.NOT_ACCEPTABLE);
 	}

@@ -16,7 +16,6 @@ import { Country } from '../../entities/Country.entity'
 import { getUserIdFromToken } from '../../helpers/functions/getUserIdFromToken'
 
 export const create = async (req: Request, res: Response) => {
-	console.log(req.body)
 	try {
 		const bodyObject: IProgramInterface = await programValidation.validateAsync(
 			req.body,

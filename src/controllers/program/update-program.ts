@@ -11,6 +11,8 @@ import { IProgramInterface } from "../../helpers/interfaces/IProgram.interface";
 import { sendErrorResponse } from "../../helpers/responses/sendErrorResponse";
 import { StatusCodes } from "../../helpers/constants/statusCodes";
 import { sendSuccessResponse } from "../../helpers/responses/sendSuccessResponse";
+import { getUserIdFromToken } from "../../helpers/functions/getUserIdFromToken";
+import { Company } from "../../entities/Company.entity";
 
 export const update = async (req: Request, res: Response) => {
 	try {
@@ -28,6 +30,7 @@ export const update = async (req: Request, res: Response) => {
 		).findOneBy( {
 			id,
 		})
+		
 		if (program && validation) {
 			program.name = validation.name
 			program.description = validation.description
