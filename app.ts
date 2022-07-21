@@ -17,7 +17,6 @@ import appRoutes from "./src/routes/app.routes";
 import programsRoutes from "./src/routes/programs.routes";
 import groupRoutes from "./src/routes/group.routes";
 import friendRequestRoutes from './src/routes/friend_request.routes'
-import adminRoutes from "./src/routes/admin/admin.routes";
 import hotelReviewsRoutes from "./src/routes/hotel_reviews.routes";
 import countryReviewsRoutes from "./src/routes/country_reviews.routes";
 import cycleReviewsRoutes from "./src/routes/cycle_reviews.routes";
