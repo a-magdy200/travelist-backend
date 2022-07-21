@@ -5,6 +5,7 @@ import {
 	listTravelers,
 	listTravelerFriends,
 	deleteTravelerFriend,
+	homeFeed
 } from '../controllers/travelers/TravelerController'
 import { isAuthenticated } from '../middlewares/isAuthenticated'
 
@@ -15,5 +16,7 @@ router.get('/profile', viewTravelerProfile)
 router.get('/friends', listTravelerFriends)
 router.put('/', editTravelerProfile)
 router.delete('/delete/:id', deleteTravelerFriend)
+router.get('/feed', homeFeed)
+
 
 export default router
