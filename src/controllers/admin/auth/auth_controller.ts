@@ -12,12 +12,13 @@ import jwt from "jsonwebtoken";
 import configurations from "../../../config/configurations";
 import _ from "lodash";
 import { userValidation } from "../../../helpers/validations/user.validation";
+import { UserTypeEnum } from "../../../helpers/enums/userType.enum";
 
 const login_handler = async (req: Request, res: Response) => {
   try {
     const validated = await loginValidation.validateAsync(req.body, { abortEarly: false });
     const existedUser = await AppDataSource.manager.findOne(User, {
-      where: { email: validated.email },
+      where: { email: validated.email, type: UserTypeEnum.ADMIN },
       select: ['email', 'name', 'password', 'id']
   });
     if (existedUser) {
