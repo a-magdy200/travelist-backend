@@ -4,8 +4,6 @@ import { Cycle } from '../../entities/Cycle.entity'
 import { sendSuccessResponse } from "../../helpers/responses/sendSuccessResponse";
 import { sendErrorResponse } from "../../helpers/responses/sendErrorResponse";
 import { StatusCodes } from "../../helpers/constants/statusCodes";
-import { getUserIdFromToken } from '../../helpers/functions/getUserIdFromToken';
-import { Company } from '../../entities/Company.entity';
 
 export const deleteCycle = async (req: Request, res: Response) => {
 	try {

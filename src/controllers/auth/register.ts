@@ -21,10 +21,11 @@ export const register = async (req: Request, res: Response, next: any) => {
 		const existedUser = await AppDataSource.manager.findOneBy<User>(User, {
 			email: req.body.email,
 		})
-		const requestBody: IRegisterRequestBody = { ...req.body }
-		const userType = requestBody.type
-
 		if (!existedUser) {
+			const requestBody: IRegisterRequestBody = { ...req.body }
+			const userType = requestBody.type
+
+
 			const userRequestBody: IUserRequestBodyInterface = {
 				name: requestBody.name,
 				email: requestBody.email,
@@ -125,8 +126,6 @@ export const register = async (req: Request, res: Response, next: any) => {
 			if (userEntity) {
 				sendAuthenticationResponse(userEntity, res)
 			}
-		} else {
-			sendErrorResponse(['User is exist'], res, StatusCodes.NOT_ACCEPTABLE)
 		}
 	} catch (error: any) {
 		sendErrorResponse(

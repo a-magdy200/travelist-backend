@@ -15,7 +15,7 @@ const upload = multer({ storage: storage(PROGRAMS_DIRECTORY) })
 
 router.get('/all', showAllGroups)
 router.get('/show/:id', showGroup)
-router.post('/add/user', addUserGroup)
+router.get('/:groupId/follow', addUserGroup)
 router.post('/create', upload.single('cover_picture'), createGroup)
 router.put('/update/:id', upload.single('cover_picture'), updateGroup)
 router.delete('/delete/:id', deleteGroup)

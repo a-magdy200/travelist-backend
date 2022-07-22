@@ -46,7 +46,7 @@ export class User extends BaseEntity {
 	@IsString()
 	password: string
 
-	@Column()
+	@Column({default: ''})
 	@IsString()
 	@Length(3)
 	address?: string

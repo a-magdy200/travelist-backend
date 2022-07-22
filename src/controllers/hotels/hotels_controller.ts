@@ -11,25 +11,43 @@ import { StatusCodes } from '../../helpers/constants/statusCodes'
 import { sendSuccessResponse } from '../../helpers/responses/sendSuccessResponse'
 
 const listHotels = async (req: Request, res: Response) => {
-	const hotels: Hotel[] = await AppDataSource.manager.find<Hotel>(Hotel, {
-		relations: ['reviews', 'country'],
-	})
-	sendSuccessResponse<Hotel[]>(res, hotels)
+	try {
+		const hotels: Hotel[] = await AppDataSource.manager.find<Hotel>(Hotel, {
+			relations: ['reviews', 'country'],
+		})
+		sendSuccessResponse<Hotel[]>(res, hotels)
+	}
+	catch (e: any) {
+		sendErrorResponse(
+			formatValidationErrors(e),
+			res,
+			StatusCodes.BAD_REQUEST
+		)
+	}
 }
 
 const showHotel = async (req: Request, res: Response) => {
 	const id: number | undefined = +req.params.id
-	const hotel: Hotel | null = await AppDataSource.manager.findOne<Hotel>(
-		Hotel,
-		{
-			where: { id },
-			relations: ['reviews', 'country'],
+	try {
+		const hotel: Hotel | null = await AppDataSource.manager.findOneOrFail<Hotel>(
+			Hotel,
+			{
+				where: { id },
+				relations: ['reviews', 'country'],
+			}
+		)
+		if (hotel) {
+			sendSuccessResponse<Hotel>(res, hotel)
+		} else {
+			sendNotFoundResponse(res)
 		}
-	)
-	if (hotel) {
-		sendSuccessResponse<Hotel>(res, hotel)
-	} else {
-		sendNotFoundResponse(res)
+	}
+	catch (e: any) {
+		sendErrorResponse(
+			formatValidationErrors(e),
+			res,
+			StatusCodes.BAD_REQUEST
+		)
 	}
 }
 
@@ -89,27 +107,36 @@ const createHotel = async (req: Request, res: Response) => {
 }
 const updateHotelCover = async (req: Request, res: Response) => {
 	const id: number | undefined = +req.params.id
-	const hotel: Hotel | null = await AppDataSource.manager.findOneBy<Hotel>(
-		Hotel,
-		{
-			id,
-		}
-	)
-	if (hotel && req.file?.filename) {
-		// Remove `uploads/` from path string
-		const oldCoverPicture = hotel.cover_picture
-		if (oldCoverPicture && oldCoverPicture !== '') {
-			await unlinkSync(`${UPLOAD_DIRECTORY}${oldCoverPicture}`)
-		}
-		const path = `${req.file.destination}${req.file.filename}`.replace(
-			UPLOAD_DIRECTORY,
-			''
+	try {
+		const hotel: Hotel | null = await AppDataSource.manager.findOneByOrFail<Hotel>(
+			Hotel,
+			{
+				id,
+			}
 		)
-		hotel.cover_picture = path
-		await hotel.save()
-		sendSuccessResponse(res)
-	} else {
-		sendNotFoundResponse(res)
+		if (hotel && req.file?.filename) {
+			// Remove `uploads/` from path string
+			const oldCoverPicture = hotel.cover_picture
+			if (oldCoverPicture && oldCoverPicture !== '') {
+				await unlinkSync(`${UPLOAD_DIRECTORY}${oldCoverPicture}`)
+			}
+			const path = `${req.file.destination}${req.file.filename}`.replace(
+				UPLOAD_DIRECTORY,
+				''
+			)
+			hotel.cover_picture = path
+			await hotel.save()
+			sendSuccessResponse(res)
+		} else {
+			sendNotFoundResponse(res)
+		}
+	}
+	catch (e: any) {
+		sendErrorResponse(
+			formatValidationErrors(e),
+			res,
+			StatusCodes.BAD_REQUEST
+		)
 	}
 }
 export {

@@ -35,7 +35,9 @@ export class Transaction extends BaseEntity {
 	@JoinColumn()
 	user: User
 
-	@ManyToOne(() => CycleBooking, (cycleBooking) => cycleBooking.transaction)
+	@ManyToOne(() => CycleBooking, (cycleBooking) => cycleBooking.transaction,{
+		onDelete:"CASCADE"
+	})
 	@JoinColumn()
 	booking: CycleBooking
 

@@ -11,29 +11,46 @@ import { GuideReview } from '../../entities/GuideReview.entity'
 import { guideReviewValidation } from '../../helpers/validations/guide-review.validation'
 
 const listGuidesReviews = async (req: Request, res: Response) => {
-	const guides_reviews: GuideReview[] =
-		await AppDataSource.manager.find<GuideReview>(GuideReview, {
-			relations: ['traveler', 'guide'],
-		})
+	try {
+		const guides_reviews: GuideReview[] =
+			await AppDataSource.manager.find<GuideReview>(GuideReview, {
+				relations: ['traveler', 'guide'],
+			})
 
-	sendSuccessResponse<GuideReview[]>(res, guides_reviews)
+		sendSuccessResponse<GuideReview[]>(res, guides_reviews)
+	}
+	catch (e: any) {
+		sendErrorResponse(
+			formatValidationErrors(e),
+			res,
+			StatusCodes.BAD_REQUEST
+		)
+	}
 }
 
 const showGuideReviews = async (req: Request, res: Response) => {
 	const guide_id: number | undefined = +req.params.id
+	try {
+		const guide_reviews: GuideReview[] | null =
+			await AppDataSource.manager.find<GuideReview>(GuideReview, {
+				where: {
+					guide: { id: guide_id },
+				},
+				relations: ['traveler', 'guide'],
+			})
 
-	const guide_reviews: GuideReview[] | null =
-		await AppDataSource.manager.find<GuideReview>(GuideReview, {
-			where: {
-				guide: { id: guide_id },
-			},
-			relations: ['traveler', 'guide'],
-		})
-
-	if (guide_reviews) {
-		sendSuccessResponse<GuideReview[]>(res, guide_reviews)
-	} else {
-		sendNotFoundResponse(res)
+		if (guide_reviews) {
+			sendSuccessResponse<GuideReview[]>(res, guide_reviews)
+		} else {
+			sendNotFoundResponse(res)
+		}
+	}
+	catch (e: any) {
+		sendErrorResponse(
+			formatValidationErrors(e),
+			res,
+			StatusCodes.BAD_REQUEST
+		)
 	}
 }
 

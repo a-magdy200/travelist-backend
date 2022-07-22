@@ -14,6 +14,7 @@ export const show_all_countries = async (req: Request, res: Response, next: any)
             select: {
                 id: true,
                 name: true,
+                average_rate: true,
             }
         })
         if (countries) {

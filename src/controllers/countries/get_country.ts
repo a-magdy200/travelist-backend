@@ -5,7 +5,6 @@ import { Country } from './../../entities/Country.entity'
 import { AppDataSource } from './../../config/database/data-source'
 import { sendErrorResponse } from '../../helpers/responses/sendErrorResponse'
 import { formatValidationErrors } from '../../helpers/functions/formatValidationErrors'
-import { any } from 'joi'
 
 export const get_country = async (req: Request, res: Response, next: any) => {
 	const countryRepository = AppDataSource.getRepository(Country)

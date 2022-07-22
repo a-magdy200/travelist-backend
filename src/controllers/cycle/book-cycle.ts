@@ -15,114 +15,109 @@ import Stripe from 'stripe'
 import { v4 as uuid } from 'uuid'
 import { Transaction } from "../../entities/Transaction.entity"
 export const bookCycle = async (req: Request, res: Response) => {
-    try
-    {
-        const bodyObject: IBookInterface = await bookingValidation.validateAsync(req.body, {
-			abortEarly: false,
-		})
-        const cycle = await AppDataSource.getRepository(Cycle).findOne({
-            where: {
-                id:bodyObject.cycleId
-            },
-            relations: ["program"],
+  try {
+    const bodyObject: IBookInterface = await bookingValidation.validateAsync(req.body, {
+      abortEarly: false,
+    })
+    const cycle = await AppDataSource.getRepository(Cycle).findOneOrFail({
+      where: {
+        id: bodyObject.cycleId
+      },
+      relations: ["program"],
 
-        })
+    })
 
-        const userId :number=getUserIdFromToken(req)
-        const traveler = await AppDataSource.getRepository(Traveler).findOne({
-            where: {
-                userId:userId
-            },
-            relations: ["user"],
+    const userId: number = getUserIdFromToken(req)
+    const traveler = await AppDataSource.getRepository(Traveler).findOneOrFail({
+      where: {
+        userId: userId
+      },
+      relations: ["user"],
 
-        })
+    })
 
-        const user = await AppDataSource.getRepository(User).findOne({
-          where: {
-              id: userId
-          },
+    const user = await AppDataSource.getRepository(User).findOneOrFail({
+      where: {
+        id: userId
+      },
 
-      })
+    })
 
-        const previousCycle = await AppDataSource.getRepository(CycleBooking).findOne({
-            where: {
-              travelers:{id:traveler?.id},
-              cycle:{id:cycle?.id}
-            },
-        })
+    const previousCycle = await AppDataSource.getRepository(CycleBooking).findOne({
+      where: {
+        travelers: { id: traveler?.id },
+        cycle: { id: cycle?.id }
+      },
+    })
 
-        console.log(!previousCycle)
 
-        if(traveler&& user&&cycle && !previousCycle&&cycle.current_seats<cycle.max_seats )
-      { 
-       const booking = await AppDataSource.manager.create<CycleBooking>(CycleBooking,bodyObject)
-       cycle.current_seats++
-       booking.travelers=traveler
-       booking.cycle=cycle
-       await AppDataSource.manager.save(booking)
-       await AppDataSource.manager.save(cycle)
-	    //sendSuccessResponse<CycleBooking>(res, booking)
-      const {token}=req.body
-     // const idempontencyKey=uuid()
+    if (traveler && user && cycle && !previousCycle && cycle.current_seats < cycle.max_seats) {
+      const booking = await AppDataSource.manager.create<CycleBooking>(CycleBooking, bodyObject)
+      cycle.current_seats++
+      booking.travelers = traveler
+      booking.cycle = cycle
+      await AppDataSource.manager.save(booking)
+      await AppDataSource.manager.save(cycle)
+      const { token } = req.body
+      // const idempontencyKey=uuid()
       const stripe = new Stripe('sk_test_51LNL5KAolBbZGsicDBdmJs9IFIpCI146iDMcUJPH1rMIVzCP6BoHaES0WMlgMBHRixb3oRpJKMPWXEsLUgoylerj00RgpfiYSe', {
         apiVersion: '2020-08-27',
       });
 
       return stripe.customers.create({
-        email:token.email,
-        source:token.id
-      }).then(async(customer)=>{
-           stripe.charges.create({
-            amount:cycle.program?.price,
-            currency:'usd',
-            customer:customer.id,
-            receipt_email:token.email,
-            description:`cycle name :${cycle.name}`,
-            shipping:{
-              name:token.card.name,
-              address:{
-                country:"egypt"
-              }
+        email: token.email,
+        source: token.id
+      }).then(async (customer) => {
+        stripe.charges.create({
+          amount: cycle.program?.price,
+          currency: 'usd',
+          customer: customer.id,
+          receipt_email: token.email,
+          description: `cycle name :${cycle.name}`,
+          shipping: {
+            name: token.card.name,
+            address: {
+              country: "egypt"
             }
-           })
-           console.log(token)
-           const transaction = await AppDataSource.manager.create<Transaction>(Transaction, {
-            payment_id:token.id,
-            amount:cycle.program?.price,
-          })
-          transaction.user=user
-          transaction.booking=booking
-          booking.is_paid=true
-          await AppDataSource.manager.save(transaction)
-          await AppDataSource.manager.save(booking)
+          }
+        })
+        console.log(token)
+        const transaction = await AppDataSource.manager.create<Transaction>(Transaction, {
+          payment_id: token.id,
+          amount: cycle.program?.price,
+        })
+        transaction.user = user
+        transaction.booking = booking
+        booking.is_paid = true
+        await AppDataSource.manager.save(transaction)
+        await AppDataSource.manager.save(booking)
 
 
       })
-      .then(data=>{
-        
-        res.status(200).json(data)
+        .then(data => {
 
-      })
-      .catch(e=>console.log(e))
+          res.status(200).json(data)
 
-      }  
-      else
-      {
-        const error:any=['not found']
-        sendErrorResponse(
-			formatValidationErrors(error),
-			res,
-			StatusCodes.NOT_ACCEPTABLE
-		)
-      }
+        })
+        .catch(e => console.log(e))
 
     }
-    catch (error: any) {
-		sendErrorResponse(
-			formatValidationErrors(error),
-			res,
-			StatusCodes.NOT_ACCEPTABLE
-		)
-	}
+    else {
+      const error: any = ['not found']
+      sendErrorResponse(
+        formatValidationErrors(error),
+        res,
+        StatusCodes.NOT_ACCEPTABLE
+      )
+    }
+
+  }
+  catch (error: any) {
+    sendErrorResponse(
+      formatValidationErrors(error),
+      res,
+      StatusCodes.NOT_ACCEPTABLE
+    )
+  }
 
 }
