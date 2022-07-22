@@ -28,14 +28,15 @@ export const bookCycle = async (req: Request, res: Response) => {
     })
 
     const userId: number = getUserIdFromToken(req)
-    const traveler = await AppDataSource.getRepository(Traveler).findOneOrFail({
+    if(userId){
+    const traveler = await AppDataSource.getRepository(Traveler).findOne({
       where: {
-        userId: userId
+        user:{id: userId}
       },
       relations: ["user"],
 
     })
-
+console.log("traveler",traveler)
     const user = await AppDataSource.getRepository(User).findOneOrFail({
       where: {
         id: userId
@@ -49,7 +50,6 @@ export const bookCycle = async (req: Request, res: Response) => {
         cycle: { id: cycle?.id }
       },
     })
-
 
     if (traveler && user && cycle && !previousCycle && cycle.current_seats < cycle.max_seats) {
       const booking = await AppDataSource.manager.create<CycleBooking>(CycleBooking, bodyObject)
@@ -81,7 +81,6 @@ export const bookCycle = async (req: Request, res: Response) => {
             }
           }
         })
-        console.log(token)
         const transaction = await AppDataSource.manager.create<Transaction>(Transaction, {
           payment_id: token.id,
           amount: cycle.program?.price,
@@ -96,22 +95,31 @@ export const bookCycle = async (req: Request, res: Response) => {
       })
         .then(data => {
 
-          res.status(200).json(data)
+          console.log(data)
+          res.status(200).json({success:true,data:"booked successfully"})
 
         })
         .catch(e => console.log(e))
 
     }
     else {
-      const error: any = ['not found']
       sendErrorResponse(
-        formatValidationErrors(error),
+       ["Booking is Not Allowed"],
         res,
         StatusCodes.NOT_ACCEPTABLE
       )
     }
 
   }
+  else
+  {
+    sendErrorResponse(
+      ["You should have Account to book"],
+       res,
+       StatusCodes.NOT_ACCEPTABLE
+     )
+  }
+}
   catch (error: any) {
     sendErrorResponse(
       formatValidationErrors(error),
