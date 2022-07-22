@@ -13,7 +13,8 @@ const listCompanies = async (req: Request, res: Response) => {
 	try{
 	const companies: Company[] = await AppDataSource.manager.find<Company>(
 		Company,
-		{}
+		{			relations: ["user"],
+	}
 	)
 	sendSuccessResponse<Company[]>(res, companies)
 	}
