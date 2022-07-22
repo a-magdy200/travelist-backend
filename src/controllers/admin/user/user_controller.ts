@@ -9,6 +9,7 @@ import bcrypt from "bcrypt";
 import { unlinkSync } from "fs";
 import { UPLOAD_DIRECTORY } from "../../../helpers/constants/directories";
 import { sendErrorResponse } from "../../../helpers/responses/sendErrorResponse";
+import { Company } from "../../../entities/Company.entity";
 
 const get_profile = async (req: Request, res: Response) => {
   const id = getUserIdFromToken(req);
@@ -50,9 +51,23 @@ const update_profile_picture = async (req: Request, res: Response) => {
 }
 
 const update_cover_picture = async (req: Request, res: Response) => {
-  const id = getUserIdFromToken(req);
   // await AppDataSource.manager.update(User, {id}, { password });
-  sendSuccessResponse(res);
+  const id = getUserIdFromToken(req);
+  if (req.file?.filename) {
+    const company = await AppDataSource.manager.findOneByOrFail(Company, { userId: id });
+    if (company.cover_picture !== '') {
+      await unlinkSync(`${UPLOAD_DIRECTORY}${company.cover_picture}`)
+    }
+    const path = `${req.file.destination}${req.file.filename}`.replace(
+      UPLOAD_DIRECTORY,
+      ''
+    );
+    company.cover_picture = path;
+    await company.save();
+    sendSuccessResponse<string>(res, path);
+  } else {
+    sendErrorResponse([], res);
+  }
 }
 
 export {
