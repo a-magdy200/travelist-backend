@@ -64,14 +64,35 @@ const createPost = async (req: Request, res: Response) => {
 		)
 	}
 }
-const listPosts = async (req: Request, res: Response) => {
+const listAllPosts = async (req: Request, res: Response) => {
+	const userId: number = getUserIdFromToken(req)
+	try{
+	const posts: Post[] = await AppDataSource.manager.find<Post>(Post, {
+		relations: ['traveler', 'traveler.user'],
+		order: {
+			id: 'DESC',
+		},
+	})
+
+	sendSuccessResponse<Post[]>(res, posts)
+}
+catch (e: any) {
+	sendErrorResponse(
+		formatValidationErrors(e),
+		res,
+		StatusCodes.BAD_REQUEST
+	)
+}
+}
+
+const listMyPosts = async (req: Request, res: Response) => {
 	const userId: number = getUserIdFromToken(req)
 	try{
 	const posts: Post[] = await AppDataSource.manager.find<Post>(Post, {
 		relations: ['traveler', 'traveler.user'],
 		where: {
 			traveler: {
-				userId,
+				userId: userId,
 			},
 		},
 		order: {
@@ -176,4 +197,31 @@ const editPost = async (req: Request, res: Response) => {
 		)
 	}
 }
-export { createPost, listPosts, showPost, deletePost, editPost }
+const reportPost = async (req: Request, res: Response) => {
+	try {
+		const userId: number = getUserIdFromToken(req)
+		const id: number | undefined = +req.params.id
+		const validation: Post = await postValidation.validateAsync(req.body, {
+			abortEarly: false,
+		})
+		const post: Post | null = await AppDataSource.manager.findOneOrFail<Post>(Post, {
+			where: { id },
+			relations: ['group', 'traveler.user'],
+		})
+			await AppDataSource.manager.update<Post>(
+				Post,
+				{
+					id,
+				},
+				validation
+			)
+			sendSuccessResponse(res)
+	} catch (error: any) {
+		sendErrorResponse(
+			formatValidationErrors(error),
+			res,
+			StatusCodes.NOT_ACCEPTABLE
+		)
+	}
+}
+export { createPost, listAllPosts, listMyPosts,showPost, deletePost, editPost ,reportPost}
