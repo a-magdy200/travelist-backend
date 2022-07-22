@@ -4,6 +4,7 @@ import { updateGroup } from './update-group'
 import { createGroup } from './create-group'
 import { addUserGroup } from './add-user-group'
 import { deleteGroup } from './delete-group'
+import { removeUserGroup } from './remove-user-group'
 
 
 export {
@@ -12,5 +13,6 @@ export {
 	createGroup,
 	updateGroup,
 	deleteGroup,
-    addUserGroup
+    addUserGroup,
+	removeUserGroup
 }
