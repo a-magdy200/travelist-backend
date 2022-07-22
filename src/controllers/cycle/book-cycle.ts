@@ -43,7 +43,7 @@ export const bookCycle = async (req: Request, res: Response) => {
 
     })
 
-    const previousCycle = await AppDataSource.getRepository(CycleBooking).findOneOrFail({
+    const previousCycle = await AppDataSource.getRepository(CycleBooking).findOne({
       where: {
         travelers: { id: traveler?.id },
         cycle: { id: cycle?.id }

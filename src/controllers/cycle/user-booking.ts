@@ -14,21 +14,21 @@ export const showTravelerBookings = async (req: Request, res: Response) => {
 	try{
     const traveler = await AppDataSource.getRepository(Traveler).findOneOrFail({
 		where: {
-			userId: userId
+			userId
 		},
 	})
-	if(traveler){	
-    
+	if(traveler){
+
     const bookings:CycleBooking[]  = await AppDataSource.getRepository(CycleBooking).find({
-        
+
         where:{
             travelers:{id:traveler.id},
           },
-          relations:["cycle","cycle.program"]
-    
+          relations:["cycle","cycle.program", "cycle.program.company"]
+
        })
        sendSuccessResponse<CycleBooking[]>(res, bookings)
-    
+
     }
     else
     {
@@ -44,4 +44,3 @@ catch (e: any) {
     )
 }
 }
-	
