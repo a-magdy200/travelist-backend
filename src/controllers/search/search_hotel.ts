@@ -28,7 +28,7 @@ export const searchHotel = async (req: Request, res: Response, next: any) => {
 			},
 		})
 		if (hotels.length == 0) {
-            return sendErrorResponse(['Could not find hotel'], res, StatusCodes.NOT_FOUND)
+            return sendErrorResponse(['Could not find hotel'], res, StatusCodes.SUCCESS_NO_CONTENT)
 		} else {
 			sendSuccessResponse(res, hotels)
 		}
