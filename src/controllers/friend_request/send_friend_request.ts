@@ -12,7 +12,7 @@ import { TravelerFriends } from '../../entities/TravelerFriend.entity'
 import { getUserIdFromToken } from '../../helpers/functions/getUserIdFromToken'
 
 const sendFriendRequest = async (req: Request, res: Response) => {
-	const oppsiteTravelerId: number | undefined = +req.params.id
+	const oppsiteTravelerId: number | undefined = parseInt(req.params.id)
 	const currentUserId: number = getUserIdFromToken(req)
   
 	const currentTraveler = await AppDataSource.getRepository(Traveler).findOne({

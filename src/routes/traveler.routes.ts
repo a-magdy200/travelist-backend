@@ -11,7 +11,7 @@ import { isAuthenticated } from '../middlewares/isAuthenticated'
 const router = Router()
 
 router.get('/', listTravelers)
-router.get('/profile', viewTravelerProfile)
+router.get('/profile/:id?', viewTravelerProfile)
 router.get('/friends', listTravelerFriends)
 router.put('/', editTravelerProfile)
 router.delete('/delete/:id', deleteTravelerFriend)
