@@ -29,36 +29,33 @@ const createPost = async (req: Request, res: Response) => {
 			relations: ['user'],
 		})
 		// if userId in group.followers =>can create
-		const group = await AppDataSource.getRepository(Group).findOneOrFail({
-			where: {
-				id: groupId,
-			},
-			relations: ['followers'],
-		})
-		const followers = group?.followers
-		const existedUser = followers?.find((obj) => {
-			return obj.id === userId
-		})
-		if (existedUser) {
-			console.log('existedUser', existedUser)
+		// const group = await AppDataSource.getRepository(Group).findOneOrFail({
+		// 	where: {
+		// 		id: groupId,
+		// 	},
+		// 	relations: ['followers'],
+		// })
+		// const followers = group?.followers
+		// const existedUser = followers?.find((obj) => {
+		// 	return obj.id === userId
+		// })
+		// if (existedUser) {
+		// 	console.log('existedUser', existedUser)
 
 			const post = await AppDataSource.manager.create<Post>(Post, {
 				content: bodyObj.content,
 				travelerId: traveler?.id,
-				groupId: group?.id,
+				groupId,
 			})
-			if (traveler?.user) {
-				post.traveler = traveler
-			}
 			await AppDataSource.manager.save(post)
 			sendSuccessResponse<Post>(res, post)
-		} else {
-			sendErrorResponse(
-				['You can not create post here'],
-				res,
-				StatusCodes.NOT_AUTHORIZED
-			)
-		}
+		// } else {
+		// 	sendErrorResponse(
+		// 		['You can not create post here'],
+		// 		res,
+		// 		StatusCodes.NOT_AUTHORIZED
+		// 	)
+		// }
 	} catch (error: any) {
 		sendErrorResponse(
 			formatValidationErrors(error),

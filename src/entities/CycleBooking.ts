@@ -14,7 +14,7 @@ import {
 import { Cycle } from './Cycle.entity'
 import { Traveler } from './Traveler.entity'
 import { Transaction } from './Transaction.entity'
-import { IsBoolean } from 'class-validator'
+import { IsBoolean, IsInt, IsPositive } from "class-validator";
 
 @Entity('cycle_bookings')
 export class CycleBooking extends BaseEntity {
@@ -27,6 +27,19 @@ export class CycleBooking extends BaseEntity {
 	})
 	@IsBoolean()
 	is_paid: boolean
+
+	@Column({
+		type: 'int',
+	})
+	@IsInt()
+	@IsPositive()
+	cycleId: number
+	@Column({
+		type: 'int',
+	})
+	@IsInt()
+	@IsPositive()
+	travelersId: number
 
 	@ManyToOne(() => Cycle, (cycle) => cycle.bookings,
 {
