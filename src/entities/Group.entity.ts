@@ -46,7 +46,7 @@ export class Group extends BaseEntity {
 
 	@OneToMany(() => Post, (post) => post.group)
 	posts: Post[]
-
+	
 	@ManyToMany(() => User, (user) => user.groups)
 	@JoinTable({
 		name: 'group_follower',
