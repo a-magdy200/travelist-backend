@@ -76,7 +76,7 @@ export class Program extends BaseEntity {
 		onUpdate: 'CASCADE',
 	})
 	@JoinColumn()
-	company?: Company
+	company: Company
 
 	@OneToMany(() => Cycle, (cycle) => cycle.program,   )
 	cycles?: Cycle[]
