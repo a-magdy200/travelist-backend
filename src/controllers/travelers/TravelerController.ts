@@ -13,7 +13,8 @@ import { sendNotFoundResponse } from '../../helpers/responses/404.response'
 import { Group } from '../../entities/Group.entity'
 import { User } from '../../entities/User.entity'
 import { Post } from '../../entities/Post.entity'
-import { IFeedPost} from '../../helpers/interfaces/IFeedPost.interface'
+import { IFeedPost } from '../../helpers/interfaces/IFeedPost.interface'
+import { number } from 'joi'
 
 const listTravelers = async (req: Request, res: Response) => {
 	try {
@@ -22,13 +23,8 @@ const listTravelers = async (req: Request, res: Response) => {
 			{}
 		)
 		sendSuccessResponse<Traveler[]>(res, travelers)
-	}
-	catch (e: any) {
-		sendErrorResponse(
-			formatValidationErrors(e),
-			res,
-			StatusCodes.BAD_REQUEST
-		)
+	} catch (e: any) {
+		sendErrorResponse(formatValidationErrors(e), res, StatusCodes.BAD_REQUEST)
 	}
 }
 
@@ -49,19 +45,13 @@ const viewTravelerProfile: RequestHandler = async (req, res) => {
 			relations: {
 				user: true,
 				reviews: true,
-			}
+			},
 		})
-		sendSuccessResponse<Traveler>(res, traveler);
-	}
-	catch (e: any) {
-		sendErrorResponse(
-			formatValidationErrors(e),
-			res,
-			StatusCodes.BAD_REQUEST
-		)
+		sendSuccessResponse<Traveler>(res, traveler)
+	} catch (e: any) {
+		sendErrorResponse(formatValidationErrors(e), res, StatusCodes.BAD_REQUEST)
 	}
 }
-
 
 const editTravelerProfile = async (req: Request, res: Response) => {
 	try {
@@ -98,32 +88,28 @@ const listTravelerFriends = async (req: Request, res: Response) => {
 	try {
 		const traveler = await AppDataSource.getRepository(Traveler).findOneOrFail({
 			where: {
-				userId: userId
+				userId: userId,
 			},
 		})
 
 		if (traveler) {
 			console.log(traveler.id)
 
-			const friends: TravelerFriends[] = await AppDataSource.getRepository(TravelerFriends).find({
-
-				where: [
-					{ receiver_id: traveler.id },
-					{ sender_id: traveler.id }
+			const friends: TravelerFriends[] = await AppDataSource.getRepository(
+				TravelerFriends
+			).find({
+				where: [{ receiver_id: traveler.id }, { sender_id: traveler.id }],
+				relations: [
+					'traveler_sender',
+					'traveler_receiver',
+					'traveler_sender.user',
+					'traveler_receiver.user',
 				],
-				relations: ['traveler_sender', 'traveler_receiver', 'traveler_sender.user', 'traveler_receiver.user'],
-
 			})
 			sendSuccessResponse<TravelerFriends[]>(res, friends)
-
 		}
-	}
-	catch (e: any) {
-		sendErrorResponse(
-			formatValidationErrors(e),
-			res,
-			StatusCodes.BAD_REQUEST
-		)
+	} catch (e: any) {
+		sendErrorResponse(formatValidationErrors(e), res, StatusCodes.BAD_REQUEST)
 	}
 }
 
@@ -132,15 +118,13 @@ const deleteTravelerFriend = async (req: Request, res: Response) => {
 		const userId: number = getUserIdFromToken(req)
 		const traveler = await AppDataSource.getRepository(Traveler).findOneOrFail({
 			where: {
-				userId: userId
-			}
+				userId: userId,
+			},
 		})
 		const friendId: number | undefined = +req.params.id
 
 		if (traveler && friendId) {
-
-			await AppDataSource
-				.createQueryBuilder()
+			await AppDataSource.createQueryBuilder()
 				.delete()
 				.from(TravelerFriends)
 				.where({ sender_id: traveler.id, receiver_id: friendId })
@@ -155,39 +139,51 @@ const deleteTravelerFriend = async (req: Request, res: Response) => {
 
 const homeFeed = async (req: Request, res: Response) => {
 
-	// todo::array filter in pending and sort array by id
-	
 	try {
 		const userId: number = getUserIdFromToken(req)
-		
+
 		const user: User = await AppDataSource.manager.findOneOrFail<User>(User, {
-			where: {id: userId},
+			where: { id: userId },
 			relations: [
-				"groups", "groups.posts", "groups.posts.group",  "groups.posts.traveler.user"
+				'groups',
+				'groups.posts',
+				'groups.posts.group',
+				'groups.posts.traveler.user',
 			],
-		});
-
-		const posts: Post[] = [];
-
-		user.groups.forEach((group) => {
-			posts.push(...group.posts);
 		})
 
-		const newPosts: IFeedPost[] = [];
+		const posts: Post[] = []
+
+		user.groups.forEach((group) => {
+			posts.push(...group.posts)
+		})
+
+		const newPosts: IFeedPost[] = []
 
 		posts.forEach((newPost) => {
 			newPosts.push({
-					id: newPost.id,
-					content: newPost.content,
-					travelerName: newPost.traveler.user.name,
-					groupId: newPost.group.id,
+				id: newPost.id,
+				content: newPost.content,
+				travelerName: newPost.traveler.user.name,
+				groupId: newPost.group.id,
+				postCreationTime: newPost.created_at,
+				postUpdationTime: newPost.updated_at,
+				postStatus: newPost.status,
 			})
+			// console.log("//////////////////////time")
+			// console.log(new Date(newPost.created_at).valueOf())
+			// console.log("//////////////////////status")
+			// console.log(newPost.status)
 		})
 
-		console.log(newPosts)
+		newPosts.sort(( a:IFeedPost , b:IFeedPost) => {
+			return new Date(b.postCreationTime).valueOf() - new Date(a.postCreationTime).valueOf()
+		});
 		
-		sendSuccessResponse<any>(res, {newPosts})
+		let filterPosts: IFeedPost[] = [];
+		filterPosts = newPosts.filter((filterPost:IFeedPost) => filterPost.postStatus != 'reported');
 
+		sendSuccessResponse<any>(res, filterPosts)
 	} catch (error: any) {
 		sendErrorResponse(error, res, StatusCodes.NOT_FOUND)
 	}
