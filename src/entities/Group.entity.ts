@@ -41,11 +41,12 @@ export class Group extends BaseEntity {
 	countryId: number;
 
 	@OneToOne(() => Country, (country) => country.group, {cascade: true})
+	@JoinColumn()
 	country: Country;
 
 	@OneToMany(() => Post, (post) => post.group)
 	posts: Post[]
-
+	
 	@ManyToMany(() => User, (user) => user.groups)
 	@JoinTable({
 		name: 'group_follower',

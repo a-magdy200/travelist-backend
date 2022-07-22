@@ -51,6 +51,7 @@ export class Country extends BaseEntity {
 	groupId: number
 
 	@OneToMany(() => Program, (program) => program.country)
+	@JoinColumn()
 	programs: Program[]
 
 	@OneToMany(() => CountryReview, (countryReview) => countryReview.country)
