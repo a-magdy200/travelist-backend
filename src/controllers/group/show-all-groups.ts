@@ -15,6 +15,7 @@ export const showAllGroups = async (req: Request, res: Response) => {
 		}
 	)
 	sendSuccessResponse<Group[]>(res, groups);
+	console.log(groups)
 	}
 	catch (e: any) {
 		sendErrorResponse(
