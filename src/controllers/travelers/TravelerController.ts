@@ -154,6 +154,9 @@ const deleteTravelerFriend = async (req: Request, res: Response) => {
 }
 
 const homeFeed = async (req: Request, res: Response) => {
+
+	// todo::array filter in pending and sort array by id
+	
 	try {
 		const userId: number = getUserIdFromToken(req)
 		
@@ -181,6 +184,8 @@ const homeFeed = async (req: Request, res: Response) => {
 			})
 		})
 
+		console.log(newPosts)
+		
 		sendSuccessResponse<any>(res, {newPosts})
 
 	} catch (error: any) {
