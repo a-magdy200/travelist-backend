@@ -15,15 +15,14 @@ import { getUserIdFromToken } from '../../helpers/functions/getUserIdFromToken'
 const rejectFriendRequest = async (req: Request, res: Response) => {
 	const oppsiteTravelerId: number | undefined = +req.params.id
 	const currentUserId: number = getUserIdFromToken(req)
-	console.log(currentUserId)
+
 	const currentTraveler = await AppDataSource.getRepository(Traveler).findOne({
 		where: {
 			userId: currentUserId,
 		},
 	})
 	if (currentTraveler && currentTraveler.id != oppsiteTravelerId) {
-		console.log(currentTraveler.id)
-		console.log(oppsiteTravelerId)
+		
 		try {
 			const alreadySentRequest: FriendRequest | null =
 				await AppDataSource.manager.findOne<FriendRequest>(FriendRequest, {
