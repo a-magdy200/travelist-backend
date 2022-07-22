@@ -1,4 +1,4 @@
-import { User } from './../../entities/User.entity';
+import { Traveler } from './../../entities/Traveler.entity';
 import { Request, Response } from 'express'
 import { ILike } from 'typeorm'
 import { AppDataSource } from '../../config/database/data-source'
@@ -7,11 +7,10 @@ import { formatValidationErrors } from '../../helpers/functions/formatValidation
 import { sendErrorResponse } from '../../helpers/responses/sendErrorResponse'
 import { sendSuccessResponse } from '../../helpers/responses/sendSuccessResponse'
 import { searchParamValidation } from '../../helpers/validations/search-param.validation'
-import { UserTypeEnum } from '../../helpers/enums/userType.enum';
 
 
 export const searchTraveler = async (req: Request, res: Response, next: any) => {
-    const userRepository = AppDataSource.getRepository(User)
+    const userRepository = AppDataSource.getRepository(Traveler)
 	try {
 		const validatedQuery = await searchParamValidation.validateAsync(
 			req.query,
@@ -19,17 +18,17 @@ export const searchTraveler = async (req: Request, res: Response, next: any) => 
 				abortEarly: false,
 			}
 		)
-		const travelers: User[] = await userRepository.find({
+		const travelers: Traveler[] = await userRepository.find({
 			where: {
-                type: UserTypeEnum.TRAVELER,
-				name: ILike(`%${validatedQuery.keyword}%`)
+				user: {name: ILike(`%${validatedQuery.keyword}%`)
+                }
 			},
-			relations: {
-				traveler: true,
-			},
+            relations: {
+                user: true
+            }
 		})
 		if (travelers.length == 0) {
-            return sendErrorResponse(['Could not find traveler'], res, StatusCodes.NOT_FOUND)
+            return sendErrorResponse(['Could not find traveler'], res, StatusCodes.SUCCESS_NO_CONTENT)
 		} else {
 			sendSuccessResponse(res, travelers)
 		}
