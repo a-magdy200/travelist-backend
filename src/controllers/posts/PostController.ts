@@ -1,6 +1,7 @@
 import { Post } from '../../entities/Post.entity'
 import { User } from '../../entities/User.entity'
 import { Traveler } from '../../entities/Traveler.entity'
+import { Not } from "typeorm"
 import { Group } from '../../entities/Group.entity'
 import { AppDataSource } from '../../config/database/data-source'
 import { Request, Response } from 'express'
@@ -12,6 +13,8 @@ import { StatusCodes } from '../../helpers/constants/statusCodes'
 import { sendSuccessResponse } from '../../helpers/responses/sendSuccessResponse'
 import { sendNotFoundResponse } from '../../helpers/responses/404.response'
 import { getUserIdFromToken } from '../../helpers/functions/getUserIdFromToken'
+import { postStatusValidation } from '../../helpers/validations/postStatus.validation'
+import { NOT_CONTAINS } from 'class-validator'
 const createPost = async (req: Request, res: Response) => {
 	try {
 		const userId: number = getUserIdFromToken(req)
@@ -67,13 +70,14 @@ const createPost = async (req: Request, res: Response) => {
 const listAllPosts = async (req: Request, res: Response) => {
 	const userId: number = getUserIdFromToken(req)
 	try{
+		
 	const posts: Post[] = await AppDataSource.manager.find<Post>(Post, {
+		where:{status :Not("reported")},
 		relations: ['traveler', 'traveler.user'],
 		order: {
 			id: 'DESC',
 		},
-	})
-
+	})	
 	sendSuccessResponse<Post[]>(res, posts)
 }
 catch (e: any) {
@@ -201,7 +205,7 @@ const reportPost = async (req: Request, res: Response) => {
 	try {
 		const userId: number = getUserIdFromToken(req)
 		const id: number | undefined = +req.params.id
-		const validation: Post = await postValidation.validateAsync(req.body, {
+		const validation: Post = await postStatusValidation.validateAsync(req.body, {
 			abortEarly: false,
 		})
 		const post: Post | null = await AppDataSource.manager.findOneOrFail<Post>(Post, {
