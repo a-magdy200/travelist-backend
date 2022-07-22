@@ -11,7 +11,7 @@ import { sendSuccessResponse } from "../../helpers/responses/sendSuccessResponse
 export const addUserGroup = async (req: Request, res: Response) => {
 
   try {
-    const groupId: number | undefined = +req.body.groupId
+    const groupId: number | undefined = +req.params.groupId
     const userId: number = getUserIdFromToken(req)
     const group = await AppDataSource.getRepository(Group).findOne({
       where: {
@@ -34,7 +34,7 @@ export const addUserGroup = async (req: Request, res: Response) => {
         }
       });
     }
-    if (group && user && flag) 
+    if (group && user && flag)
     {
       group.followers.push(user)
       group.followers_count += 1

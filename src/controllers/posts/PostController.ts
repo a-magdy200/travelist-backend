@@ -71,7 +71,7 @@ const listPosts = async (req: Request, res: Response) => {
 		relations: ['traveler', 'traveler.user'],
 		where: {
 			traveler: {
-				userId: userId,
+				userId,
 			},
 		},
 		order: {

@@ -49,6 +49,9 @@ export const showCompanyBookings = async (req: Request, res: Response) => {
           bookings.push(...cycle.bookings);
         });
       });
+      if (bookings.length > 1) {
+        bookings.sort((a, b) => (b?.id || 0) - (a?.id || 0));
+      }
     }
         sendSuccessResponse<CycleBooking[]>(res, bookings)
 }

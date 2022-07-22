@@ -17,10 +17,10 @@ const isCompany = async (
   const id = getUserIdFromToken(req);
   if (id) {
     try {
-    await AppDataSource.manager.findOneByOrFail(User, {
-      id,
-      type: UserTypeEnum.COMPANY
-    })
+      await AppDataSource.manager.findOneByOrFail(User, {
+        id,
+        type: UserTypeEnum.COMPANY
+      })
       next();
     } catch (e: any) {
       sendErrorResponse(formatValidationErrors(e), res, StatusCodes.NOT_AUTHORIZED);

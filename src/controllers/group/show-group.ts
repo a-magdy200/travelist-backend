@@ -12,9 +12,9 @@ export const showGroup = async (req: Request, res: Response) => {
 	try {
 		const group = await AppDataSource.getRepository(Group).findOneOrFail({
 			where: {
-				id: parseInt(req.params.id),
+				id,
 			},
-			relations: ["posts", "country", "followers"],
+			relations: ["posts", "country", "followers", "posts.traveler.user"],
 		})
 		if (group) {
 			sendSuccessResponse<Group>(res, group)
