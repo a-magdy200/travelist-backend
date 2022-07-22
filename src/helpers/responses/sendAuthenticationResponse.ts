@@ -9,6 +9,7 @@ export const sendAuthenticationResponse = (user: User, res: Response) => {
 		type: user.type,
 	}
 	const userData = {
+		id: user.id,
 		name: user.name,
 		type: user.type,
 		profile_picture: user.profile_picture,
