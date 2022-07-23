@@ -12,6 +12,7 @@ const getUserChats = async (req: Request, res: Response) => {
   try {
     const userId: number | undefined = getUserIdFromToken(req);
     if (userId) {
+      console.log(userId)
       const userChats: Chat[] = await AppDataSource.manager.find(Chat, {
         where: {
           chatUsers: {
@@ -20,7 +21,10 @@ const getUserChats = async (req: Request, res: Response) => {
         },
         relations: [
           "chatUsers", "chatUsers.user"
-        ]
+        ],
+        order: {
+          id: "desc"
+        }
       })
       sendSuccessResponse<Chat[]>(res, userChats);
     } else {
@@ -50,9 +54,9 @@ const getChatMessages = async (req: Request, res: Response) => {
               }
             }
           },
-          relations: [
-            "user"
-          ]
+          order: {
+            id: "desc"
+          }
         })
         sendSuccessResponse<ChatMessage[]>(res, userChatMessages);
       } else {
