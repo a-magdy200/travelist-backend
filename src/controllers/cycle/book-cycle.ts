@@ -50,11 +50,13 @@ export const bookCycle = async (req: Request, res: Response) => {
 
       if (traveler && user && cycle && !previousCycle && (cycle.current_seats+bodyObject.bookingSeats) < cycle.max_seats) {
         const booking = await AppDataSource.manager.create<CycleBooking>(CycleBooking, bodyObject)
-        cycle.current_seats++
+        cycle.current_seats+=bodyObject.bookingSeats
         booking.travelers = traveler
         booking.cycle = cycle
         await AppDataSource.manager.save(booking)
         await AppDataSource.manager.save(cycle)
+        console.log("booooooooking")
+
     /*************** Transaction*******************/
         const { token } = req.body
         const stripe = new Stripe('sk_test_51LNL5KAolBbZGsicDBdmJs9IFIpCI146iDMcUJPH1rMIVzCP6BoHaES0WMlgMBHRixb3oRpJKMPWXEsLUgoylerj00RgpfiYSe', {
@@ -85,6 +87,7 @@ export const bookCycle = async (req: Request, res: Response) => {
         transaction.user = user
         transaction.booking = booking
         booking.is_paid = true
+        console.log("transactiiiiion")
         await AppDataSource.manager.save(transaction)
         await AppDataSource.manager.save(booking)
 
@@ -101,6 +104,13 @@ export const bookCycle = async (req: Request, res: Response) => {
       ))
       
       }  
+      else {
+        sendErrorResponse(
+         ["Booking is Not Allowed"],
+          res,
+          StatusCodes.NOT_ACCEPTABLE
+        )
+      }
 
     }
     else
