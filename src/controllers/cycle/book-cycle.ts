@@ -115,15 +115,17 @@ export const bookCycle = async (req: Request, res: Response) => {
 						await AppDataSource.manager.save(transaction)
 						await AppDataSource.manager.save(booking)
 
-						// problem in userId can be null
-						const companyUserId = cycle.program?.company.userId
-						// notify({
-						// 	type: NotificationEnum.CYCLE_BOOKED,
-						// 	userId: companyUserId,
-						// 	content: `New Traveler has booked your cycle`,
-						// 	title: 'Cycle booked',
-						// })
+						// before response
+						if (cycle.program?.company.userId) {
+							notify({
+								type: NotificationEnum.CYCLE_BOOKED,
+								userId: cycle.program?.company.userId,
+								content: `New Traveler has booked your cycle`,
+								title: 'Cycle booked',
+							})
+						}
 
+						// before response
 						const email = user.email
 						await emailHandler({
 							email,

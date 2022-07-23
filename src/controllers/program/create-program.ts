@@ -11,9 +11,12 @@ import { formatValidationErrors } from '../../helpers/functions/formatValidation
 import { IProgramInterface } from '../../helpers/interfaces/IProgram.interface'
 import { sendErrorResponse } from '../../helpers/responses/sendErrorResponse'
 import { StatusCodes } from '../../helpers/constants/statusCodes'
-import { sendSuccessResponse } from "../../helpers/responses/sendSuccessResponse";
+import { sendSuccessResponse } from '../../helpers/responses/sendSuccessResponse'
 import { Country } from '../../entities/Country.entity'
 import { getUserIdFromToken } from '../../helpers/functions/getUserIdFromToken'
+import notify from '../../helpers/common/notify'
+import { NotificationEnum } from '../../helpers/enums/notification.enum'
+import { Traveler } from '../../entities/Traveler.entity'
 
 export const create = async (req: Request, res: Response) => {
 	try {
@@ -45,9 +48,16 @@ export const create = async (req: Request, res: Response) => {
 		const destinationIds =
 			typeof bodyObject.destinations === 'string'
 				? [parseInt(bodyObject.destinations, 10)]
-				: bodyObject.destinations?.map((destinationId: string) => parseInt(destinationId, 10))
+				: bodyObject.destinations?.map((destinationId: string) =>
+						parseInt(destinationId, 10)
+				  )
 
-		if (hotelsIds && destinationIds&&bodyObject.countryId &&bodyObject.transportationId) {
+		if (
+			hotelsIds &&
+			destinationIds &&
+			bodyObject.countryId &&
+			bodyObject.transportationId
+		) {
 			const loadedHotels = await AppDataSource.manager.findBy(Hotel, {
 				id: In(hotelsIds),
 			})
@@ -59,12 +69,15 @@ export const create = async (req: Request, res: Response) => {
 			program.hotels = loadedHotels
 			program.destinations = loadedDestinations
 
-
 			const userId: number = getUserIdFromToken(req)
-			const company = await AppDataSource.getRepository(Company).findOneByOrFail({
-                  user:{id:userId}
+			const company = await AppDataSource.getRepository(
+				Company
+			).findOneByOrFail({
+				user: { id: userId },
 			})
-			const country = await AppDataSource.getRepository(Country).findOneByOrFail({
+			const country = await AppDataSource.getRepository(
+				Country
+			).findOneByOrFail({
 				id: parseInt(bodyObject.countryId),
 			})
 
@@ -80,6 +93,21 @@ export const create = async (req: Request, res: Response) => {
 		}
 		await AppDataSource.manager.save(program)
 		sendSuccessResponse<Program>(res, program)
+
+		const travelers: Traveler[] = await AppDataSource.manager.find<Traveler>(
+			Traveler,
+			{}
+		)
+		if (travelers) {
+			travelers.forEach((traveler) => {
+				notify({
+					type: NotificationEnum.COMPANY_CREATED_PROGRAM,
+					userId: traveler.userId,
+					content: `New program has been added`,
+					title: 'Program Added',
+				})
+			})
+		}
 	} catch (error: any) {
 		sendErrorResponse(
 			formatValidationErrors(error),

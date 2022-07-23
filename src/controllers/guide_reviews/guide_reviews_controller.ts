@@ -9,6 +9,8 @@ import { getUserIdFromToken } from '../../helpers/functions/getUserIdFromToken'
 import { Traveler } from '../../entities/Traveler.entity'
 import { GuideReview } from '../../entities/GuideReview.entity'
 import { guideReviewValidation } from '../../helpers/validations/guide-review.validation'
+import { NotificationEnum } from '../../helpers/enums/notification.enum'
+import notify from '../../helpers/common/notify'
 
 const listGuidesReviews = async (req: Request, res: Response) => {
 	try {
@@ -96,9 +98,24 @@ const createGuideReview = async (req: Request, res: Response) => {
 					await AppDataSource.manager.save(guideReview)
 
 					sendSuccessResponse<GuideReview>(res, guideReview)
+
+					const traveler: Traveler | null =
+					await AppDataSource.manager.findOneOrFail<Traveler>(Traveler, {
+						where: {
+							id: requestedGuideId,
+						},
+					})
+
+					notify({
+						type: NotificationEnum.TRAVELER_REVIEWED_GUIDE,
+						userId: traveler.userId,
+						content: `New traveler has been reviewed you as a Guide`,
+						title: 'Guide Review',
+					})
+
 				} else {
 					sendNotFoundResponse(res, [
-						'Traveler already has reviewed this country',
+						'Traveler already has reviewed this guide',
 					])
 				}
 			} else {

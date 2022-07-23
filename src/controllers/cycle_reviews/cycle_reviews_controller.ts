@@ -9,57 +9,47 @@ import { getUserIdFromToken } from '../../helpers/functions/getUserIdFromToken'
 import { Traveler } from '../../entities/Traveler.entity'
 import { CycleReview } from '../../entities/CycleReview.entity'
 import { cycleReviewValidation } from '../../helpers/validations/review-cycle.validation'
+import { NotificationEnum } from '../../helpers/enums/notification.enum'
+import notify from '../../helpers/common/notify'
+import { Cycle } from '../../entities/Cycle.entity'
 
 const listCyclesReviews = async (req: Request, res: Response) => {
-	try
-	{
-	const cycles_reviews: CycleReview[] =
-		await AppDataSource.manager.find<CycleReview>(CycleReview, {
-			relations: ['traveler', 'cycle'],
-		})
+	try {
+		const cycles_reviews: CycleReview[] =
+			await AppDataSource.manager.find<CycleReview>(CycleReview, {
+				relations: ['traveler', 'cycle'],
+			})
 
-	sendSuccessResponse<CycleReview[]>(res, cycles_reviews)
-	}
-	catch (e: any) {
-		sendErrorResponse(
-			formatValidationErrors(e),
-			res,
-			StatusCodes.BAD_REQUEST
-		)
+		sendSuccessResponse<CycleReview[]>(res, cycles_reviews)
+	} catch (e: any) {
+		sendErrorResponse(formatValidationErrors(e), res, StatusCodes.BAD_REQUEST)
 	}
 }
 
 const showCycleReviews = async (req: Request, res: Response) => {
 	const cycle_id: number | undefined = +req.params.id
-  try
-  {
-	const cycle_reviews: CycleReview[] | null =
-		await AppDataSource.manager.find<CycleReview>(CycleReview, {
-			where: {
-				cycle: { id: cycle_id },
-			},
-			relations: ['traveler', 'cycle'],
-		})
+	try {
+		const cycle_reviews: CycleReview[] | null =
+			await AppDataSource.manager.find<CycleReview>(CycleReview, {
+				where: {
+					cycle: { id: cycle_id },
+				},
+				relations: ['traveler', 'cycle'],
+			})
 
-	if (cycle_reviews) {
-		sendSuccessResponse<CycleReview[]>(res, cycle_reviews)
-	} else {
-		sendNotFoundResponse(res)
+		if (cycle_reviews) {
+			sendSuccessResponse<CycleReview[]>(res, cycle_reviews)
+		} else {
+			sendNotFoundResponse(res)
+		}
+	} catch (e: any) {
+		sendErrorResponse(formatValidationErrors(e), res, StatusCodes.BAD_REQUEST)
 	}
-}
-catch (e: any) {
-	sendErrorResponse(
-		formatValidationErrors(e),
-		res,
-		StatusCodes.BAD_REQUEST
-	)
-}
 }
 
 const createCycleReview = async (req: Request, res: Response) => {
 	try {
 		const userId = getUserIdFromToken(req)
-		// console.log(userId) //4
 		if (userId) {
 			const currentTravelerUser: Traveler | null =
 				await AppDataSource.manager.findOneOrFail<Traveler>(Traveler, {
@@ -70,10 +60,10 @@ const createCycleReview = async (req: Request, res: Response) => {
 
 			if (currentTravelerUser) {
 				const currentTravelerId = currentTravelerUser.id
-				// console.log(currentTravelerId) //2
 
 				const requestedCycleId = req.body?.cycleId
 
+				//only if traveler has booked cycle: new info
 				const cycle_review: CycleReview | null =
 					await AppDataSource.manager.findOneOrFail<CycleReview>(CycleReview, {
 						where: {
@@ -81,7 +71,6 @@ const createCycleReview = async (req: Request, res: Response) => {
 							cycle: { id: requestedCycleId },
 						},
 					})
-				// console.log(cycle_review) //null
 
 				if (!cycle_review) {
 					const validation: CycleReview =
@@ -101,9 +90,26 @@ const createCycleReview = async (req: Request, res: Response) => {
 					await AppDataSource.manager.save(cycleReview)
 
 					sendSuccessResponse<CycleReview>(res, cycleReview)
+
+					const cycle: Cycle | null =
+						await AppDataSource.manager.findOneOrFail<Cycle>(Cycle, {
+							where: {
+								id: requestedCycleId,
+							},
+							relations: ['program','program.comapny'],
+						})
+
+					if (cycle.program?.company.userId) {
+						notify({
+							type: NotificationEnum.TRAVELER_REVIEWED_CYCLE,
+							userId: cycle.program?.company.userId,
+							content: `New traveler has been reviewed your Cycle`,
+							title: 'Cycle Review',
+						})
+					}
 				} else {
 					sendNotFoundResponse(res, [
-						'Traveler already has reviewed this country',
+						'Traveler already has reviewed this cycle',
 					])
 				}
 			} else {

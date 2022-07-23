@@ -1,18 +1,19 @@
-import { Program } from "../../entities/Program.entity";
-import { AppDataSource } from "../../config/database/data-source";
-import { Request, Response } from "express";
-import { UPLOAD_DIRECTORY } from "../../helpers/constants/directories";
-import { programUpdateValidation } from "../../helpers/validations/program-update.validation";
-import { formatValidationErrors } from "../../helpers/functions/formatValidationErrors";
-import { Hotel } from "../../entities/Hotel.entity";
-import { In } from "typeorm";
-import { unlinkSync } from "fs";
-import { IProgramInterface } from "../../helpers/interfaces/IProgram.interface";
-import { sendErrorResponse } from "../../helpers/responses/sendErrorResponse";
-import { StatusCodes } from "../../helpers/constants/statusCodes";
-import { sendSuccessResponse } from "../../helpers/responses/sendSuccessResponse";
-import { getUserIdFromToken } from "../../helpers/functions/getUserIdFromToken";
-import { Company } from "../../entities/Company.entity";
+import { Program } from '../../entities/Program.entity'
+import { AppDataSource } from '../../config/database/data-source'
+import { Request, Response } from 'express'
+import { UPLOAD_DIRECTORY } from '../../helpers/constants/directories'
+import { programUpdateValidation } from '../../helpers/validations/program-update.validation'
+import { formatValidationErrors } from '../../helpers/functions/formatValidationErrors'
+import { Hotel } from '../../entities/Hotel.entity'
+import { In } from 'typeorm'
+import { unlinkSync } from 'fs'
+import { IProgramInterface } from '../../helpers/interfaces/IProgram.interface'
+import { sendErrorResponse } from '../../helpers/responses/sendErrorResponse'
+import { StatusCodes } from '../../helpers/constants/statusCodes'
+import { sendSuccessResponse } from '../../helpers/responses/sendSuccessResponse'
+import { getUserIdFromToken } from '../../helpers/functions/getUserIdFromToken'
+import { Company } from '../../entities/Company.entity'
+
 
 export const update = async (req: Request, res: Response) => {
 	try {
@@ -26,8 +27,8 @@ export const update = async (req: Request, res: Response) => {
 		const bodyObject: IProgramInterface = { ...req.body }
 		const program: Program | null = await AppDataSource.getRepository(
 			Program
-		).findOneByOrFail( {
-			id,
+		).findOneByOrFail({
+				id,
 		})
 
 		if (program && validation) {
@@ -49,10 +50,11 @@ export const update = async (req: Request, res: Response) => {
 				if (oldCoverPicture && oldCoverPicture !== '') {
 					await unlinkSync(`${UPLOAD_DIRECTORY}${oldCoverPicture}`)
 				}
-				program.cover_picture = `${req.file.destination}${req.file.filename}`.replace(
-					UPLOAD_DIRECTORY,
-					''
-				)
+				program.cover_picture =
+					`${req.file.destination}${req.file.filename}`.replace(
+						UPLOAD_DIRECTORY,
+						''
+					)
 			}
 			await program.save()
 

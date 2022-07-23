@@ -43,7 +43,7 @@ export const updateCycle = async (req: Request, res: Response) => {
 			sendSuccessResponse<Cycle>(res, cycle)
 
 			cycle.bookings.forEach((booking) => {
-				const id = booking.travelers.userId;
+				const id = booking.travelers.userId
 				notify({
 					type: NotificationEnum.CYCLE_BOOKED_UPDATED,
 					userId: id,

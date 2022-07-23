@@ -6,5 +6,13 @@ export enum NotificationEnum {
 	POST_CREATED = 'post_created',
 	CYCLE_BOOKED = 'cycle_booked',
 	CYCLE_BOOKED_UPDATED = 'cycle_booked_updated',
+	TRAVELER_REVIEWED_COMPANY = 'traveler_reviewed_company',
+	TRAVELER_REVIEWED_CYCLE = 'traveler_reviewed_cycle',
+	COMPANY_CREATED_PROGRAM = 'company_created_program',
+	TRAVELER_REVIEWED_GUIDE = 'traveler_reviewed_guide',
+
+
+	COMPANY_UPDATED_PROGRAM = 'company_updated_program',
+
 
 }
