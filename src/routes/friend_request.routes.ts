@@ -11,6 +11,6 @@ router.post('/send/:id', sendFriendRequest)
 router.put('/accept/:id', acceptFriendRequest)
 router.put('/reject/:id', rejectFriendRequest)
 router.delete('/cancel/:id', 	cancelFriendRequest)
-router.get('/sent', 	listReceivedRequests)
-router.get('/received', 	listSentRequests)
+router.get('/received', 	listReceivedRequests)
+router.get('/sent', 	listSentRequests)
 export default router
