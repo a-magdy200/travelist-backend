@@ -17,7 +17,7 @@ import { Transaction } from '../../entities/Transaction.entity'
 import { NotificationEnum } from '../../helpers/enums/notification.enum'
 import notify from '../../helpers/common/notify'
 import { emailHandler } from '../../helpers/common/email-handler'
-import { Payment_PROCESS_SUBJECT } from '../../helpers/constants/emailParams'
+import { PAYMENT_PROCESS_SUBJECT } from '../../helpers/constants/emailParams'
 import { paymentDetailsEmail } from '../../helpers/emails/payment_details.email'
 
 export const bookCycle = async (req: Request, res: Response) => {
@@ -129,7 +129,7 @@ export const bookCycle = async (req: Request, res: Response) => {
 						const email = user.email
 						await emailHandler({
 							email,
-							subject: Payment_PROCESS_SUBJECT,
+							subject: PAYMENT_PROCESS_SUBJECT,
 							html: paymentDetailsEmail(),
 						})
 					})

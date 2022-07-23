@@ -12,6 +12,7 @@ import { cycleReviewValidation } from '../../helpers/validations/review-cycle.va
 import { NotificationEnum } from '../../helpers/enums/notification.enum'
 import notify from '../../helpers/common/notify'
 import { Cycle } from '../../entities/Cycle.entity'
+import { Program } from '../../entities/Program.entity'
 
 const listCyclesReviews = async (req: Request, res: Response) => {
 	try {
@@ -63,12 +64,12 @@ const createCycleReview = async (req: Request, res: Response) => {
 
 				const requestedCycleId = req.body?.cycleId
 
-				//only if traveler has booked cycle: new info
+				//only if traveler has booked cycle: new infoCycleReview
 				const cycle_review: CycleReview | null =
-					await AppDataSource.manager.findOneOrFail<CycleReview>(CycleReview, {
+					await AppDataSource.manager.findOne<CycleReview>(CycleReview, {
 						where: {
 							traveler: { id: currentTravelerId },
-							cycle: { id: requestedCycleId },
+							cycleId: requestedCycleId,
 						},
 					})
 
@@ -96,16 +97,28 @@ const createCycleReview = async (req: Request, res: Response) => {
 							where: {
 								id: requestedCycleId,
 							},
-							relations: ['program','program.comapny'],
+							relations: ['program'],
 						})
 
-					if (cycle.program?.company.userId) {
-						notify({
-							type: NotificationEnum.TRAVELER_REVIEWED_CYCLE,
-							userId: cycle.program?.company.userId,
-							content: `New traveler has been reviewed your Cycle`,
-							title: 'Cycle Review',
-						})
+					const programId = cycle.program?.id
+
+					if (programId) {
+						const program: Program | null =
+							await AppDataSource.manager.findOneOrFail<Program>(Program, {
+								where: {
+									id: programId,
+								},
+								relations: ['company'],
+							})
+
+						if (program.company) {
+							notify({
+								type: NotificationEnum.TRAVELER_REVIEWED_CYCLE,
+								userId: program.company.userId,
+								content: `New traveler has been reviewed your Cycle`,
+								title: 'Cycle Review',
+							})
+						}
 					}
 				} else {
 					sendNotFoundResponse(res, [
