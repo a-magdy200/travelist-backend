@@ -10,11 +10,12 @@ import { unlinkSync } from "fs";
 import { UPLOAD_DIRECTORY } from "../../../helpers/constants/directories";
 import { sendErrorResponse } from "../../../helpers/responses/sendErrorResponse";
 import { Company } from "../../../entities/Company.entity";
+import { sendAuthenticationResponse } from "../../../helpers/responses/sendAuthenticationResponse";
 
 const get_profile = async (req: Request, res: Response) => {
   const id = getUserIdFromToken(req);
   const user = await AppDataSource.manager.findOneByOrFail(User, {id});
-  sendSuccessResponse<User>(res, user);
+  sendAuthenticationResponse(user, res);
 }
 
 const update_profile = async (req: Request, res: Response) => {

@@ -33,7 +33,7 @@ const showHotel = async (req: Request, res: Response) => {
 			Hotel,
 			{
 				where: { id },
-				relations: ['reviews', 'country'],
+				relations: ['reviews', 'country', 'reviews.traveler.user'],
 			}
 		)
 		if (hotel) {
