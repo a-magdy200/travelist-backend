@@ -11,7 +11,7 @@ import {
 } from 'typeorm'
 import { User } from './User.entity'
 import { NotificationEnum } from '../helpers/enums/notification.enum'
-import { IsEnum, IsString, Length } from 'class-validator'
+import {IsEnum, IsInt, IsPositive, IsString, Length} from 'class-validator'
 import { NotificationStatusEnum } from '../helpers/enums/notificationStatus.enum'
 
 @Entity('notifications')
@@ -25,7 +25,7 @@ export class Notification extends BaseEntity {
 		default: NotificationStatusEnum.UNREAD,
 	})
 	@IsEnum(NotificationStatusEnum)
-	status: NotificationStatusEnum
+	status?: NotificationStatusEnum
 
 	@Column()
 	@Length(3)
@@ -44,9 +44,16 @@ export class Notification extends BaseEntity {
 	@IsEnum(NotificationEnum)
 	type: NotificationEnum
 
+	@Column({
+		type: 'int'
+	})
+	@IsInt()
+	@IsPositive()
+	userId: number;
+
 	@ManyToOne(() => User, (user) => user.notifications)
 	@JoinColumn()
-	user: User
+	user?: User
 
 	@CreateDateColumn()
 	created_at?: Date
