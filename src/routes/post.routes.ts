@@ -3,14 +3,16 @@ import {
 createPost,
 deletePost,
 editPost,
-listPosts,
-showPost
+listAllPosts,
+listMyPosts,
+showPost,
 } from '../controllers/posts/PostController'
 import { isAuthenticated } from '../middlewares/isAuthenticated'
 
 const router = Router()
 
-router.get('/', listPosts)
+router.get('/', listAllPosts)
+router.get('/myPosts', listMyPosts)
 router.post('/', isAuthenticated,createPost)
 router.get('/:id', isAuthenticated,showPost)
 router.put('/:id', isAuthenticated,editPost)
