@@ -14,6 +14,12 @@ import { sendSuccessResponse } from '../../helpers/responses/sendSuccessResponse
 import Stripe from 'stripe'
 import { v4 as uuid } from 'uuid'
 import { Transaction } from '../../entities/Transaction.entity'
+import { NotificationEnum } from '../../helpers/enums/notification.enum'
+import notify from '../../helpers/common/notify'
+import { emailHandler } from '../../helpers/common/email-handler'
+import { paymentDetailsEmail } from '../../helpers/emails/payment_details.email'
+import { PAYMENT_PROCESS_SUBJECT } from '../../helpers/constants/emailParams'
+
 export const bookCycle = async (req: Request, res: Response) => {
 	try {
 		const bodyObject: IBookInterface = await bookingValidation.validateAsync(
@@ -26,7 +32,7 @@ export const bookCycle = async (req: Request, res: Response) => {
 			where: {
 				id: bodyObject.cycleId,
 			},
-			relations: ['program'],
+			relations: ['program', 'program.company'],
 		})
 		const userId: number = getUserIdFromToken(req)
 		if (userId) {
@@ -111,6 +117,25 @@ export const bookCycle = async (req: Request, res: Response) => {
 						console.log('transactiiiiion')
 						await AppDataSource.manager.save(transaction)
 						await AppDataSource.manager.save(booking)
+
+            // before response
+						if (cycle.program?.company.userId) {
+							notify({
+								type: NotificationEnum.CYCLE_BOOKED,
+								userId: cycle.program?.company.userId,
+								content: `New Traveler has booked your cycle`,
+								title: 'Cycle booked',
+							})
+						}
+
+						// before response
+						const email = user.email
+						await emailHandler({
+							email,
+							subject: PAYMENT_PROCESS_SUBJECT,
+							html: paymentDetailsEmail(),
+						})
+            
 					})
 					.then((data) => {
 						res.status(200).json({ success: true, data: 'booked successfully' })

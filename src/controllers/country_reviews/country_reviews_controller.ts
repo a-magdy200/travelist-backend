@@ -60,18 +60,18 @@ const createCountryReview = async (req: Request, res: Response) => {
 
 			const requestedCountryId = req.body?.countryId
 
-			const country_review: CountryReview | null =
-				await AppDataSource.manager.findOneOrFail<CountryReview>(
-					CountryReview,
-					{
-						where: {
-							traveler: { id: currentTravelerId },
-							country: { id: requestedCountryId },
-						},
-					}
-				)
+			// const country_review: CountryReview | null =
+			// 	await AppDataSource.manager.findOneOrFail<CountryReview>(
+			// 		CountryReview,
+			// 		{
+			// 			where: {
+			// 				traveler: { id: currentTravelerId },
+			// 				country: { id: requestedCountryId },
+			// 			},
+			// 		}
+			// 	)
 
-			if (! country_review) {
+			if (requestedCountryId && currentTravelerId) {
 				const validation: CountryReview =
 					await countryReviewValidation.validateAsync(req.body, {
 						abortEarly: false,
