@@ -10,6 +10,8 @@ import { FriendRequestStatusType } from '../../helpers/types/friendRequestStatus
 import { FriendRequestStatusEnum } from '../../helpers/enums/friendRequestStatus.enum'
 import { TravelerFriends } from '../../entities/TravelerFriend.entity'
 import { getUserIdFromToken } from '../../helpers/functions/getUserIdFromToken'
+import {Chat} from "../../entities/Chat.entity";
+import {ChatUser} from "../../entities/ChatUser.entity";
 
 
 const acceptFriendRequest = async (req: Request, res: Response) => {
@@ -21,7 +23,7 @@ const acceptFriendRequest = async (req: Request, res: Response) => {
 			userId: currentUserId,
 		},
 	})
-	if (currentTraveler && currentTraveler.id != oppsiteTravelerId) {
+	if (currentTraveler && currentTraveler.id !== oppsiteTravelerId) {
 
 		try {
 			const alreadySentRequest: FriendRequest | null =
@@ -36,16 +38,25 @@ const acceptFriendRequest = async (req: Request, res: Response) => {
 			if (alreadySentRequest) {
 				alreadySentRequest.status = FriendRequestStatusEnum.APPROVED
 				await alreadySentRequest.save()
-
 				const friend: TravelerFriends =
 					await AppDataSource.manager.create<TravelerFriends>(TravelerFriends, {
 						traveler_sender: { id: oppsiteTravelerId },
 						traveler_receiver: { id: currentTraveler.id },
 					})
 				await AppDataSource.manager.save(friend)
+				const insertedChat = await AppDataSource.manager.insert(Chat, {});
+				await AppDataSource.manager.insert(ChatUser, {
+					chatId: insertedChat.generatedMaps[0].id,
+					userId: currentUserId,
+				})
+				const otherTraveler = await AppDataSource.manager.findOneByOrFail(Traveler, {
+					id: oppsiteTravelerId
+				})
+				await AppDataSource.manager.insert(ChatUser, {
+					chatId: insertedChat.generatedMaps[0].id,
+					userId: otherTraveler.userId,
+				})
 				sendSuccessResponse<TravelerFriends>(res, friend)
-
-				//sendSuccessResponse<FriendRequest>(res, alreadySentRequest)
 			} else {
 				sendErrorResponse(
 					['there is not a request '],
