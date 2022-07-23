@@ -71,6 +71,11 @@ export class Program extends BaseEntity {
 	@Max(5)
 	average_rate?: number
 
+	@Column({
+		type: "int",
+		nullable: true,
+	  })
+	 companyId: number
 	@ManyToOne(() => Company, (company) => company.programs, {
 		onDelete: 'CASCADE',
 		onUpdate: 'CASCADE',
