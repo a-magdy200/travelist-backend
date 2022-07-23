@@ -122,10 +122,37 @@ const createCompanyReview = async (req: Request, res: Response) => {
 const deleteCompanyReview = async (req: Request, res: Response) => {
 	try {
 		const id: number | undefined = +req.params.id
+
+		const company_review: CompanyReview | null =
+			await AppDataSource.manager.findOne<CompanyReview>(CompanyReview, {
+				where: {
+					id,
+				},
+			})
+
+		const companyId = company_review?.companyId
+
 		await AppDataSource.manager.delete<CompanyReview>(CompanyReview, {
 			id,
 		})
+
+		const company: Company | null =
+			await AppDataSource.manager.findOne<Company>(Company, {
+				where: {
+					id: companyId,
+				},
+			})
+
 		sendSuccessResponse(res)
+
+		if (company) {
+			notify({
+				type: NotificationEnum.ADMIN_DELETED_COMPANY_REVIEW,
+				userId: company.userId,
+				content: `Admin deleted a review related to you`,
+				title: 'Company Review deleted',
+			})
+		}
 	} catch (error: any) {
 		sendErrorResponse(error, res, StatusCodes.NOT_ACCEPTABLE)
 	}

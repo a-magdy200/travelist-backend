@@ -20,13 +20,8 @@ const listGuidesReviews = async (req: Request, res: Response) => {
 			})
 
 		sendSuccessResponse<GuideReview[]>(res, guides_reviews)
-	}
-	catch (e: any) {
-		sendErrorResponse(
-			formatValidationErrors(e),
-			res,
-			StatusCodes.BAD_REQUEST
-		)
+	} catch (e: any) {
+		sendErrorResponse(formatValidationErrors(e), res, StatusCodes.BAD_REQUEST)
 	}
 }
 
@@ -46,13 +41,8 @@ const showGuideReviews = async (req: Request, res: Response) => {
 		} else {
 			sendNotFoundResponse(res)
 		}
-	}
-	catch (e: any) {
-		sendErrorResponse(
-			formatValidationErrors(e),
-			res,
-			StatusCodes.BAD_REQUEST
-		)
+	} catch (e: any) {
+		sendErrorResponse(formatValidationErrors(e), res, StatusCodes.BAD_REQUEST)
 	}
 }
 
@@ -100,11 +90,11 @@ const createGuideReview = async (req: Request, res: Response) => {
 					sendSuccessResponse<GuideReview>(res, guideReview)
 
 					const traveler: Traveler | null =
-					await AppDataSource.manager.findOneOrFail<Traveler>(Traveler, {
-						where: {
-							id: requestedGuideId,
-						},
-					})
+						await AppDataSource.manager.findOneOrFail<Traveler>(Traveler, {
+							where: {
+								id: requestedGuideId,
+							},
+						})
 
 					notify({
 						type: NotificationEnum.TRAVELER_REVIEWED_GUIDE,
@@ -112,7 +102,6 @@ const createGuideReview = async (req: Request, res: Response) => {
 						content: `New traveler has been reviewed you as a Guide`,
 						title: 'Guide Review',
 					})
-
 				} else {
 					sendNotFoundResponse(res, [
 						'Traveler already has reviewed this guide',
@@ -136,10 +125,38 @@ const createGuideReview = async (req: Request, res: Response) => {
 const deleteGuideReview = async (req: Request, res: Response) => {
 	try {
 		const id: number | undefined = +req.params.id
+
+		const guide_review: GuideReview | null =
+			await AppDataSource.manager.findOne<GuideReview>(GuideReview, {
+				where: {
+					id,
+				},
+			})
+
+		const travelerGuideId = guide_review?.guideId
+		// const ownerTravelerId = guide_review?.travelerId
+
+		const travelerGuide: Traveler | null =
+			await AppDataSource.manager.findOne<Traveler>(Traveler, {
+				where: {
+					id: travelerGuideId,
+				},
+			})
+
 		await AppDataSource.manager.delete<GuideReview>(GuideReview, {
 			id,
 		})
+
 		sendSuccessResponse(res)
+
+		if (travelerGuide) {
+			notify({
+				type: NotificationEnum.ADMIN_DELETED_GUIDE_REVIEW,
+				userId: travelerGuide?.userId,
+				content: `Admin deleted a review related to you`,
+				title: 'Guide Review deleted',
+			})
+		}
 	} catch (error: any) {
 		sendErrorResponse(error, res, StatusCodes.NOT_ACCEPTABLE)
 	}

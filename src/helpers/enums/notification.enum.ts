@@ -10,9 +10,8 @@ export enum NotificationEnum {
 	TRAVELER_REVIEWED_CYCLE = 'traveler_reviewed_cycle',
 	COMPANY_CREATED_PROGRAM = 'company_created_program',
 	TRAVELER_REVIEWED_GUIDE = 'traveler_reviewed_guide',
-
+	ADMIN_DELETED_GUIDE_REVIEW = 'admin_deleted_guide_review',
+	ADMIN_DELETED_COMPANY_REVIEW = 'admin_deleted_company_review',
 
 	COMPANY_UPDATED_PROGRAM = 'company_updated_program',
-
-
 }
