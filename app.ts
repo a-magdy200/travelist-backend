@@ -25,10 +25,13 @@ import companyReviewsRoutes from "./src/routes/company_reviews.routes";
 import postRoutes from './src/routes/post.routes'
 import adminRoutes from './src/routes/admin/admin.routes'
 import searchRouter from './src/routes/search.routes';
-
+import socketio from "socket.io"
 
 const app = express()
 app.use(cors({ origin: true, credentials: true }))
+
+// let http = require("http").Server(app);
+let io = require('socket.io')(app);
 
 // create a rotating write stream
 app.use(express.json())
@@ -36,6 +39,13 @@ app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.static(path.join(__dirname, 'uploads')))
+
+io.on("connection", function(socket: any) {
+	console.log("a user connected");
+	console.log(socket.id);
+
+  });
+
 
 AppDataSource.initialize()
 	.then((connection) => {
