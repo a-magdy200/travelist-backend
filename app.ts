@@ -26,9 +26,14 @@ import postRoutes from './src/routes/post.routes'
 import postReportsRoutes from './src/routes/post_reports.routes'
 import adminRoutes from './src/routes/admin/admin.routes'
 import searchRouter from './src/routes/search.routes';
+import {createServer} from "http";
+import { Server } from "socket.io";
+import chatHandlers from "./src/controllers/chat/chat-handlers";
 
 
 const app = express()
+const server = createServer(app);
+const io = new Server(server);
 app.use(cors({ origin: true, credentials: true }))
 
 // create a rotating write stream
@@ -60,13 +65,13 @@ AppDataSource.initialize()
 		app.use('/api/guide_reviews', guideReviewsRoutes)
 		app.use('/api/company_reviews', companyReviewsRoutes)
 		app.use('/api/search', searchRouter)
-
-
 		app.use('/api/posts', postRoutes)
-
 		app.use('/api/posts_reports', postReportsRoutes)
 
-		app.listen(config.port, () => {
+		chatHandlers(io);
+
+
+		server.listen(config.port, () => {
 			console.log(`Server running on PORT: ${config.port}`)
 		})
 	})
