@@ -15,7 +15,7 @@ export const show = async (req: Request, res: Response) => {
 			where: {
 				id: parseInt(req.params.id),
 			},
-			relations: ["company", "company.user", "cycles", "hotels", "transportation", "country", "hotels.country"],
+			relations: ["company", "company.user", "cycles", "hotels", "transportation", "country", "hotels.country","destinations"],
 		})
 		if (program) {
 			sendSuccessResponse<Program>(res, program)

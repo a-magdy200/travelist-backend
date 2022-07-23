@@ -18,7 +18,7 @@ import { CompanyReview } from './CompanyReview.entity'
 @Entity('companies')
 export class Company extends BaseEntity {
 	@PrimaryGeneratedColumn()
-	id?: number
+	id: number
 
 	@Column({ default: '' })
 	@Length(10)
