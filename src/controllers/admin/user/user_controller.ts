@@ -6,7 +6,7 @@ import { sendSuccessResponse } from "../../../helpers/responses/sendSuccessRespo
 import { userProfileValidation, userValidation } from "../../../helpers/validations/user.validation";
 import { passwordValidation } from "../../../helpers/validations/password.validation";
 import bcrypt from "bcrypt";
-import { unlinkSync } from "fs";
+import {existsSync, unlinkSync} from "fs";
 import { UPLOAD_DIRECTORY } from "../../../helpers/constants/directories";
 import { sendErrorResponse } from "../../../helpers/responses/sendErrorResponse";
 import { Company } from "../../../entities/Company.entity";
@@ -36,7 +36,9 @@ const update_profile_picture = async (req: Request, res: Response) => {
   if (req.file?.filename) {
     const user = await AppDataSource.manager.findOneByOrFail(User, { id });
     if (user.profile_picture !== '') {
-      await unlinkSync(`${UPLOAD_DIRECTORY}${user.profile_picture}`)
+      if (existsSync(`${UPLOAD_DIRECTORY}${user.profile_picture}`)) {
+        await unlinkSync(`${UPLOAD_DIRECTORY}${user.profile_picture}`)
+      }
     }
     const path = `${req.file.destination}${req.file.filename}`.replace(
       UPLOAD_DIRECTORY,
@@ -56,7 +58,9 @@ const update_cover_picture = async (req: Request, res: Response) => {
   if (req.file?.filename) {
     const company = await AppDataSource.manager.findOneByOrFail(Company, { userId: id });
     if (company.cover_picture !== '') {
-      await unlinkSync(`${UPLOAD_DIRECTORY}${company.cover_picture}`)
+      if (existsSync(`${UPLOAD_DIRECTORY}${company.cover_picture}`)) {
+        await unlinkSync(`${UPLOAD_DIRECTORY}${company.cover_picture}`)
+      }
     }
     const path = `${req.file.destination}${req.file.filename}`.replace(
       UPLOAD_DIRECTORY,
