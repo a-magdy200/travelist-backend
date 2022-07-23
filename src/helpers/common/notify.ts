@@ -10,7 +10,11 @@ interface INotificationInterface {
   title: string
 }
 const notify = async (notification: INotificationInterface) => {
-  await AppDataSource.manager.insert<Notification>(Notification, notification);
-  io.sockets.to(onlineUsers[notification.userId]).emit("notification", notification.content)
+  const insertResult = await AppDataSource.manager.insert<Notification>(Notification, notification);
+  const insertedNotification = {
+    ...notification,
+    ...insertResult.generatedMaps[0]
+  }
+  io.sockets.to(onlineUsers[notification.userId]).emit("notification", insertedNotification);
 }
 export default notify;

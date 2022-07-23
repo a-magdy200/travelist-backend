@@ -11,8 +11,9 @@ import {
 } from 'typeorm'
 import { Chat } from './Chat.entity'
 import { MessageStatusEnum } from '../helpers/enums/messageStatus.enum'
-import { IsEnum, IsString, Length } from 'class-validator'
+import {IsEnum, IsInt, IsPositive, IsString, Length} from 'class-validator'
 import { User } from './User.entity'
+import {ChatUser} from "./ChatUser.entity";
 
 @Entity('chat_messages')
 export class ChatMessage extends BaseEntity {
@@ -34,13 +35,27 @@ export class ChatMessage extends BaseEntity {
 	@IsString()
 	content: string
 
+	@Column({
+		type: 'int'
+	})
+	@IsInt()
+	@IsPositive()
+	userId: number;
+
+	@Column({
+		type: 'int'
+	})
+	@IsInt()
+	@IsPositive()
+	chatId: number;
+
 	@ManyToOne(() => User, (user) => user.messages)
 	@JoinColumn()
 	user: User
 
 	@ManyToOne(() => Chat, (chat) => chat.messages)
 	@JoinColumn()
-	chat: Chat[]
+	chat: Chat
 
 	@CreateDateColumn()
 	created_at: Date

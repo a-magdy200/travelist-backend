@@ -29,6 +29,8 @@ import searchRouter from './src/routes/search.routes';
 import {createServer} from "http";
 import { Server } from "socket.io";
 import socketHandler from "./src/controllers/socket_handler";
+import createDirectories from "./src/helpers/functions/createDirectories";
+import {mkdirSync} from "fs";
 const app = express()
 const server = createServer(app);
 export const io = new Server(server, {
@@ -53,6 +55,7 @@ AppDataSource.initialize()
 	.then((connection) => {
 		const config = configurations()
 		// app.use('/', indexRouter);
+		createDirectories();
 		app.use('/auth', authRouter)
 		app.use('/api/companies', companyRoutes)
 		app.use('/api/hotels', hotelsRoutes)
