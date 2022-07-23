@@ -44,7 +44,7 @@ export class ChatUser extends BaseEntity {
 
 	@ManyToOne(() => User, (user) => user.chats)
 	@JoinColumn()
-	users: User[]
+	user: User
 
 	@ManyToOne(() => Chat, (chat) => chat.chatUsers)
 	@JoinColumn()

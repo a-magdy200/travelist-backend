@@ -78,7 +78,7 @@ export const register = async (req: Request, res: Response, next: any) => {
 			const userEntity = await AppDataSource.manager.findOneBy<User>(User, {
 				id: userId,
 			})
-			if (userType == 'traveler') {
+			if (userType === 'traveler') {
 				const traveler = await AppDataSource.manager.insert<Traveler>(
 					Traveler,
 					// todo:: roleValidatedBody as ITravelerRequestBodyInterface,

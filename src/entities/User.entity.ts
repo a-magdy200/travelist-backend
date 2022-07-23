@@ -106,7 +106,7 @@ export class User extends BaseEntity {
 	@OneToMany(() => ChatMessage, (message) => message.user)
 	messages: ChatMessage[]
 
-	@OneToMany(() => ChatUser, (chat) => chat.users)
+	@OneToMany(() => ChatUser, (chat) => chat.user)
 	chats: ChatUser[]
 
 	@ManyToMany(() => Group, (group) => group.followers)
