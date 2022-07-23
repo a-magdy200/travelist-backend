@@ -26,14 +26,17 @@ import postRoutes from './src/routes/post.routes'
 import postReportsRoutes from './src/routes/post_reports.routes'
 import adminRoutes from './src/routes/admin/admin.routes'
 import searchRouter from './src/routes/search.routes';
-import socketio from "socket.io"
+// import socketio from "socket.io"
 
 const app = express()
 app.use(cors({ origin: true, credentials: true }))
 
 // let http = require("http").Server(app);
-let io = require('socket.io')(app);
-
+// let io = require('socket.io')(http);
+// io.on('custom_event', (name:string) =>{
+// console.log(name);
+// io.emit('return_event', 'yes from server to client')
+// })
 // create a rotating write stream
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
@@ -41,11 +44,10 @@ app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.static(path.join(__dirname, 'uploads')))
 
-io.on("connection", function(socket: any) {
-	console.log("a user connected");
-	console.log(socket.id);
-
-  });
+// io.on("connection", function(socket: any) {
+// 	console.log("a user connected");
+// 	console.log(socket.id);
+//   });
 
 
 AppDataSource.initialize()
