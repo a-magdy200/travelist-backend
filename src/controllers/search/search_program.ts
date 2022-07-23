@@ -29,7 +29,7 @@ export const searchProgram = async (req: Request, res: Response, next: any) => {
 			},
 		})
 		if (programs.length == 0) {
-            return sendErrorResponse(['Could not find program'], res, StatusCodes.NOT_FOUND)
+            return sendErrorResponse(['Could not find program'], res, StatusCodes.SUCCESS_NO_CONTENT)
 		} else {
 			sendSuccessResponse(res, programs)
 		}

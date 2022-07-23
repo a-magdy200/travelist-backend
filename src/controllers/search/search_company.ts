@@ -1,4 +1,4 @@
-import { User } from './../../entities/User.entity';
+import { Company } from './../../entities/Company.entity';
 import { Request, Response } from 'express'
 import { ILike } from 'typeorm'
 import { AppDataSource } from '../../config/database/data-source'
@@ -7,11 +7,11 @@ import { formatValidationErrors } from '../../helpers/functions/formatValidation
 import { sendErrorResponse } from '../../helpers/responses/sendErrorResponse'
 import { sendSuccessResponse } from '../../helpers/responses/sendSuccessResponse'
 import { searchParamValidation } from '../../helpers/validations/search-param.validation'
-import { UserTypeEnum } from '../../helpers/enums/userType.enum';
+
 
 
 export const searchCompany = async (req: Request, res: Response, next: any) => {
-    const userRepository = AppDataSource.getRepository(User)
+    const userRepository = AppDataSource.getRepository(Company)
 	try {
 		const validatedQuery = await searchParamValidation.validateAsync(
 			req.query,
@@ -19,17 +19,17 @@ export const searchCompany = async (req: Request, res: Response, next: any) => {
 				abortEarly: false,
 			}
 		)
-		const companies: User[] = await userRepository.find({
+		const companies: Company[] = await userRepository.find({
 			where: {
-                type: UserTypeEnum.COMPANY,
-				name: ILike(`%${validatedQuery.keyword}%`)
+				user: {name: ILike(`%${validatedQuery.keyword}%`)
+                }
 			},
-			relations: {
-				company: true,
-			},
+            relations: {
+                user: true
+            }
 		})
 		if (companies.length == 0) {
-            return sendErrorResponse(['Could not find company'], res, StatusCodes.NOT_FOUND)
+            return sendErrorResponse(['Could not find company'], res, StatusCodes.SUCCESS_NO_CONTENT)
 		} else {
 			sendSuccessResponse(res, companies)
 		}
@@ -40,4 +40,33 @@ export const searchCompany = async (req: Request, res: Response, next: any) => {
 			StatusCodes.NOT_ACCEPTABLE
 		)
 	}
+    // const userRepository = AppDataSource.getRepository(User)
+	// try {
+	// 	const validatedQuery = await searchParamValidation.validateAsync(
+	// 		req.query,
+	// 		{
+	// 			abortEarly: false,
+	// 		}
+	// 	)
+	// 	const companies: User[] = await userRepository.find({
+	// 		where: {
+    //             type: UserTypeEnum.COMPANY,
+	// 			name: ILike(`%${validatedQuery.keyword}%`)
+	// 		},
+	// 		relations: {
+	// 			company: true,
+	// 		},
+	// 	})
+	// 	if (companies.length == 0) {
+    //         return sendErrorResponse(['Could not find company'], res, StatusCodes.NOT_FOUND)
+	// 	} else {
+	// 		sendSuccessResponse(res, companies)
+	// 	}
+	// } catch (error: any) {
+	// 	return sendErrorResponse(
+	// 		formatValidationErrors(error),
+	// 		res,
+	// 		StatusCodes.NOT_ACCEPTABLE
+	// 	)
+	// }
 }
