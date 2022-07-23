@@ -26,6 +26,110 @@ export const bookCycle = async (req: Request, res: Response) => {
       relations: ["program"],
 
     })
+    const userId: number = getUserIdFromToken(req)
+    if(userId)
+    {
+      const traveler = await AppDataSource.getRepository(Traveler).findOneOrFail({
+        where: {
+          user:{id: userId}
+        },
+        relations: ["user"],
+  
+      })
+      const user = await AppDataSource.getRepository(User).findOneOrFail({
+        where: {
+          id: userId
+        },
+      })
+      const previousCycle = await AppDataSource.getRepository(CycleBooking).findOne({
+        where: {
+          travelers: { id: traveler.id },
+          cycle: { id: cycle.id }
+        },
+      })
+
+      if (traveler && user && cycle && !previousCycle && (cycle.current_seats+bodyObject.bookingSeats) < cycle.max_seats) {
+        const booking = await AppDataSource.manager.create<CycleBooking>(CycleBooking, bodyObject)
+        cycle.current_seats++
+        booking.travelers = traveler
+        booking.cycle = cycle
+        await AppDataSource.manager.save(booking)
+        await AppDataSource.manager.save(cycle)
+    /*************** Transaction*******************/
+        const { token } = req.body
+        const stripe = new Stripe('sk_test_51LNL5KAolBbZGsicDBdmJs9IFIpCI146iDMcUJPH1rMIVzCP6BoHaES0WMlgMBHRixb3oRpJKMPWXEsLUgoylerj00RgpfiYSe', {
+        apiVersion: '2020-08-27',
+      });
+
+      return stripe.customers.create({
+        email: token.email,
+        source: token.id
+      }).then(async (customer) => {
+        stripe.charges.create({
+          amount: cycle.program?.price,
+          currency: 'usd',
+          customer: customer.id,
+          receipt_email: token.email,
+          description: `cycle name :${cycle.name}`,
+          shipping: {
+            name: token.card.name,
+            address: {
+              country: "egypt"
+            }
+          }
+        })
+        const transaction = await AppDataSource.manager.create<Transaction>(Transaction, {
+          payment_id: token.id,
+          amount: cycle.program?.price,
+        })
+        transaction.user = user
+        transaction.booking = booking
+        booking.is_paid = true
+        await AppDataSource.manager.save(transaction)
+        await AppDataSource.manager.save(booking)
+
+
+      })
+      .then(data => {
+        res.status(200).json({success:true,data:"booked successfully"})
+      })
+      .catch(error => 
+        sendErrorResponse(
+        formatValidationErrors(error),
+        res,
+        StatusCodes.NOT_ACCEPTABLE
+      ))
+      
+      }  
+
+    }
+    else
+    {
+      sendErrorResponse(
+      ["You should have Account to book"],
+       res,
+       StatusCodes.NOT_ACCEPTABLE
+     )
+    }
+  }
+  catch (error: any) {
+    sendErrorResponse(
+      formatValidationErrors(error),
+      res,
+      StatusCodes.NOT_ACCEPTABLE
+    )
+  }
+ /* try {
+    const bodyObject: IBookInterface = await bookingValidation.validateAsync(req.body, {
+      abortEarly: false,
+    })
+    const cycle = await AppDataSource.getRepository(Cycle).findOneOrFail({
+      where: {
+        id: bodyObject.cycleId
+      },
+      relations: ["program"],
+
+    })
 
     const userId: number = getUserIdFromToken(req)
     if(userId){
@@ -127,5 +231,5 @@ console.log("traveler",traveler)
       StatusCodes.NOT_ACCEPTABLE
     )
   }
-
+*/
 }

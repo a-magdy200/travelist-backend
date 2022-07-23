@@ -3,5 +3,6 @@ export interface IBookInterface {
 	is_paid:boolean
     cycleId:number
     travelersId?:number
+    bookingSeats:number
 
 }
