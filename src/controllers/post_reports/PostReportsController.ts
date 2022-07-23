@@ -26,14 +26,13 @@ const createPostReport = async (req: Request, res: Response) => {
 			await postReportValidation.validateAsync(req.body, {
 				abortEarly: false,
 			})
-		const user = await AppDataSource.getRepository(User).findOneBy({
+		const user = await AppDataSource.getRepository(User).findOneByOrFail({
 			id: userId,
 		})
-		console.log('user', user)
-		const post = await AppDataSource.getRepository(Post).findOneBy({
+		const post = await AppDataSource.getRepository(Post).findOneByOrFail({
 			id: postId,
 		})
-		console.log('post', post)
+		//////////////////
 		const postReport = await AppDataSource.manager.create<PostReport>(
 			PostReport,
 			{
@@ -61,8 +60,7 @@ const createPostReport = async (req: Request, res: Response) => {
 			await AppDataSource.manager.save(postReport)
 			postReport.post.status = post.status
 		}
-
-		console.log('post postReport', postReport)
+	
 		await AppDataSource.manager.save(postReport)
 		sendSuccessResponse<PostReport>(res, postReport)
 	} catch (error: any) {
