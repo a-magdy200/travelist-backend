@@ -121,7 +121,6 @@ export class Traveler extends BaseEntity {
 	traveler2_friends: Traveler[]
 
 	@OneToOne(() => User, (user) => user.traveler)
-	@OneToOne(() => User )
 	@JoinColumn()
 	user: User
 
