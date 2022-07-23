@@ -44,7 +44,7 @@ const viewTravelerProfile: RequestHandler = async (req, res) => {
 			where: criteria,
 			relations: {
 				user: true,
-				reviews: true,
+				// reviews: true,
 			},
 		})
 		sendSuccessResponse<Traveler>(res, traveler)
@@ -83,12 +83,37 @@ const editTravelerProfile = async (req: Request, res: Response) => {
 	}
 }
 
+const checkIfTravelerIsAFriend = async (req: Request, res: Response) => {
+	try {
+		const userId = getUserIdFromToken(req);
+		const traveler = await AppDataSource.manager.findOneByOrFail(Traveler, {
+			userId
+		});
+		const otherTravelerId = +req.params.id;
+		const friend = await AppDataSource.getRepository(
+			TravelerFriends
+		).findOneBy([
+			{
+				receiver_id: traveler.id,
+				sender_id: otherTravelerId
+			},
+			{
+				sender_id: traveler.id,
+				receiver_id: otherTravelerId
+			}
+		]);
+		sendSuccessResponse(res, !!friend)
+	} catch(e) {
+		sendErrorResponse([], res)
+	}
+}
+
 const listTravelerFriends = async (req: Request, res: Response) => {
 	const userId: number = getUserIdFromToken(req)
 	try {
 		const traveler = await AppDataSource.getRepository(Traveler).findOneOrFail({
 			where: {
-				userId: userId,
+				userId,
 			},
 		})
 
@@ -117,18 +142,29 @@ const deleteTravelerFriend = async (req: Request, res: Response) => {
 		const userId: number = getUserIdFromToken(req)
 		const traveler = await AppDataSource.getRepository(Traveler).findOneOrFail({
 			where: {
-				userId: userId,
+				userId,
 			},
 		})
 		const friendId: number | undefined = +req.params.id
 
 		if (traveler && friendId) {
-			await AppDataSource.createQueryBuilder()
-				.delete()
-				.from(TravelerFriends)
-				.where({ sender_id: traveler.id, receiver_id: friendId })
-				.orWhere({ sender_id: friendId, receiver_id: traveler.id })
-				.execute()
+			// await AppDataSource.createQueryBuilder()
+			// 	.delete()
+			// 	.from(TravelerFriends)
+			// 	.where({ sender_id: traveler.id, receiver_id: friendId })
+			// 	.orWhere({ sender_id: friendId, receiver_id: traveler.id })
+			// 	.execute()
+			const friend = await AppDataSource.manager.findBy(TravelerFriends, [
+				{
+					receiver_id: traveler.id,
+					sender_id: friendId
+				},
+				{
+					sender_id: traveler.id,
+					receiver_id: friendId
+				}
+			]);
+			await AppDataSource.getRepository(TravelerFriends).remove(friend);
 			sendSuccessResponse(res)
 		}
 	} catch (error: any) {
@@ -195,4 +231,5 @@ export {
 	listTravelerFriends,
 	deleteTravelerFriend,
 	homeFeed,
+	checkIfTravelerIsAFriend
 }

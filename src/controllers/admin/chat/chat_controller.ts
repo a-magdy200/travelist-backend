@@ -7,17 +7,23 @@ import {sendErrorResponse} from "../../../helpers/responses/sendErrorResponse";
 import {StatusCodes} from "../../../helpers/constants/statusCodes";
 import {Chat} from "../../../entities/Chat.entity";
 import {ChatMessage} from "../../../entities/ChatMessage.entity";
+import {In} from "typeorm";
 
 const getUserChats = async (req: Request, res: Response) => {
   try {
     const userId: number | undefined = getUserIdFromToken(req);
     if (userId) {
-      console.log(userId)
-      const userChats: Chat[] = await AppDataSource.manager.find(Chat, {
+      const userChatsIds: Chat[] = await AppDataSource.manager.find(Chat, {
         where: {
           chatUsers: {
             userId
           }
+        },
+        select: ['id']
+      })
+      const userChats: Chat[] = await AppDataSource.manager.find(Chat, {
+        where: {
+          id: In(userChatsIds.map(c => c.id))
         },
         relations: [
           "chatUsers", "chatUsers.user"
@@ -54,9 +60,6 @@ const getChatMessages = async (req: Request, res: Response) => {
               }
             }
           },
-          order: {
-            id: "desc"
-          }
         })
         sendSuccessResponse<ChatMessage[]>(res, userChatMessages);
       } else {

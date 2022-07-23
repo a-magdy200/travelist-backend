@@ -14,12 +14,6 @@ import { sendSuccessResponse } from '../../helpers/responses/sendSuccessResponse
 import Stripe from 'stripe'
 import { v4 as uuid } from 'uuid'
 import { Transaction } from '../../entities/Transaction.entity'
-import { NotificationEnum } from '../../helpers/enums/notification.enum'
-import notify from '../../helpers/common/notify'
-import { emailHandler } from '../../helpers/common/email-handler'
-import { PAYMENT_PROCESS_SUBJECT } from '../../helpers/constants/emailParams'
-import { paymentDetailsEmail } from '../../helpers/emails/payment_details.email'
-
 export const bookCycle = async (req: Request, res: Response) => {
 	try {
 		const bodyObject: IBookInterface = await bookingValidation.validateAsync(
@@ -32,7 +26,7 @@ export const bookCycle = async (req: Request, res: Response) => {
 			where: {
 				id: bodyObject.cycleId,
 			},
-			relations: ['program', 'program.company'],
+			relations: ['program'],
 		})
 		const userId: number = getUserIdFromToken(req)
 		if (userId) {
@@ -69,11 +63,13 @@ export const bookCycle = async (req: Request, res: Response) => {
 					CycleBooking,
 					bodyObject
 				)
-				cycle.current_seats++
+				cycle.current_seats += bodyObject.bookingSeats
 				booking.travelers = traveler
 				booking.cycle = cycle
 				await AppDataSource.manager.save(booking)
 				await AppDataSource.manager.save(cycle)
+				console.log('booooooooking')
+
 				/*************** Transaction*******************/
 				const { token } = req.body
 				const stripe = new Stripe(
@@ -112,26 +108,9 @@ export const bookCycle = async (req: Request, res: Response) => {
 						transaction.user = user
 						transaction.booking = booking
 						booking.is_paid = true
+						console.log('transactiiiiion')
 						await AppDataSource.manager.save(transaction)
 						await AppDataSource.manager.save(booking)
-
-						// before response
-						if (cycle.program?.company.userId) {
-							notify({
-								type: NotificationEnum.CYCLE_BOOKED,
-								userId: cycle.program?.company.userId,
-								content: `New Traveler has booked your cycle`,
-								title: 'Cycle booked',
-							})
-						}
-
-						// before response
-						const email = user.email
-						await emailHandler({
-							email,
-							subject: PAYMENT_PROCESS_SUBJECT,
-							html: paymentDetailsEmail(),
-						})
 					})
 					.then((data) => {
 						res.status(200).json({ success: true, data: 'booked successfully' })
@@ -143,6 +122,12 @@ export const bookCycle = async (req: Request, res: Response) => {
 							StatusCodes.NOT_ACCEPTABLE
 						)
 					)
+			} else {
+				sendErrorResponse(
+					['Booking is Not Allowed'],
+					res,
+					StatusCodes.NOT_ACCEPTABLE
+				)
 			}
 		} else {
 			sendErrorResponse(
@@ -167,9 +152,7 @@ export const bookCycle = async (req: Request, res: Response) => {
         id: bodyObject.cycleId
       },
       relations: ["program"],
-
     })
-
     const userId: number = getUserIdFromToken(req)
     if(userId){
     const traveler = await AppDataSource.getRepository(Traveler).findOne({
@@ -177,23 +160,19 @@ export const bookCycle = async (req: Request, res: Response) => {
         user:{id: userId}
       },
       relations: ["user"],
-
     })
 console.log("traveler",traveler)
     const user = await AppDataSource.getRepository(User).findOneOrFail({
       where: {
         id: userId
       },
-
     })
-
     const previousCycle = await AppDataSource.getRepository(CycleBooking).findOne({
       where: {
         travelers: { id: traveler?.id },
         cycle: { id: cycle?.id }
       },
     })
-
     if (traveler && user && cycle && !previousCycle && cycle.current_seats < cycle.max_seats) {
       const booking = await AppDataSource.manager.create<CycleBooking>(CycleBooking, bodyObject)
       cycle.current_seats++
@@ -206,7 +185,6 @@ console.log("traveler",traveler)
       const stripe = new Stripe('sk_test_51LNL5KAolBbZGsicDBdmJs9IFIpCI146iDMcUJPH1rMIVzCP6BoHaES0WMlgMBHRixb3oRpJKMPWXEsLUgoylerj00RgpfiYSe', {
         apiVersion: '2020-08-27',
       });
-
       return stripe.customers.create({
         email: token.email,
         source: token.id
@@ -233,17 +211,12 @@ console.log("traveler",traveler)
         booking.is_paid = true
         await AppDataSource.manager.save(transaction)
         await AppDataSource.manager.save(booking)
-
-
       })
         .then(data => {
-
           console.log(data)
           res.status(200).json({success:true,data:"booked successfully"})
-
         })
         .catch(e => console.log(e))
-
     }
     else {
       sendErrorResponse(
@@ -252,7 +225,6 @@ console.log("traveler",traveler)
         StatusCodes.NOT_ACCEPTABLE
       )
     }
-
   }
   else
   {
