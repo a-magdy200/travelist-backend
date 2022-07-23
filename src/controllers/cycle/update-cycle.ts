@@ -41,6 +41,8 @@ export const updateCycle = async (req: Request, res: Response) => {
 			await cycle.save()
 
 			sendSuccessResponse<Cycle>(res, cycle)
+			
+			console.log(cycle)
 
 			cycle.bookings.forEach((booking) => {
 				const id = booking.travelers.userId
