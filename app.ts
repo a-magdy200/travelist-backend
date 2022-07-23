@@ -45,6 +45,12 @@ app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.static(path.join(__dirname, 'uploads')))
 
+// io.on("connection", function(socket: any) {
+// 	console.log("a user connected");
+// 	console.log(socket.id);
+//   });
+
+
 AppDataSource.initialize()
 	.then((connection) => {
 		const config = configurations()

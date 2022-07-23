@@ -8,6 +8,7 @@
 	},
 	"dependencies": {
 		"@joi/date": "^2.1.0",
+		"@types/socket.io": "^3.0.2",
 		"bcrypt": "^5.0.1",
 		"class-validator": "^0.13.2",
 		"cookie-parser": "^1.4.6",

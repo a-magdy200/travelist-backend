@@ -10,6 +10,8 @@ import { FriendRequestStatusType } from '../../helpers/types/friendRequestStatus
 import { FriendRequestStatusEnum } from '../../helpers/enums/friendRequestStatus.enum'
 import { TravelerFriends } from '../../entities/TravelerFriend.entity'
 import { getUserIdFromToken } from '../../helpers/functions/getUserIdFromToken'
+import { NotificationEnum } from '../../helpers/enums/notification.enum'
+import notify from '../../helpers/common/notify'
 import {Chat} from "../../entities/Chat.entity";
 import {ChatUser} from "../../entities/ChatUser.entity";
 
@@ -57,6 +59,23 @@ const acceptFriendRequest = async (req: Request, res: Response) => {
 					userId: otherTraveler.userId,
 				})
 				sendSuccessResponse<TravelerFriends>(res, friend)
+
+				//sendSuccessResponse<FriendRequest>(res, alreadySentRequest)
+
+				const traveler: Traveler = await AppDataSource.manager.findOneOrFail<Traveler>(Traveler, {
+					where: { id: oppsiteTravelerId },
+				})
+
+				const oppsiteUserId = traveler.userId;
+				console.log(oppsiteUserId);
+
+				notify({
+					type: NotificationEnum.FRIEND_REQUEST_APPROVED,
+					userId: oppsiteUserId,
+					content: `Your friend request has been accepted`,
+					title: 'Friend Request approved',
+				})
+
 			} else {
 				sendErrorResponse(
 					['there is not a request '],
@@ -76,8 +95,4 @@ const acceptFriendRequest = async (req: Request, res: Response) => {
 	}
 }
 
-export {
-
-	acceptFriendRequest,
-
-}
+export { acceptFriendRequest }

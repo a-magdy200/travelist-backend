@@ -10,6 +10,8 @@ import { FriendRequestStatusType } from '../../helpers/types/friendRequestStatus
 import { FriendRequestStatusEnum } from '../../helpers/enums/friendRequestStatus.enum'
 import { TravelerFriends } from '../../entities/TravelerFriend.entity'
 import { getUserIdFromToken } from '../../helpers/functions/getUserIdFromToken'
+import { NotificationEnum } from '../../helpers/enums/notification.enum'
+import notify from '../../helpers/common/notify'
 
 const sendFriendRequest = async (req: Request, res: Response) => {
 	const oppsiteTravelerId: number | undefined = parseInt(req.params.id)
@@ -66,6 +68,21 @@ const sendFriendRequest = async (req: Request, res: Response) => {
 
 				await friendRequest.save()
 				sendSuccessResponse<FriendRequest>(res, friendRequest)
+
+				const traveler: Traveler = await AppDataSource.manager.findOneOrFail<Traveler>(Traveler, {
+					where: { id: oppsiteTravelerId },
+				})
+
+				const oppsiteUserId = traveler.userId;
+				console.log(oppsiteUserId);
+
+				notify({
+					type: NotificationEnum.FRIEND_REQUEST_RECEIVED,
+					userId: oppsiteUserId,
+					content: `New friend request has been sent`,
+					title: 'Friend Request received',
+				})
+
 			} catch (error: any) {
 				sendErrorResponse(
 					['Can not send friend request'],

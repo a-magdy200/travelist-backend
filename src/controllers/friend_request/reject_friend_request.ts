@@ -10,7 +10,8 @@ import { FriendRequestStatusType } from '../../helpers/types/friendRequestStatus
 import { FriendRequestStatusEnum } from '../../helpers/enums/friendRequestStatus.enum'
 import { TravelerFriends } from '../../entities/TravelerFriend.entity'
 import { getUserIdFromToken } from '../../helpers/functions/getUserIdFromToken'
-
+import notify from '../../helpers/common/notify'
+import { NotificationEnum } from '../../helpers/enums/notification.enum'
 
 const rejectFriendRequest = async (req: Request, res: Response) => {
 	const oppsiteTravelerId: number | undefined = +req.params.id
@@ -22,7 +23,6 @@ const rejectFriendRequest = async (req: Request, res: Response) => {
 		},
 	})
 	if (currentTraveler && currentTraveler.id != oppsiteTravelerId) {
-		
 		try {
 			const alreadySentRequest: FriendRequest | null =
 				await AppDataSource.manager.findOne<FriendRequest>(FriendRequest, {
@@ -38,6 +38,21 @@ const rejectFriendRequest = async (req: Request, res: Response) => {
 				await alreadySentRequest.save()
 
 				sendSuccessResponse<FriendRequest>(res, alreadySentRequest)
+
+				const traveler: Traveler =
+					await AppDataSource.manager.findOneOrFail<Traveler>(Traveler, {
+						where: { id: oppsiteTravelerId },
+					})
+
+				const oppsiteUserId = traveler.userId
+				console.log(oppsiteUserId)
+
+				notify({
+					type: NotificationEnum.FRIEND_REQUEST_DECLINED,
+					userId: oppsiteUserId,
+					content: `Your friend request has been refused`,
+					title: 'Friend request refused',
+				})
 			} else {
 				sendErrorResponse(
 					['there is not a request '],
@@ -57,10 +72,4 @@ const rejectFriendRequest = async (req: Request, res: Response) => {
 	}
 }
 
-
-
-export {
-	
-	rejectFriendRequest,
-	
-}
+export { rejectFriendRequest }
