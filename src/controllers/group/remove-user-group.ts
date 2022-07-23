@@ -34,7 +34,6 @@ export const removeUserGroup = async (req: Request, res: Response) => {
 				}
 			})
 		}
-		console.log(flag)
 
 		if (group && user && flag) {
 			group.followers_count -= 1

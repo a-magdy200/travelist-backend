@@ -28,7 +28,6 @@ export const searchCountry = async (req: Request, res: Response, next: any) => {
 				group: true,
 			},
 		})
-		console.log(countries)
 
 		if (countries.length == 0) {
             return sendErrorResponse(['Could not find country'], res, StatusCodes.SUCCESS_NO_CONTENT)
