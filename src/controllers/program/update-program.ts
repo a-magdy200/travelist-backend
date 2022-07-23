@@ -17,7 +17,6 @@ import { Company } from "../../entities/Company.entity";
 export const update = async (req: Request, res: Response) => {
 	try {
 		const id: number | undefined = +req.params.id
-		console.log(req.body)
 		const validation: Program = await programUpdateValidation.validateAsync(
 			req.body,
 			{
@@ -30,7 +29,7 @@ export const update = async (req: Request, res: Response) => {
 		).findOneByOrFail( {
 			id,
 		})
-		
+
 		if (program && validation) {
 			program.name = validation.name
 			program.description = validation.description

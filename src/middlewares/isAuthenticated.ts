@@ -14,7 +14,6 @@ const isAuthenticated = async (
 
   if (bearerHeader !== undefined && bearerHeader.includes("Bearer ")) {
     const Token = bearerHeader.split(" ")[1];
-    console.log(Token)
     try {
       jwt.verify(
         Token,

@@ -93,7 +93,6 @@ const listTravelerFriends = async (req: Request, res: Response) => {
 		})
 
 		if (traveler) {
-			console.log(traveler.id)
 
 			const friends: TravelerFriends[] = await AppDataSource.getRepository(
 				TravelerFriends
@@ -179,7 +178,7 @@ const homeFeed = async (req: Request, res: Response) => {
 		newPosts.sort(( a:IFeedPost , b:IFeedPost) => {
 			return new Date(b.postCreationTime).valueOf() - new Date(a.postCreationTime).valueOf()
 		});
-		
+
 		let filterPosts: IFeedPost[] = [];
 		filterPosts = newPosts.filter((filterPost:IFeedPost) => filterPost.postStatus != 'reported');
 

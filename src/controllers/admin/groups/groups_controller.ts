@@ -13,7 +13,6 @@ import logger from "../../../config/logger";
 const listGroups = async (req: Request, res: Response) => {
 	try {
 		const count: number = await AppDataSource.getRepository<Group>(Group).count();
-		console.log(count);
 		if (count === 0) {
 			sendSuccessResponse<IGroupInterface[]>(res, []);
 		} else {

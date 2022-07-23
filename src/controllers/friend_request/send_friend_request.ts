@@ -12,17 +12,16 @@ import { TravelerFriends } from '../../entities/TravelerFriend.entity'
 import { getUserIdFromToken } from '../../helpers/functions/getUserIdFromToken'
 
 const sendFriendRequest = async (req: Request, res: Response) => {
-	const oppsiteTravelerId: number | undefined = +req.params.id
+	const oppsiteTravelerId: number | undefined = parseInt(req.params.id)
 	const currentUserId: number = getUserIdFromToken(req)
-    console.log(currentUserId)
+  
 	const currentTraveler = await AppDataSource.getRepository(Traveler).findOne({
 		where: {
 			userId: currentUserId,
 		},
 	})
 	if (currentTraveler && currentTraveler.id != oppsiteTravelerId) {
-		console.log(currentTraveler.id)
-		console.log(oppsiteTravelerId)
+		
 		const existedFriendRequest: FriendRequest | null =
 			await AppDataSource.manager.findOne<FriendRequest>(FriendRequest, {
 				where: [

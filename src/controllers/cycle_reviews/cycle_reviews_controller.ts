@@ -73,7 +73,6 @@ const createCycleReview = async (req: Request, res: Response) => {
 				// console.log(currentTravelerId) //2
 
 				const requestedCycleId = req.body?.cycleId
-				console.log(requestedCycleId)
 
 				const cycle_review: CycleReview | null =
 					await AppDataSource.manager.findOneOrFail<CycleReview>(CycleReview, {

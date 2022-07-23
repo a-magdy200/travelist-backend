@@ -15,15 +15,14 @@ import { getUserIdFromToken } from '../../helpers/functions/getUserIdFromToken'
 const acceptFriendRequest = async (req: Request, res: Response) => {
 	const oppsiteTravelerId: number | undefined = +req.params.id
 	const currentUserId: number = getUserIdFromToken(req)
-	console.log(currentUserId)
+
 	const currentTraveler = await AppDataSource.getRepository(Traveler).findOne({
 		where: {
 			userId: currentUserId,
 		},
 	})
 	if (currentTraveler && currentTraveler.id != oppsiteTravelerId) {
-		console.log(currentTraveler.id)
-		console.log(oppsiteTravelerId)
+
 		try {
 			const alreadySentRequest: FriendRequest | null =
 				await AppDataSource.manager.findOne<FriendRequest>(FriendRequest, {
@@ -44,11 +43,6 @@ const acceptFriendRequest = async (req: Request, res: Response) => {
 						traveler_receiver: { id: currentTraveler.id },
 					})
 				await AppDataSource.manager.save(friend)
-				if (friend) {
-					console.log('friend is added')
-				} else {
-					console.log('can not add friend')
-				}
 				sendSuccessResponse<TravelerFriends>(res, friend)
 
 				//sendSuccessResponse<FriendRequest>(res, alreadySentRequest)
@@ -72,7 +66,7 @@ const acceptFriendRequest = async (req: Request, res: Response) => {
 }
 
 export {
-	
+
 	acceptFriendRequest,
-	
+
 }

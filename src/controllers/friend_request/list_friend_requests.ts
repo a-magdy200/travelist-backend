@@ -28,8 +28,9 @@ const listReceivedRequests = async (req: Request, res: Response) => {
 						
 						receiver: { id: currentTraveler.id },
 						status: FriendRequestStatusEnum.PENDING,
-					}
-				,
+					},
+					relations: ['sender','receiver','sender.user','receiver.user'],
+				
 			})
             if(receivedFriendRequests){
                 sendSuccessResponse<FriendRequest[]>(res, receivedFriendRequests)
@@ -60,8 +61,10 @@ const listSentRequests = async (req: Request, res: Response) => {
 						
 						sender: { id: currentTraveler.id },
 						status: FriendRequestStatusEnum.PENDING,
-					}
-				,
+					},
+					relations: ['sender','receiver','sender.user','receiver.user'],
+
+				
 			})
             if(sentFriendRequests){
                 sendSuccessResponse<FriendRequest[]>(res, sentFriendRequests)
@@ -74,7 +77,6 @@ const listSentRequests = async (req: Request, res: Response) => {
 
 	
 }
-
 
 
 
