@@ -23,6 +23,7 @@ import cycleReviewsRoutes from "./src/routes/cycle_reviews.routes";
 import guideReviewsRoutes from "./src/routes/guide_reviews.routes";
 import companyReviewsRoutes from "./src/routes/company_reviews.routes";
 import postRoutes from './src/routes/post.routes'
+import postReportsRoutes from './src/routes/post_reports.routes'
 import adminRoutes from './src/routes/admin/admin.routes'
 import searchRouter from './src/routes/search.routes';
 
@@ -62,6 +63,8 @@ AppDataSource.initialize()
 
 
 		app.use('/api/posts', postRoutes)
+
+		app.use('/api/posts_reports', postReportsRoutes)
 
 		app.listen(config.port, () => {
 			console.log(`Server running on PORT: ${config.port}`)

@@ -1,6 +1,7 @@
 import { Post } from '../../entities/Post.entity'
 import { User } from '../../entities/User.entity'
 import { Traveler } from '../../entities/Traveler.entity'
+import { Not } from "typeorm"
 import { Group } from '../../entities/Group.entity'
 import { AppDataSource } from '../../config/database/data-source'
 import { Request, Response } from 'express'
@@ -12,6 +13,7 @@ import { StatusCodes } from '../../helpers/constants/statusCodes'
 import { sendSuccessResponse } from '../../helpers/responses/sendSuccessResponse'
 import { sendNotFoundResponse } from '../../helpers/responses/404.response'
 import { getUserIdFromToken } from '../../helpers/functions/getUserIdFromToken'
+import { NOT_CONTAINS } from 'class-validator'
 const createPost = async (req: Request, res: Response) => {
 	try {
 		const userId: number = getUserIdFromToken(req)
@@ -64,14 +66,36 @@ const createPost = async (req: Request, res: Response) => {
 		)
 	}
 }
-const listPosts = async (req: Request, res: Response) => {
+const listAllPosts = async (req: Request, res: Response) => {
+
+	try{
+		
+	const posts: Post[] = await AppDataSource.manager.find<Post>(Post, {
+		where:{status :Not("reported")},
+		relations: ['traveler', 'traveler.user'],
+		order: {
+			id: 'DESC',
+		},
+	})	
+	sendSuccessResponse<Post[]>(res, posts)
+}
+catch (e: any) {
+	sendErrorResponse(
+		formatValidationErrors(e),
+		res,
+		StatusCodes.BAD_REQUEST
+	)
+}
+}
+
+const listMyPosts = async (req: Request, res: Response) => {
 	const userId: number = getUserIdFromToken(req)
 	try{
 	const posts: Post[] = await AppDataSource.manager.find<Post>(Post, {
 		relations: ['traveler', 'traveler.user'],
 		where: {
 			traveler: {
-				userId,
+				userId: userId,
 			},
 		},
 		order: {
@@ -117,7 +141,6 @@ const deletePost = async (req: Request, res: Response) => {
 		const id: number | undefined = +req.params.id
 		const post: Post | null = await AppDataSource.manager.findOneOrFail<Post>(Post, {
 			where: { id },
-			// relations: ['group', 'traveler','traveler.user'],
 			relations: ['group', 'traveler.user'],
 		})
 
@@ -176,4 +199,32 @@ const editPost = async (req: Request, res: Response) => {
 		)
 	}
 }
-export { createPost, listPosts, showPost, deletePost, editPost }
+
+// const reportPost = async (req: Request, res: Response) => {
+// 	try {
+// 		const userId: number = getUserIdFromToken(req)
+// 		const id: number | undefined = +req.params.id
+// 		const validation: Post = await postStatusValidation.validateAsync(req.body, {
+// 			abortEarly: false,
+// 		}) 
+// 		const post: Post | null = await AppDataSource.manager.findOneOrFail<Post>(Post, {
+// 			where: { id },
+// 			relations: ['group', 'traveler.user'],
+// 		})
+// 			await AppDataSource.manager.update<Post>(
+// 				Post,
+// 				{
+// 					id,
+// 				},
+// 				validation
+// 			)
+// 			sendSuccessResponse(res)
+// 	} catch (error: any) {
+// 		sendErrorResponse(
+// 			formatValidationErrors(error),
+// 			res,
+// 			StatusCodes.NOT_ACCEPTABLE
+// 		)
+// 	}
+// }
+export { createPost, listAllPosts, listMyPosts,showPost, deletePost, editPost }
