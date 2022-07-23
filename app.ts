@@ -28,20 +28,14 @@ import adminRoutes from './src/routes/admin/admin.routes'
 import searchRouter from './src/routes/search.routes';
 import {createServer} from "http";
 import { Server } from "socket.io";
-import chatHandlers from "./src/controllers/chat/chat-handlers";
-
-
+import socketHandler from "./src/controllers/socket_handler";
 const app = express()
 const server = createServer(app);
-const io = new Server(server);
-app.use(cors({ origin: true, credentials: true }))
+export const io = new Server(server, {
+	cors: {origin: true}
+});
 
-// let http = require("http").Server(app);
-// let io = require('socket.io')(http);
-// io.on('custom_event', (name:string) =>{
-// console.log(name);
-// io.emit('return_event', 'yes from server to client')
-// })
+app.use(cors({ origin: true, credentials: true }))
 // create a rotating write stream
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
@@ -79,10 +73,7 @@ AppDataSource.initialize()
 		app.use('/api/search', searchRouter)
 		app.use('/api/posts', postRoutes)
 		app.use('/api/posts_reports', postReportsRoutes)
-
-		chatHandlers(io);
-
-
+		socketHandler(io)
 		server.listen(config.port, () => {
 			console.log(`Server running on PORT: ${config.port}`)
 		})

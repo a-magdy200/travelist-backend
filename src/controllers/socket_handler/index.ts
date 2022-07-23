@@ -1,9 +1,8 @@
 import { ISocketInterface } from "../../helpers/interfaces/ISocket.interface";
-import { Socket } from "socket.io";
 import chatHandlers from "./chat-handlers";
 
+export const onlineUsers: {[userId: number]: string} = {};
 const socketHandler = (io: any) => {
-  const users: {[userId: number]: Socket} = {};
   io.use((socket: ISocketInterface, next: (error?: any) => void) => {
     const userId = socket.handshake.auth.userId;
     if (!userId) {
@@ -13,17 +12,13 @@ const socketHandler = (io: any) => {
     next();
   });
   io.on("connection", (socket: ISocketInterface) => {
-    console.log('a user connected');
     if (socket.userId) {
-      users[socket.userId] = socket;
+      onlineUsers[socket.userId] = socket.id;
     }
-    socket.emit("say hi", "hi");
-    console.log("connection", socket.userId);
-    socket.onAny((socket: ISocketInterface) => {
-      console.log(socket.data);
-    })
+    // socket.onAny((s: ISocketInterface, d: any) => {
+    //   console.log(s, d);
+    // })
+    chatHandlers(socket);
   });
-
-  chatHandlers(io);
 }
 export default socketHandler;
