@@ -48,7 +48,7 @@ export const bookCycle = async (req: Request, res: Response) => {
         },
       })
 
-      if (traveler && user && cycle && !previousCycle && (cycle.current_seats+bodyObject.bookingSeats) < cycle.max_seats) {
+      if (traveler && user && cycle && !previousCycle && (cycle.current_seats+bodyObject.bookingSeats) < cycle.max_seats) {git
         const booking = await AppDataSource.manager.create<CycleBooking>(CycleBooking, bodyObject)
         cycle.current_seats+=bodyObject.bookingSeats
         booking.travelers = traveler
